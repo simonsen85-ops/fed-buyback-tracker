@@ -47,6 +47,7 @@ HTML_TEMPLATE = r"""<!DOCTYPE html>
   --bg:#0c1017;--bg2:#141a24;--bg3:#1a2230;
   --t1:#f8fafc;--t2:#b0bac9;--t3:#6b7a90;--t4:#3d4a5c;
   --g1:#6ee7b7;--g2:#34d399;--g3:#10b981;--g4:#059669;
+  --amb:#f59e0b;--red:#ef4444;
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'JetBrains Mono',monospace;background:var(--bg);color:var(--t1);min-height:100vh;font-size:13px;-webkit-font-smoothing:antialiased}
@@ -158,7 +159,8 @@ tbody tr:last-child td{border-bottom:2px solid var(--t4);font-weight:600}
   <div class="chc"><h3>Købskurs vs. NAV <span>— DKK/aktie</span></h3><div class="chw"><canvas id="ch1"></canvas></div></div>
   <div class="chc"><h3>ROIC <span>— akkumuleret %</span></h3><div class="chw"><canvas id="ch2"></canvas></div></div>
   <div class="chc"><h3>Værdiskabelse <span>— akkumuleret DKK</span></h3><div class="chw"><canvas id="ch3"></canvas></div></div>
-  <div class="chc"><h3>Volumen <span>— tilbagekøb vs. marked</span></h3><div class="chw"><canvas id="ch4"></canvas></div></div>
+  <div class="chc"><h3>Handelsvolumen <span>— tilbagekøb vs. marked</span></h3><div class="chw"><canvas id="ch4"></canvas></div></div>
+  <div class="chc" style="grid-column:1/-1"><h3>Tilbagekøb som % af markedsvolumen <span>— ugentlig</span></h3><div class="chw" style="height:200px"><canvas id="ch5"></canvas></div></div>
 </div>
 
 <div class="tc">
@@ -267,21 +269,45 @@ function render(){
   }]},options:cO()});
 
   // Chart 4: Volume — market volume (grey) vs buyback (white)
+  // Skip first data point for y-axis max calc if it's a spike (>2x median)
   const hasMktVol = rows.some(r=>r.mVol>0);
+  const volData = rows.map(r=>r.mVol);
+  const buyData = rows.map(r=>r.wS);
   const ch4datasets = [{
     label:'Tilbagekøbt',
-    data:rows.map(r=>r.wS),backgroundColor:'rgba(248,250,252,.25)',borderColor:'rgba(248,250,252,.4)',
+    data:buyData,backgroundColor:'rgba(248,250,252,.25)',borderColor:'rgba(248,250,252,.4)',
     borderWidth:1,borderRadius:2
   }];
   if(hasMktVol){
     ch4datasets.unshift({
       label:'Markedsvolumen',
-      data:rows.map(r=>r.mVol),backgroundColor:'rgba(176,186,201,.1)',borderColor:'rgba(176,186,201,.2)',
+      data:volData,backgroundColor:'rgba(176,186,201,.1)',borderColor:'rgba(176,186,201,.2)',
       borderWidth:1,borderRadius:2
     });
   }
+  // Calculate a sensible y-max excluding outlier first week
+  const allVols = hasMktVol ? volData.slice(1) : buyData.slice(1);
+  const sugMax = Math.max(...allVols) * 1.2;
   new Chart(document.getElementById('ch4'),{type:'bar',data:{labels:lbl,datasets:ch4datasets},
-    options:cO({y:{beginAtZero:true},lg:{display:hasMktVol,labels:{color:'#b0bac9',font:{family:'JetBrains Mono',size:10},boxWidth:10,padding:12}}})});
+    options:cO({y:{beginAtZero:true,suggestedMax:sugMax>0?sugMax:undefined},
+      lg:{display:hasMktVol,labels:{color:'#b0bac9',font:{family:'JetBrains Mono',size:10},boxWidth:10,padding:12}}})});
+
+  // Chart 5: Buyback as % of market volume — color-coded bars
+  if(hasMktVol){
+    const pctData = rows.map(r=>r.bPct);
+    // Color: green (<20%), amber (20-40%), red (>40%)
+    const pctColors = pctData.map(p=>p>40?'rgba(239,68,68,.6)':p>20?'rgba(245,158,11,.6)':'rgba(16,185,129,.5)');
+    new Chart(document.getElementById('ch5'),{type:'bar',data:{labels:lbl,datasets:[{
+      label:'% af volumen',data:pctData,backgroundColor:pctColors,borderColor:pctColors.map(c=>c.replace(/[\d.]+\)$/,'0.8)')),
+      borderWidth:1,borderRadius:2,pct:true
+    }]},options:cO({y:{beginAtZero:true},yt:{callback:v=>v+'%'}})});
+  } else {
+    // No volume data yet — show placeholder
+    const ctx5=document.getElementById('ch5').getContext('2d');
+    ctx5.fillStyle='#6b7a90';ctx5.font='12px JetBrains Mono';
+    ctx5.textAlign='center';ctx5.fillText('Volume-data hentes ved næste automatiske opdatering',
+      document.getElementById('ch5').width/2, 100);
+  }
 
   // Table
   document.getElementById('tb').innerHTML=rows.map((r,i)=>`<tr>
@@ -291,7 +317,7 @@ function render(){
     <td>${r.wA.toFixed(2)}</td>
     <td>${fK(r.wAmt)}K</td>
     <td>${r.mVol>0?fD(r.mVol):'—'}</td>
-    <td>${r.bPct>0?r.bPct.toFixed(1)+'%':'—'}</td>
+    <td style="color:${r.bPct>40?'var(--red)':r.bPct>20?'var(--amb)':'var(--g3)'}">${r.bPct>0?r.bPct.toFixed(1)+'%':'—'}</td>
     <td><b>${fD(r.aS)}</b></td>
     <td>${fM(r.aAmt)}M</td>
     <td>${r.nav.toFixed(2)}</td>
