@@ -289,6 +289,56 @@ def scan_for_new_announcements(data):
     return new_count
 
 
+def fetch_weekly_volumes(announcements):
+    """
+    Fetch daily trading volumes from Yahoo Finance for FED.CO
+    and calculate weekly totals matching each announcement period.
+    """
+    print("\nFetching trading volumes from Yahoo Finance...")
+    try:
+        url = 'https://query1.finance.yahoo.com/v8/finance/chart/FED.CO?interval=1d&range=1y'
+        req = Request(url, headers=HEADERS)
+        with urlopen(req, timeout=15) as resp:
+            raw = json.loads(resp.read())
+
+        result = raw['chart']['result'][0]
+        timestamps = result['timestamp']
+        volumes = result['indicators']['quote'][0]['volume']
+
+        # Build date->volume map
+        daily_vol = {}
+        for ts, vol in zip(timestamps, volumes):
+            d = datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d')
+            if vol is not None:
+                daily_vol[d] = vol
+
+        print(f"  Got {len(daily_vol)} daily volume entries")
+
+        # For each announcement, sum the volume for its period
+        for a in announcements:
+            start = a.get('period_start', '')
+            end = a.get('period_end', '')
+            if not start or not end:
+                continue
+
+            week_vol = 0
+            for date_str, vol in daily_vol.items():
+                if start <= date_str <= end:
+                    week_vol += vol
+
+            a['market_volume'] = week_vol
+            if a['week_shares'] > 0 and week_vol > 0:
+                a['buyback_pct_of_volume'] = round(a['week_shares'] / week_vol * 100, 1)
+            else:
+                a['buyback_pct_of_volume'] = 0
+
+        print("  Volume data matched to announcements")
+
+    except Exception as e:
+        print(f"  Warning: Could not fetch volumes: {e}")
+        # Don't fail — volume is supplementary data
+
+
 def main():
     print("=" * 60)
     print("Fast Ejendom Danmark — Buyback Scraper")
@@ -304,6 +354,9 @@ def main():
     # Sort announcements by accumulated shares (chronological order)
     data["announcements"].sort(key=lambda a: a["acc_shares"])
 
+    # Fetch trading volumes
+    fetch_weekly_volumes(data["announcements"])
+
     # Update NAV history
     data["nav_history"] = NAV_HISTORY
     data["total_shares"] = TOTAL_SHARES
@@ -317,6 +370,9 @@ def main():
         last = data["announcements"][-1]
         print(f"Latest: {last['announcement_date']} — "
               f"{last['acc_shares']} shares, {last['acc_amount']} DKK")
+        if 'market_volume' in last:
+            print(f"  Market volume: {last['market_volume']}, "
+                  f"buyback = {last.get('buyback_pct_of_volume', 0)}% of volume")
 
 
 if __name__ == "__main__":
