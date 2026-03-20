@@ -2,11 +2,14 @@ name: Scrape & Deploy FED Buyback Tracker
 
 on:
   schedule:
+    # Run every Wednesday and Friday at 16:00 UTC (17:00 CET / 18:00 CEST)
     - cron: '0 16 * * 3,5'
-  workflow_dispatch:
+  workflow_dispatch:  # Allow manual trigger
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   scrape-and-deploy:
@@ -34,11 +37,13 @@ jobs:
           git diff --staged --quiet || git commit -m "Auto-update: $(date -u '+%Y-%m-%d %H:%M') UTC"
           git push
 
-      - name: Deploy to Netlify
-        uses: nwtgck/actions-netlify@v3
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload to Pages
+        uses: actions/upload-pages-artifact@v3
         with:
-          publish-dir: '.'
-          production-deploy: true
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4
