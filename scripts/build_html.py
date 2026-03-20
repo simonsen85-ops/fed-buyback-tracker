@@ -292,15 +292,18 @@ function render(){
     options:cO({y:{beginAtZero:true,suggestedMax:sugMax>0?sugMax:undefined},
       lg:{display:hasMktVol,labels:{color:'#b0bac9',font:{family:'JetBrains Mono',size:10},boxWidth:10,padding:12}}})});
 
-  // Chart 5: Buyback as % of market volume — color-coded bars
+  // Chart 5: Buyback as % of market volume — color-coded bars + average line
   if(hasMktVol){
     const pctData = rows.map(r=>r.bPct);
-    // Color: green (<20%), amber (20-40%), red (>40%)
     const pctColors = pctData.map(p=>p>40?'rgba(239,68,68,.6)':p>20?'rgba(245,158,11,.6)':'rgba(16,185,129,.5)');
-    new Chart(document.getElementById('ch5'),{type:'bar',data:{labels:lbl,datasets:[{
-      label:'% af volumen',data:pctData,backgroundColor:pctColors,borderColor:pctColors.map(c=>c.replace(/[\d.]+\)$/,'0.8)')),
-      borderWidth:1,borderRadius:2,pct:true
-    }]},options:cO({y:{beginAtZero:true},yt:{callback:v=>v+'%'}})});
+    // Cumulative average line
+    let cumSum=0;
+    const avgLine = pctData.map((p,i)=>{cumSum+=p;return Math.round(cumSum/(i+1)*10)/10});
+    new Chart(document.getElementById('ch5'),{type:'bar',data:{labels:lbl,datasets:[
+      {label:'% af volumen',data:pctData,backgroundColor:pctColors,borderColor:pctColors.map(c=>c.replace(/[\d.]+\)$/,'0.8)')),borderWidth:1,borderRadius:2,pct:true,order:2},
+      {label:'Gennemsnit',data:avgLine,type:'line',borderColor:'#f8fafc',borderWidth:1.5,borderDash:[4,3],pointRadius:0,tension:.3,fill:false,pct:true,order:1}
+    ]},options:cO({y:{beginAtZero:true},yt:{callback:v=>v+'%'},
+      lg:{display:true,labels:{color:'#b0bac9',font:{family:'JetBrains Mono',size:10},boxWidth:10,padding:12}}})});
   } else {
     // No volume data yet — show placeholder
     const ctx5=document.getElementById('ch5').getContext('2d');
