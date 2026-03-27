@@ -339,6 +339,34 @@ def fetch_weekly_volumes(announcements):
         # Don't fail — volume is supplementary data
 
 
+def fetch_current_price(data):
+    """Fetch the latest closing price from Yahoo Finance."""
+    print("\nFetching current price from Yahoo Finance...")
+    try:
+        url = 'https://query1.finance.yahoo.com/v8/finance/chart/FED.CO?interval=1d&range=5d'
+        req = Request(url, headers=HEADERS)
+        with urlopen(req, timeout=15) as resp:
+            raw = json.loads(resp.read())
+
+        result = raw['chart']['result'][0]
+        closes = result['indicators']['quote'][0]['close']
+        # Get last non-None close
+        price = None
+        for c in reversed(closes):
+            if c is not None:
+                price = round(c, 2)
+                break
+
+        if price:
+            data['current_price'] = price
+            print(f"  Current price: {price} DKK")
+        else:
+            print("  Warning: Could not determine price")
+
+    except Exception as e:
+        print(f"  Warning: Could not fetch price: {e}")
+
+
 def main():
     print("=" * 60)
     print("Fast Ejendom Danmark — Buyback Scraper")
@@ -356,6 +384,9 @@ def main():
 
     # Fetch trading volumes
     fetch_weekly_volumes(data["announcements"])
+
+    # Fetch current price
+    fetch_current_price(data)
 
     # Update NAV history
     data["nav_history"] = NAV_HISTORY
