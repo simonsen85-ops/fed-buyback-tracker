@@ -111,7 +111,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .tc{background:var(--bg2);border:1px solid var(--t4);border-radius:4px;padding:14px 16px;margin-bottom:16px;overflow:hidden}
 .ts{overflow-x:auto;max-width:100%}
 table{width:100%;border-collapse:collapse}
-th{text-align:right;padding:6px 8px;border-bottom:2px solid var(--t4);font-size:.63rem;text-transform:uppercase;letter-spacing:.5px;color:var(--t2);font-weight:600;white-space:nowrap}
+th{text-align:right;padding:6px 8px;border-bottom:2px solid var(--t4);font-size:.63rem;text-transform:uppercase;letter-spacing:.5px;color:var(--t2);font-weight:600;white-space:nowrap;cursor:pointer;user-select:none;transition:color .15s}
+th:hover{color:var(--t1)}
+th .arrow{font-size:.55rem;margin-left:3px;opacity:.4}
+th.active .arrow{opacity:1;color:var(--g3)}
 th:first-child,th:nth-child(2){text-align:left}
 th:first-child{width:28px}
 th:nth-child(2){width:62px}
@@ -119,7 +122,6 @@ td{text-align:right;padding:5px 8px;border-bottom:1px solid rgba(61,74,92,.4);fo
 td:first-child,td:nth-child(2){text-align:left}
 td:first-child{color:var(--t3)}
 tr:hover td{background:rgba(16,185,129,.02)}
-tbody tr:last-child td{border-bottom:2px solid var(--t4);font-weight:600}
 
 .foot{display:flex;justify-content:center;gap:16px;padding:14px 0;font-size:.65rem;color:var(--t3)}
 .foot a{color:var(--g3);text-decoration:none}
@@ -165,7 +167,7 @@ tbody tr:last-child td{border-bottom:2px solid var(--t4);font-weight:600}
 
 <div class="tc">
   <div class="sh">Ugentligt køb og likviditet</div>
-  <div class="ts"><table><thead><tr>
+  <div class="ts"><table id="tbl"><thead><tr>
     <th>#</th><th>Dato</th><th>Købt</th><th>Kurs</th><th>Beløb</th>
     <th>Mkt.vol</th><th>% af vol</th>
     <th>Akk.stk</th><th>Akk.DKK</th><th>NAV</th><th>Rabat</th>
@@ -312,23 +314,77 @@ function render(){
       document.getElementById('ch5').width/2, 100);
   }
 
-  // Table
-  document.getElementById('tb').innerHTML=rows.map((r,i)=>`<tr>
-    <td>${i+1}</td>
-    <td>${new Date(r.d).toLocaleDateString('da-DK',{day:'numeric',month:'short'})}</td>
-    <td>${fD(r.wS)}</td>
-    <td>${r.wA.toFixed(2)}</td>
-    <td>${fK(r.wAmt)}K</td>
-    <td>${r.mVol>0?fD(r.mVol):'—'}</td>
-    <td style="color:${r.bPct>40?'var(--red)':r.bPct>20?'var(--amb)':'var(--g3)'}">${r.bPct>0?r.bPct.toFixed(1)+'%':'—'}</td>
-    <td><b>${fD(r.aS)}</b></td>
-    <td>${fM(r.aAmt)}M</td>
-    <td>${r.nav.toFixed(2)}</td>
-    <td style="color:var(--g1)">${r.disc.toFixed(1)}%</td>
-    <td style="color:var(--g2)">+${r.accr.toFixed(2)}</td>
-    <td style="color:var(--g3)"><b>${fM(r.vc)}M</b></td>
-    <td style="color:var(--g4)">${r.roic.toFixed(1)}%</td>
-  </tr>`).join('');
+  // Sortable table
+  const cols=[
+    {k:'i',l:'#',left:true},
+    {k:'d',l:'Dato',left:true},
+    {k:'wS',l:'Købt'},
+    {k:'wA',l:'Kurs'},
+    {k:'wAmt',l:'Beløb'},
+    {k:'mVol',l:'Mkt.vol'},
+    {k:'bPct',l:'% af vol'},
+    {k:'aS',l:'Akk.stk'},
+    {k:'aAmt',l:'Akk.DKK'},
+    {k:'nav',l:'NAV'},
+    {k:'disc',l:'Rabat'},
+    {k:'accr',l:'Accr.'},
+    {k:'vc',l:'Værdi'},
+    {k:'roic',l:'ROIC'}
+  ];
+
+  let sortCol='i', sortDir='desc'; // default: newest first
+
+  function renderTable(){
+    const sorted=[...rows].map((r,i)=>({...r,i:i+1}));
+    sorted.sort((a,b)=>{
+      let va=a[sortCol],vb=b[sortCol];
+      if(sortCol==='d'){va=a.d;vb=b.d;}
+      if(typeof va==='string')return sortDir==='asc'?va.localeCompare(vb):vb.localeCompare(va);
+      return sortDir==='asc'?(va-vb):(vb-va);
+    });
+
+    // Update header arrows
+    document.querySelectorAll('#tbl th').forEach((th,ci)=>{
+      const col=cols[ci];
+      const isActive=col.k===sortCol;
+      th.className=isActive?'active':'';
+      th.innerHTML=(col.left?'':'')+ col.l + `<span class="arrow">${isActive?(sortDir==='desc'?'▼':'▲'):'⇅'}</span>`;
+      if(col.left)th.style.textAlign='left';
+    });
+
+    document.getElementById('tb').innerHTML=sorted.map(r=>`<tr>
+      <td>${r.i}</td>
+      <td>${new Date(r.d).toLocaleDateString('da-DK',{day:'numeric',month:'short'})}</td>
+      <td>${fD(r.wS)}</td>
+      <td>${r.wA.toFixed(2)}</td>
+      <td>${fK(r.wAmt)}K</td>
+      <td>${r.mVol>0?fD(r.mVol):'—'}</td>
+      <td style="color:${r.bPct>40?'var(--red)':r.bPct>20?'var(--amb)':'var(--g3)'}">${r.bPct>0?r.bPct.toFixed(1)+'%':'—'}</td>
+      <td><b>${fD(r.aS)}</b></td>
+      <td>${fM(r.aAmt)}M</td>
+      <td>${r.nav.toFixed(2)}</td>
+      <td style="color:var(--g1)">${r.disc.toFixed(1)}%</td>
+      <td style="color:var(--g2)">+${r.accr.toFixed(2)}</td>
+      <td style="color:var(--g3)"><b>${fM(r.vc)}M</b></td>
+      <td style="color:var(--g4)">${r.roic.toFixed(1)}%</td>
+    </tr>`).join('');
+  }
+
+  // Build header with click handlers
+  const thead=document.getElementById('tbl').querySelector('thead tr');
+  thead.innerHTML='';
+  cols.forEach(col=>{
+    const th=document.createElement('th');
+    if(col.left)th.style.textAlign='left';
+    th.addEventListener('click',()=>{
+      if(sortCol===col.k){sortDir=sortDir==='desc'?'asc':'desc';}
+      else{sortCol=col.k;sortDir='desc';}
+      renderTable();
+    });
+    thead.appendChild(th);
+  });
+
+  renderTable();
 
   document.getElementById('upd').textContent='Sidst: '+(D.last_updated?new Date(D.last_updated).toLocaleDateString('da-DK',{day:'numeric',month:'short',year:'numeric'}):'—');
 }
