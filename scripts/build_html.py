@@ -202,7 +202,7 @@ function fM(n){return(n/1e6).toFixed(2)}
 function fK(n){return(n/1e3).toFixed(0)}
 
 function render(){
-  const rows=calc(),R=rows[rows.length-1],kurs=222,nav=R.nav,
+  const rows=calc(),R=rows[rows.length-1],kurs=D.current_price||222,nav=R.nav,
     pU=R.aAmt/D.program_max*100,dB=(nav-R.aA)/nav*100,dM=(nav-kurs)/nav*100,vPS=R.vc/R.nSh;
 
   document.getElementById('hNav').textContent=nav.toFixed(2);
