@@ -93,7 +93,10 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .tc{background:var(--bg2);border:1px solid var(--t4);border-radius:4px;padding:14px 16px;margin-bottom:16px;overflow:hidden}
 .ts{overflow-x:auto;max-width:100%}
 table{width:100%;border-collapse:collapse}
-th{text-align:right;padding:6px 8px;border-bottom:2px solid var(--t4);font-size:.63rem;text-transform:uppercase;letter-spacing:.5px;color:var(--t2);font-weight:600;white-space:nowrap}
+th{text-align:right;padding:6px 8px;border-bottom:2px solid var(--t4);font-size:.63rem;text-transform:uppercase;letter-spacing:.5px;color:var(--t2);font-weight:600;white-space:nowrap;cursor:pointer;user-select:none;transition:color .15s}
+th:hover{color:var(--t1)}
+th .arrow{font-size:.55rem;margin-left:3px;opacity:.4}
+th.active .arrow{opacity:1;color:var(--g3)}
 th:first-child,th:nth-child(2){text-align:left}
 th:first-child{width:28px}
 th:nth-child(2){width:62px}
@@ -101,7 +104,6 @@ td{text-align:right;padding:5px 8px;border-bottom:1px solid rgba(61,74,92,.4);fo
 td:first-child,td:nth-child(2){text-align:left}
 td:first-child{color:var(--t3)}
 tr:hover td{background:rgba(16,185,129,.02)}
-tbody tr:last-child td{border-bottom:2px solid var(--t4);font-weight:600}
 
 .foot{display:flex;justify-content:center;gap:16px;padding:14px 0;font-size:.65rem;color:var(--t3)}
 .foot a{color:var(--g3);text-decoration:none}
@@ -147,7 +149,7 @@ tbody tr:last-child td{border-bottom:2px solid var(--t4);font-weight:600}
 
 <div class="tc">
   <div class="sh">Ugentligt køb og likviditet</div>
-  <div class="ts"><table><thead><tr>
+  <div class="ts"><table id="tbl"><thead><tr>
     <th>#</th><th>Dato</th><th>Købt</th><th>Kurs</th><th>Beløb</th>
     <th>Mkt.vol</th><th>% af vol</th>
     <th>Akk.stk</th><th>Akk.DKK</th><th>NAV</th><th>Rabat</th>
@@ -162,7 +164,7 @@ tbody tr:last-child td{border-bottom:2px solid var(--t4);font-weight:600}
 
 </div>
 <script>
-const D={"total_shares":2659442,"nav_history":[{"from":"2025-10-24","nav":281.26,"label":"Q3 2025"},{"from":"2026-02-17","nav":306.6,"label":"FY 2025"}],"program_max":10000000,"program_start":"2025-10-24","program_end":"2026-10-23","last_page_index":127,"announcements":[{"announcement_date":"2025-10-31","period_start":"2025-10-24","period_end":"2025-10-31","week_shares":3550,"week_amount":709712,"week_avg_price":199.92,"acc_shares":3550,"acc_amount":709712,"acc_avg_price":199.92,"market_volume":33250,"buyback_pct_of_volume":10.7},{"announcement_date":"2025-11-07","period_start":"2025-11-03","period_end":"2025-11-07","week_shares":3643,"week_amount":724007,"week_avg_price":198.74,"acc_shares":7193,"acc_amount":1433719,"acc_avg_price":199.32,"market_volume":10126,"buyback_pct_of_volume":36.0},{"announcement_date":"2025-11-14","period_start":"2025-11-10","period_end":"2025-11-14","week_shares":4994,"week_amount":994216,"week_avg_price":199.08,"acc_shares":12187,"acc_amount":2427935,"acc_avg_price":199.22,"market_volume":7330,"buyback_pct_of_volume":68.1},{"announcement_date":"2025-11-21","period_start":"2025-11-17","period_end":"2025-11-21","week_shares":3976,"week_amount":785648,"week_avg_price":197.6,"acc_shares":16163,"acc_amount":3213583,"acc_avg_price":198.82,"market_volume":10926,"buyback_pct_of_volume":36.4},{"announcement_date":"2025-11-28","period_start":"2025-11-24","period_end":"2025-11-28","week_shares":1965,"week_amount":395381,"week_avg_price":201.21,"acc_shares":18128,"acc_amount":3608964,"acc_avg_price":199.08,"market_volume":10172,"buyback_pct_of_volume":19.3},{"announcement_date":"2025-12-08","period_start":"2025-12-01","period_end":"2025-12-05","week_shares":1435,"week_amount":298020,"week_avg_price":207.68,"acc_shares":19563,"acc_amount":3906984,"acc_avg_price":199.71,"market_volume":7969,"buyback_pct_of_volume":18.0},{"announcement_date":"2025-12-15","period_start":"2025-12-08","period_end":"2025-12-12","week_shares":2300,"week_amount":494592,"week_avg_price":214.95,"acc_shares":21863,"acc_amount":4401576,"acc_avg_price":201.33,"market_volume":10921,"buyback_pct_of_volume":21.1},{"announcement_date":"2025-12-19","period_start":"2025-12-15","period_end":"2025-12-19","week_shares":2010,"week_amount":440140,"week_avg_price":218.97,"acc_shares":23873,"acc_amount":4841716,"acc_avg_price":202.81,"market_volume":8908,"buyback_pct_of_volume":22.6},{"announcement_date":"2026-01-04","period_start":"2025-12-22","period_end":"2025-12-30","week_shares":1788,"week_amount":384284,"week_avg_price":214.92,"acc_shares":25661,"acc_amount":5226000,"acc_avg_price":203.66,"market_volume":6348,"buyback_pct_of_volume":28.2},{"announcement_date":"2026-01-09","period_start":"2026-01-02","period_end":"2026-01-09","week_shares":2710,"week_amount":577260,"week_avg_price":213.01,"acc_shares":28371,"acc_amount":5803260,"acc_avg_price":204.55,"market_volume":13198,"buyback_pct_of_volume":20.5},{"announcement_date":"2026-01-16","period_start":"2026-01-12","period_end":"2026-01-16","week_shares":1795,"week_amount":370674,"week_avg_price":206.5,"acc_shares":30166,"acc_amount":6173934,"acc_avg_price":204.67,"market_volume":5756,"buyback_pct_of_volume":31.2},{"announcement_date":"2026-01-23","period_start":"2026-01-19","period_end":"2026-01-23","week_shares":2030,"week_amount":423900,"week_avg_price":208.82,"acc_shares":32196,"acc_amount":6597834,"acc_avg_price":204.93,"market_volume":8526,"buyback_pct_of_volume":23.8},{"announcement_date":"2026-01-30","period_start":"2026-01-26","period_end":"2026-01-30","week_shares":2000,"week_amount":433560,"week_avg_price":216.78,"acc_shares":34196,"acc_amount":7031394,"acc_avg_price":205.62,"market_volume":6303,"buyback_pct_of_volume":31.7},{"announcement_date":"2026-02-07","period_start":"2026-02-02","period_end":"2026-02-06","week_shares":1530,"week_amount":337140,"week_avg_price":220.35,"acc_shares":35726,"acc_amount":7368534,"acc_avg_price":206.25,"market_volume":5799,"buyback_pct_of_volume":26.4},{"announcement_date":"2026-02-16","period_start":"2026-02-09","period_end":"2026-02-12","week_shares":1455,"week_amount":338764,"week_avg_price":232.83,"acc_shares":37181,"acc_amount":7707298,"acc_avg_price":207.29,"market_volume":12202,"buyback_pct_of_volume":11.9},{"announcement_date":"2026-02-23","period_start":"2026-02-16","period_end":"2026-02-20","week_shares":2065,"week_amount":475062,"week_avg_price":230.05,"acc_shares":39246,"acc_amount":8182360,"acc_avg_price":208.49,"market_volume":7616,"buyback_pct_of_volume":27.1},{"announcement_date":"2026-03-02","period_start":"2026-02-23","period_end":"2026-02-27","week_shares":990,"week_amount":229680,"week_avg_price":232.0,"acc_shares":40236,"acc_amount":8412040,"acc_avg_price":209.07,"market_volume":4574,"buyback_pct_of_volume":21.6},{"announcement_date":"2026-03-06","period_start":"2026-03-02","period_end":"2026-03-06","week_shares":1041,"week_amount":237846,"week_avg_price":228.48,"acc_shares":41277,"acc_amount":8649886,"acc_avg_price":209.56,"market_volume":2989,"buyback_pct_of_volume":34.8},{"announcement_date":"2026-03-16","period_start":"2026-03-09","period_end":"2026-03-13","week_shares":1150,"week_amount":255400,"week_avg_price":222.09,"acc_shares":42427,"acc_amount":8905286,"acc_avg_price":209.9,"market_volume":4207,"buyback_pct_of_volume":27.3},{"announcement_date":"2026-03-20","period_start":"2026-03-16","period_end":"2026-03-20","week_shares":672,"week_amount":148872,"week_avg_price":221.54,"acc_shares":43099,"acc_amount":9054158,"acc_avg_price":210.08,"market_volume":3617,"buyback_pct_of_volume":18.6}],"last_updated":"2026-03-27T17:09:43.491364Z","current_price":210.0},TS=D.total_shares;
+const D={"total_shares":2659442,"nav_history":[{"from":"2025-10-24","nav":281.26,"label":"Q3 2025"},{"from":"2026-02-17","nav":306.6,"label":"FY 2025"}],"program_max":10000000,"program_start":"2025-10-24","program_end":"2026-10-23","last_page_index":127,"announcements":[{"announcement_date":"2025-10-31","period_start":"2025-10-24","period_end":"2025-10-31","week_shares":3550,"week_amount":709712,"week_avg_price":199.92,"acc_shares":3550,"acc_amount":709712,"acc_avg_price":199.92,"market_volume":33250,"buyback_pct_of_volume":10.7},{"announcement_date":"2025-11-07","period_start":"2025-11-03","period_end":"2025-11-07","week_shares":3643,"week_amount":724007,"week_avg_price":198.74,"acc_shares":7193,"acc_amount":1433719,"acc_avg_price":199.32,"market_volume":10126,"buyback_pct_of_volume":36.0},{"announcement_date":"2025-11-14","period_start":"2025-11-10","period_end":"2025-11-14","week_shares":4994,"week_amount":994216,"week_avg_price":199.08,"acc_shares":12187,"acc_amount":2427935,"acc_avg_price":199.22,"market_volume":7330,"buyback_pct_of_volume":68.1},{"announcement_date":"2025-11-21","period_start":"2025-11-17","period_end":"2025-11-21","week_shares":3976,"week_amount":785648,"week_avg_price":197.6,"acc_shares":16163,"acc_amount":3213583,"acc_avg_price":198.82,"market_volume":10926,"buyback_pct_of_volume":36.4},{"announcement_date":"2025-11-28","period_start":"2025-11-24","period_end":"2025-11-28","week_shares":1965,"week_amount":395381,"week_avg_price":201.21,"acc_shares":18128,"acc_amount":3608964,"acc_avg_price":199.08,"market_volume":10172,"buyback_pct_of_volume":19.3},{"announcement_date":"2025-12-08","period_start":"2025-12-01","period_end":"2025-12-05","week_shares":1435,"week_amount":298020,"week_avg_price":207.68,"acc_shares":19563,"acc_amount":3906984,"acc_avg_price":199.71,"market_volume":7969,"buyback_pct_of_volume":18.0},{"announcement_date":"2025-12-15","period_start":"2025-12-08","period_end":"2025-12-12","week_shares":2300,"week_amount":494592,"week_avg_price":214.95,"acc_shares":21863,"acc_amount":4401576,"acc_avg_price":201.33,"market_volume":10921,"buyback_pct_of_volume":21.1},{"announcement_date":"2025-12-19","period_start":"2025-12-15","period_end":"2025-12-19","week_shares":2010,"week_amount":440140,"week_avg_price":218.97,"acc_shares":23873,"acc_amount":4841716,"acc_avg_price":202.81,"market_volume":8908,"buyback_pct_of_volume":22.6},{"announcement_date":"2026-01-04","period_start":"2025-12-22","period_end":"2025-12-30","week_shares":1788,"week_amount":384284,"week_avg_price":214.92,"acc_shares":25661,"acc_amount":5226000,"acc_avg_price":203.66,"market_volume":6348,"buyback_pct_of_volume":28.2},{"announcement_date":"2026-01-09","period_start":"2026-01-02","period_end":"2026-01-09","week_shares":2710,"week_amount":577260,"week_avg_price":213.01,"acc_shares":28371,"acc_amount":5803260,"acc_avg_price":204.55,"market_volume":13198,"buyback_pct_of_volume":20.5},{"announcement_date":"2026-01-16","period_start":"2026-01-12","period_end":"2026-01-16","week_shares":1795,"week_amount":370674,"week_avg_price":206.5,"acc_shares":30166,"acc_amount":6173934,"acc_avg_price":204.67,"market_volume":5756,"buyback_pct_of_volume":31.2},{"announcement_date":"2026-01-23","period_start":"2026-01-19","period_end":"2026-01-23","week_shares":2030,"week_amount":423900,"week_avg_price":208.82,"acc_shares":32196,"acc_amount":6597834,"acc_avg_price":204.93,"market_volume":8526,"buyback_pct_of_volume":23.8},{"announcement_date":"2026-01-30","period_start":"2026-01-26","period_end":"2026-01-30","week_shares":2000,"week_amount":433560,"week_avg_price":216.78,"acc_shares":34196,"acc_amount":7031394,"acc_avg_price":205.62,"market_volume":6303,"buyback_pct_of_volume":31.7},{"announcement_date":"2026-02-07","period_start":"2026-02-02","period_end":"2026-02-06","week_shares":1530,"week_amount":337140,"week_avg_price":220.35,"acc_shares":35726,"acc_amount":7368534,"acc_avg_price":206.25,"market_volume":5799,"buyback_pct_of_volume":26.4},{"announcement_date":"2026-02-16","period_start":"2026-02-09","period_end":"2026-02-12","week_shares":1455,"week_amount":338764,"week_avg_price":232.83,"acc_shares":37181,"acc_amount":7707298,"acc_avg_price":207.29,"market_volume":12202,"buyback_pct_of_volume":11.9},{"announcement_date":"2026-02-23","period_start":"2026-02-16","period_end":"2026-02-20","week_shares":2065,"week_amount":475062,"week_avg_price":230.05,"acc_shares":39246,"acc_amount":8182360,"acc_avg_price":208.49,"market_volume":7616,"buyback_pct_of_volume":27.1},{"announcement_date":"2026-03-02","period_start":"2026-02-23","period_end":"2026-02-27","week_shares":990,"week_amount":229680,"week_avg_price":232.0,"acc_shares":40236,"acc_amount":8412040,"acc_avg_price":209.07,"market_volume":4574,"buyback_pct_of_volume":21.6},{"announcement_date":"2026-03-06","period_start":"2026-03-02","period_end":"2026-03-06","week_shares":1041,"week_amount":237846,"week_avg_price":228.48,"acc_shares":41277,"acc_amount":8649886,"acc_avg_price":209.56,"market_volume":2989,"buyback_pct_of_volume":34.8},{"announcement_date":"2026-03-16","period_start":"2026-03-09","period_end":"2026-03-13","week_shares":1150,"week_amount":255400,"week_avg_price":222.09,"acc_shares":42427,"acc_amount":8905286,"acc_avg_price":209.9,"market_volume":4207,"buyback_pct_of_volume":27.3},{"announcement_date":"2026-03-20","period_start":"2026-03-16","period_end":"2026-03-20","week_shares":672,"week_amount":148872,"week_avg_price":221.54,"acc_shares":43099,"acc_amount":9054158,"acc_avg_price":210.08,"market_volume":3617,"buyback_pct_of_volume":18.6}],"last_updated":"2026-03-27T17:15:01.910017Z","current_price":210.0},TS=D.total_shares;
 function gN(d){let n=D.nav_history[0].nav;for(const e of D.nav_history)if(d>=e.from)n=e.nav;return n}
 
 function calc(){
@@ -294,23 +296,77 @@ function render(){
       document.getElementById('ch5').width/2, 100);
   }
 
-  // Table
-  document.getElementById('tb').innerHTML=rows.map((r,i)=>`<tr>
-    <td>${i+1}</td>
-    <td>${new Date(r.d).toLocaleDateString('da-DK',{day:'numeric',month:'short'})}</td>
-    <td>${fD(r.wS)}</td>
-    <td>${r.wA.toFixed(2)}</td>
-    <td>${fK(r.wAmt)}K</td>
-    <td>${r.mVol>0?fD(r.mVol):'—'}</td>
-    <td style="color:${r.bPct>40?'var(--red)':r.bPct>20?'var(--amb)':'var(--g3)'}">${r.bPct>0?r.bPct.toFixed(1)+'%':'—'}</td>
-    <td><b>${fD(r.aS)}</b></td>
-    <td>${fM(r.aAmt)}M</td>
-    <td>${r.nav.toFixed(2)}</td>
-    <td style="color:var(--g1)">${r.disc.toFixed(1)}%</td>
-    <td style="color:var(--g2)">+${r.accr.toFixed(2)}</td>
-    <td style="color:var(--g3)"><b>${fM(r.vc)}M</b></td>
-    <td style="color:var(--g4)">${r.roic.toFixed(1)}%</td>
-  </tr>`).join('');
+  // Sortable table
+  const cols=[
+    {k:'i',l:'#',left:true},
+    {k:'d',l:'Dato',left:true},
+    {k:'wS',l:'Købt'},
+    {k:'wA',l:'Kurs'},
+    {k:'wAmt',l:'Beløb'},
+    {k:'mVol',l:'Mkt.vol'},
+    {k:'bPct',l:'% af vol'},
+    {k:'aS',l:'Akk.stk'},
+    {k:'aAmt',l:'Akk.DKK'},
+    {k:'nav',l:'NAV'},
+    {k:'disc',l:'Rabat'},
+    {k:'accr',l:'Accr.'},
+    {k:'vc',l:'Værdi'},
+    {k:'roic',l:'ROIC'}
+  ];
+
+  let sortCol='i', sortDir='desc'; // default: newest first
+
+  function renderTable(){
+    const sorted=[...rows].map((r,i)=>({...r,i:i+1}));
+    sorted.sort((a,b)=>{
+      let va=a[sortCol],vb=b[sortCol];
+      if(sortCol==='d'){va=a.d;vb=b.d;}
+      if(typeof va==='string')return sortDir==='asc'?va.localeCompare(vb):vb.localeCompare(va);
+      return sortDir==='asc'?(va-vb):(vb-va);
+    });
+
+    // Update header arrows
+    document.querySelectorAll('#tbl th').forEach((th,ci)=>{
+      const col=cols[ci];
+      const isActive=col.k===sortCol;
+      th.className=isActive?'active':'';
+      th.innerHTML=(col.left?'':'')+ col.l + `<span class="arrow">${isActive?(sortDir==='desc'?'▼':'▲'):'⇅'}</span>`;
+      if(col.left)th.style.textAlign='left';
+    });
+
+    document.getElementById('tb').innerHTML=sorted.map(r=>`<tr>
+      <td>${r.i}</td>
+      <td>${new Date(r.d).toLocaleDateString('da-DK',{day:'numeric',month:'short'})}</td>
+      <td>${fD(r.wS)}</td>
+      <td>${r.wA.toFixed(2)}</td>
+      <td>${fK(r.wAmt)}K</td>
+      <td>${r.mVol>0?fD(r.mVol):'—'}</td>
+      <td style="color:${r.bPct>40?'var(--red)':r.bPct>20?'var(--amb)':'var(--g3)'}">${r.bPct>0?r.bPct.toFixed(1)+'%':'—'}</td>
+      <td><b>${fD(r.aS)}</b></td>
+      <td>${fM(r.aAmt)}M</td>
+      <td>${r.nav.toFixed(2)}</td>
+      <td style="color:var(--g1)">${r.disc.toFixed(1)}%</td>
+      <td style="color:var(--g2)">+${r.accr.toFixed(2)}</td>
+      <td style="color:var(--g3)"><b>${fM(r.vc)}M</b></td>
+      <td style="color:var(--g4)">${r.roic.toFixed(1)}%</td>
+    </tr>`).join('');
+  }
+
+  // Build header with click handlers
+  const thead=document.getElementById('tbl').querySelector('thead tr');
+  thead.innerHTML='';
+  cols.forEach(col=>{
+    const th=document.createElement('th');
+    if(col.left)th.style.textAlign='left';
+    th.addEventListener('click',()=>{
+      if(sortCol===col.k){sortDir=sortDir==='desc'?'asc':'desc';}
+      else{sortCol=col.k;sortDir='desc';}
+      renderTable();
+    });
+    thead.appendChild(th);
+  });
+
+  renderTable();
 
   document.getElementById('upd').textContent='Sidst: '+(D.last_updated?new Date(D.last_updated).toLocaleDateString('da-DK',{day:'numeric',month:'short',year:'numeric'}):'—');
 }
