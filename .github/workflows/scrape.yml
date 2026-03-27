@@ -2,9 +2,10 @@ name: Scrape & Deploy FED Buyback Tracker
 
 on:
   schedule:
-    # Run every Wednesday and Friday at 16:00 UTC (17:00 CET / 18:00 CEST)
-    - cron: '0 16 * * 3,5'
-  workflow_dispatch:  # Allow manual trigger
+    # Run every weekday at 16:30 UTC (17:30 CET / 18:30 CEST)
+    # After Danish market close — updates price daily, checks for new announcements
+    - cron: '30 16 * * 1-5'
+  workflow_dispatch:
 
 permissions:
   contents: write
