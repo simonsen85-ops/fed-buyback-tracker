@@ -190,6 +190,11 @@ def extract_announcement(html):
     if not new_acc or new_acc["shares"] == 0:
         return None
 
+    # Calculate week totals
+    week_shares = sum(t["shares"] for t in daily_transactions)
+    week_amount = sum(t["amount"] for t in daily_transactions)
+    week_avg = week_amount / week_shares if week_shares > 0 else 0
+
     # Sanity check: if acc totals didn't change but there were purchases,
     # the company made an error in the announcement. Recalculate.
     if prev_acc and week_shares > 0 and new_acc["shares"] == prev_acc["shares"]:
@@ -197,11 +202,6 @@ def extract_announcement(html):
         new_acc["shares"] = prev_acc["shares"] + week_shares
         new_acc["amount"] = prev_acc["amount"] + week_amount
         new_acc["avg_price"] = new_acc["amount"] / new_acc["shares"] if new_acc["shares"] > 0 else 0
-
-    # Calculate week totals
-    week_shares = sum(t["shares"] for t in daily_transactions)
-    week_amount = sum(t["amount"] for t in daily_transactions)
-    week_avg = week_amount / week_shares if week_shares > 0 else 0
 
     # Determine period string
     if daily_transactions:
