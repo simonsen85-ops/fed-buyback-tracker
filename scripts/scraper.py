@@ -190,6 +190,14 @@ def extract_announcement(html):
     if not new_acc or new_acc["shares"] == 0:
         return None
 
+    # Sanity check: if acc totals didn't change but there were purchases,
+    # the company made an error in the announcement. Recalculate.
+    if prev_acc and week_shares > 0 and new_acc["shares"] == prev_acc["shares"]:
+        print(f"  Warning: acc_shares unchanged despite {week_shares} purchases — recalculating")
+        new_acc["shares"] = prev_acc["shares"] + week_shares
+        new_acc["amount"] = prev_acc["amount"] + week_amount
+        new_acc["avg_price"] = new_acc["amount"] / new_acc["shares"] if new_acc["shares"] > 0 else 0
+
     # Calculate week totals
     week_shares = sum(t["shares"] for t in daily_transactions)
     week_amount = sum(t["amount"] for t in daily_transactions)
@@ -247,9 +255,10 @@ def scan_for_new_announcements(data):
     Starts from last_page_index + 1 and keeps going until 404.
     """
     start_idx = data.get("last_page_index", 107) + 1
-    known_acc_shares = set()
+    known_pages = set()
     for a in data["announcements"]:
-        known_acc_shares.add(a["acc_shares"])
+        if "page_index" in a:
+            known_pages.add(a["page_index"])
 
     new_count = 0
     idx = start_idx
@@ -270,16 +279,17 @@ def scan_for_new_announcements(data):
         fails = 0  # Reset on success
         result = extract_announcement(html)
 
-        if result and result["acc_shares"] not in known_acc_shares:
+        if result and idx not in known_pages:
+            result["page_index"] = idx
             data["announcements"].append(result)
-            known_acc_shares.add(result["acc_shares"])
+            known_pages.add(idx)
             data["last_page_index"] = idx
             new_count += 1
             print(f"  ✓ New announcement: {result['announcement_date']}, "
                   f"acc {result['acc_shares']} shares, "
                   f"acc {result['acc_amount']} DKK")
         elif result:
-            print(f"  Page {idx}: already known (acc_shares={result['acc_shares']})")
+            print(f"  Page {idx}: already known")
             data["last_page_index"] = idx
         else:
             print(f"  Page {idx}: could not parse table")
