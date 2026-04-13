@@ -15,7 +15,7 @@
   "program_max": 10000000,
   "program_start": "2025-10-24",
   "program_end": "2026-10-23",
-  "last_page_index": 129,
+  "last_page_index": 130,
   "announcements": [
     {
       "announcement_date": "2025-10-31",
@@ -344,8 +344,48 @@
       "page_index": 129,
       "market_volume": 5869,
       "buyback_pct_of_volume": 14.1
+    },
+    {
+      "announcement_date": "2026-04-10",
+      "period_start": "2026-04-07",
+      "period_end": "2026-04-10",
+      "week_shares": 1380,
+      "week_amount": 303600,
+      "week_avg_price": 220.0,
+      "acc_shares": 45999,
+      "acc_amount": 9686158,
+      "acc_avg_price": 210.57,
+      "daily": [
+        {
+          "date": "2026-04-07",
+          "shares": 340,
+          "price": 218.0,
+          "amount": 74120.0
+        },
+        {
+          "date": "2026-04-08",
+          "shares": 345,
+          "price": 220.0,
+          "amount": 75920.0
+        },
+        {
+          "date": "2026-04-09",
+          "shares": 330,
+          "price": 222.0,
+          "amount": 73260.0
+        },
+        {
+          "date": "2026-04-10",
+          "shares": 365,
+          "price": 220.0,
+          "amount": 80300.0
+        }
+      ],
+      "page_index": 130,
+      "market_volume": 5916,
+      "buyback_pct_of_volume": 23.3
     }
   ],
-  "last_updated": "2026-04-10T17:27:10.543181Z",
+  "last_updated": "2026-04-13T17:39:45.208735Z",
   "current_price": 216.0
 }
