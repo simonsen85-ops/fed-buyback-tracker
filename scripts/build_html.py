@@ -152,9 +152,10 @@ tr:hover td{background:rgba(16,185,129,.02)}
 </div>
 
 <div class="prog">
-  <div class="prog-top"><span class="sh" style="margin:0">Program — 10,0 mio. DKK</span><span class="pct" id="pPct"></span></div>
+  <div class="prog-top"><span class="sh" style="margin:0" id="pHdr">Programmer</span><span class="pct" id="pPct"></span></div>
   <div class="prog-bar"><div class="prog-fill" id="pF"></div></div>
-  <div class="prog-lbl"><span>0</span><span id="pL"></span><span>10.000.000</span></div>
+  <div class="prog-lbl"><span>0</span><span id="pL"></span><span id="pMax">—</span></div>
+  <div id="pDetail" style="margin-top:8px;display:flex;gap:20px;font-size:.65rem;color:var(--t2)"></div>
 </div>
 
 <div class="charts">
@@ -169,7 +170,7 @@ tr:hover td{background:rgba(16,185,129,.02)}
   <div class="sh">Ugentligt køb og likviditet</div>
   <div class="ts"><table id="tbl"><thead><tr>
     <th>#</th><th>Dato</th><th>Købt</th><th>Kurs</th><th>Beløb</th>
-    <th>Mkt.vol</th><th>% af vol</th>
+    <th>Mkt.vol</th><th>% af vol</th><th>Udnyttelse</th>
     <th>Akk.stk</th><th>Akk.DKK</th><th>NAV</th><th>Rabat</th>
     <th>Accr.</th><th>Værdi</th><th>ROIC</th>
   </tr></thead><tbody id="tb"></tbody></table></div>
@@ -187,14 +188,29 @@ function gN(d){let n=D.nav_history[0].nav;for(const e of D.nav_history)if(d>=e.f
 
 function calc(){
   const r=[];
+  let grandShares=0, grandAmount=0;
   for(const a of D.announcements){
-    const nav=gN(a.announcement_date),wA=a.week_shares>0?a.week_amount/a.week_shares:0,
-      aA=a.acc_shares>0?a.acc_amount/a.acc_shares:0,disc=(nav-wA)/nav*100,
-      nSh=TS-a.acc_shares,nNAV=(nav*TS-a.acc_amount)/nSh,accr=nNAV-nav,
-      vc=accr*nSh,roic=a.acc_amount>0?vc/a.acc_amount*100:0;
-    r.push({d:a.announcement_date,wS:a.week_shares,wAmt:a.week_amount,wA,
-      aS:a.acc_shares,aAmt:a.acc_amount,aA,nav,disc,nNAV,accr,vc,nSh,roic,
-      mVol:a.market_volume||0,bPct:a.buyback_pct_of_volume||0});
+    // Grand total accumulates through all programs (for combined view)
+    grandShares += a.week_shares;
+    grandAmount += a.week_amount;
+
+    const nav=gN(a.announcement_date),
+      wA=a.week_shares>0?a.week_amount/a.week_shares:0,
+      gA=grandShares>0?grandAmount/grandShares:0,  // Grand avg price
+      disc=(nav-wA)/nav*100,
+      nSh=TS-grandShares,  // Remaining shares after all buybacks
+      nNAV=(nav*TS-grandAmount)/nSh,
+      accr=nNAV-nav,
+      vc=accr*nSh,
+      roic=grandAmount>0?vc/grandAmount*100:0;
+    r.push({
+      d:a.announcement_date,
+      wS:a.week_shares,wAmt:a.week_amount,wA,
+      aS:grandShares,aAmt:grandAmount,aA:gA,  // Use grand totals as "akkumuleret"
+      nav,disc,nNAV,accr,vc,nSh,roic,
+      mVol:a.market_volume||0,bPct:a.buyback_pct_of_volume||0,
+      maxW:a.max_allowed_week||0,util:a.utilization_pct||0
+    });
   }
   return r;
 }
@@ -205,7 +221,8 @@ function fK(n){return(n/1e3).toFixed(0)}
 
 function render(){
   const rows=calc(),R=rows[rows.length-1],kurs=D.current_price||222,nav=R.nav,
-    pU=R.aAmt/D.program_max*100,dB=(nav-R.aA)/nav*100,dM=(nav-kurs)/nav*100,vPS=R.vc/R.nSh;
+    totMax=(D.programs||[{max_amount:D.program_max}]).reduce((s,p)=>s+p.max_amount,0),
+    pU=R.aAmt/totMax*100,dB=(nav-R.aA)/nav*100,dM=(nav-kurs)/nav*100,vPS=R.vc/R.nSh;
 
   document.getElementById('hNav').textContent=nav.toFixed(2);
   document.getElementById('hKrs').textContent=kurs;
@@ -231,9 +248,27 @@ function render(){
   document.getElementById('mn').textContent=
     'Ny NAV = (egenkapital − købsbeløb) / (udstedte − tilbagekøbte). Værdiskabelse = (ny NAV − nuv. NAV) × '+fD(R.nSh)+' resterende aktier.';
 
-  document.getElementById('pF').style.width=Math.min(pU,100)+'%';
-  document.getElementById('pPct').textContent=pU.toFixed(1)+'%';
+  // Progress bar — combined across all programs
+  const progs = D.programs || [{id:1, max_amount:D.program_max}];
+  const totalMax = progs.reduce((s,p)=>s+p.max_amount,0);
+  const totalPct = R.aAmt/totalMax*100;
+  document.getElementById('pHdr').textContent = `Programmer — ${fM(totalMax)} mio. DKK total`;
+  document.getElementById('pF').style.width=Math.min(totalPct,100)+'%';
+  document.getElementById('pPct').textContent=totalPct.toFixed(1)+'%';
   document.getElementById('pL').textContent=fM(R.aAmt)+' mio. brugt';
+  document.getElementById('pMax').textContent=fD(totalMax);
+
+  // Per-program detail
+  let remaining = R.aAmt;
+  document.getElementById('pDetail').innerHTML = progs.map(p=>{
+    const used = Math.min(remaining, p.max_amount);
+    remaining -= used;
+    const pct = used/p.max_amount*100;
+    const status = p.closed_on ? `<span style="color:var(--t3)">Afsluttet ${new Date(p.closed_on).toLocaleDateString('da-DK',{day:'numeric',month:'short'})}</span>` :
+                   pct>=99.9 ? `<span style="color:var(--g3)">Afsluttet</span>` :
+                   `<span style="color:var(--g2)">Aktivt</span>`;
+    return `<div>Program ${p.id}: ${fM(used)} / ${fM(p.max_amount)} mio. (${pct.toFixed(1)}%) · ${status}</div>`;
+  }).join('');
 
   // Chart config — T2 for axis ticks (readable), T4 for grid (structural)
   const lbl=rows.map(r=>new Date(r.d).toLocaleDateString('da-DK',{day:'numeric',month:'short'}));
@@ -294,16 +329,19 @@ function render(){
     options:cO({y:{beginAtZero:true,suggestedMax:sugMax>0?sugMax:undefined},
       lg:{display:hasMktVol,labels:{color:'#b0bac9',font:{family:'JetBrains Mono',size:10},boxWidth:10,padding:12}}})});
 
-  // Chart 5: Buyback as % of market volume — color-coded bars + average line
+  // Chart 5: Buyback as % of market volume — color-coded bars + average line + 25% limit
   if(hasMktVol){
     const pctData = rows.map(r=>r.bPct);
     const pctColors = pctData.map(p=>p>40?'rgba(239,68,68,.6)':p>20?'rgba(245,158,11,.6)':'rgba(16,185,129,.5)');
     // Cumulative average line
     let cumSum=0;
     const avgLine = pctData.map((p,i)=>{cumSum+=p;return Math.round(cumSum/(i+1)*10)/10});
+    // 25% Safe Harbour limit line (constant across all announcements)
+    const limitLine = pctData.map(()=>25);
     new Chart(document.getElementById('ch5'),{type:'bar',data:{labels:lbl,datasets:[
-      {label:'% af volumen',data:pctData,backgroundColor:pctColors,borderColor:pctColors.map(c=>c.replace(/[\d.]+\)$/,'0.8)')),borderWidth:1,borderRadius:2,pct:true,order:2},
-      {label:'Gennemsnit',data:avgLine,type:'line',borderColor:'#f8fafc',borderWidth:1.5,borderDash:[4,3],pointRadius:0,tension:.3,fill:false,pct:true,order:1}
+      {label:'% af volumen',data:pctData,backgroundColor:pctColors,borderColor:pctColors.map(c=>c.replace(/[\d.]+\)$/,'0.8)')),borderWidth:1,borderRadius:2,pct:true,order:3},
+      {label:'Gennemsnit',data:avgLine,type:'line',borderColor:'#f8fafc',borderWidth:1.5,borderDash:[4,3],pointRadius:0,tension:.3,fill:false,pct:true,order:2},
+      {label:'25% Safe Harbour loft',data:limitLine,type:'line',borderColor:'#f59e0b',borderWidth:1.5,borderDash:[8,4],pointRadius:0,fill:false,pct:true,order:1}
     ]},options:cO({y:{beginAtZero:true},yt:{callback:v=>v+'%'},
       lg:{display:true,labels:{color:'#b0bac9',font:{family:'JetBrains Mono',size:10},boxWidth:10,padding:12}}})});
   } else {
@@ -323,6 +361,7 @@ function render(){
     {k:'wAmt',l:'Beløb'},
     {k:'mVol',l:'Mkt.vol'},
     {k:'bPct',l:'% af vol'},
+    {k:'util',l:'Udnyttelse'},
     {k:'aS',l:'Akk.stk'},
     {k:'aAmt',l:'Akk.DKK'},
     {k:'nav',l:'NAV'},
@@ -360,6 +399,7 @@ function render(){
       <td>${fK(r.wAmt)}K</td>
       <td>${r.mVol>0?fD(r.mVol):'—'}</td>
       <td style="color:${r.bPct>40?'var(--red)':r.bPct>20?'var(--amb)':'var(--g3)'}">${r.bPct>0?r.bPct.toFixed(1)+'%':'—'}</td>
+      <td style="color:${r.util>80?'var(--g3)':r.util>50?'var(--amb)':r.util>0?'var(--red)':'var(--t3)'}">${r.util>0?r.util.toFixed(0)+'%':'—'}</td>
       <td><b>${fD(r.aS)}</b></td>
       <td>${fM(r.aAmt)}M</td>
       <td>${r.nav.toFixed(2)}</td>
