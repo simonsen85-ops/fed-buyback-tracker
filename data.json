@@ -12,7 +12,7 @@
       "label": "FY 2025"
     }
   ],
-  "program_max": 10000000,
+  "program_max": 20000000,
   "program_start": "2025-10-24",
   "program_end": "2026-10-23",
   "last_page_index": 130,
@@ -28,7 +28,9 @@
       "acc_amount": 709712,
       "acc_avg_price": 199.92,
       "market_volume": 33250,
-      "buyback_pct_of_volume": 10.7
+      "buyback_pct_of_volume": 10.7,
+      "max_allowed_week": 4574,
+      "utilization_pct": 77.6
     },
     {
       "announcement_date": "2025-11-07",
@@ -41,7 +43,9 @@
       "acc_amount": 1433719,
       "acc_avg_price": 199.32,
       "market_volume": 10126,
-      "buyback_pct_of_volume": 36.0
+      "buyback_pct_of_volume": 36.0,
+      "max_allowed_week": 4783,
+      "utilization_pct": 76.2
     },
     {
       "announcement_date": "2025-11-14",
@@ -54,7 +58,9 @@
       "acc_amount": 2427935,
       "acc_avg_price": 199.22,
       "market_volume": 7330,
-      "buyback_pct_of_volume": 68.1
+      "buyback_pct_of_volume": 68.1,
+      "max_allowed_week": 5247,
+      "utilization_pct": 95.2
     },
     {
       "announcement_date": "2025-11-21",
@@ -67,7 +73,9 @@
       "acc_amount": 3213583,
       "acc_avg_price": 198.82,
       "market_volume": 10926,
-      "buyback_pct_of_volume": 36.4
+      "buyback_pct_of_volume": 36.4,
+      "max_allowed_week": 5178,
+      "utilization_pct": 76.8
     },
     {
       "announcement_date": "2025-11-28",
@@ -80,7 +88,9 @@
       "acc_amount": 3608964,
       "acc_avg_price": 199.08,
       "market_volume": 10172,
-      "buyback_pct_of_volume": 19.3
+      "buyback_pct_of_volume": 19.3,
+      "max_allowed_week": 2711,
+      "utilization_pct": 72.5
     },
     {
       "announcement_date": "2025-12-08",
@@ -93,7 +103,9 @@
       "acc_amount": 3906984,
       "acc_avg_price": 199.71,
       "market_volume": 7969,
-      "buyback_pct_of_volume": 18.0
+      "buyback_pct_of_volume": 18.0,
+      "max_allowed_week": 2406,
+      "utilization_pct": 59.6
     },
     {
       "announcement_date": "2025-12-15",
@@ -106,7 +118,9 @@
       "acc_amount": 4401576,
       "acc_avg_price": 201.33,
       "market_volume": 10921,
-      "buyback_pct_of_volume": 21.1
+      "buyback_pct_of_volume": 21.1,
+      "max_allowed_week": 2322,
+      "utilization_pct": 99.1
     },
     {
       "announcement_date": "2025-12-19",
@@ -119,7 +133,9 @@
       "acc_amount": 4841716,
       "acc_avg_price": 202.81,
       "market_volume": 8908,
-      "buyback_pct_of_volume": 22.6
+      "buyback_pct_of_volume": 22.6,
+      "max_allowed_week": 2521,
+      "utilization_pct": 79.7
     },
     {
       "announcement_date": "2026-01-04",
@@ -132,7 +148,9 @@
       "acc_amount": 5226000,
       "acc_avg_price": 203.66,
       "market_volume": 6348,
-      "buyback_pct_of_volume": 28.2
+      "buyback_pct_of_volume": 28.2,
+      "max_allowed_week": 2034,
+      "utilization_pct": 87.9
     },
     {
       "announcement_date": "2026-01-09",
@@ -145,7 +163,9 @@
       "acc_amount": 5803260,
       "acc_avg_price": 204.55,
       "market_volume": 13198,
-      "buyback_pct_of_volume": 20.5
+      "buyback_pct_of_volume": 20.5,
+      "max_allowed_week": 2756,
+      "utilization_pct": 98.3
     },
     {
       "announcement_date": "2026-01-16",
@@ -158,7 +178,9 @@
       "acc_amount": 6173934,
       "acc_avg_price": 204.67,
       "market_volume": 5756,
-      "buyback_pct_of_volume": 31.2
+      "buyback_pct_of_volume": 31.2,
+      "max_allowed_week": 2397,
+      "utilization_pct": 74.9
     },
     {
       "announcement_date": "2026-01-23",
@@ -171,7 +193,9 @@
       "acc_amount": 6597834,
       "acc_avg_price": 204.93,
       "market_volume": 8526,
-      "buyback_pct_of_volume": 23.8
+      "buyback_pct_of_volume": 23.8,
+      "max_allowed_week": 2068,
+      "utilization_pct": 98.2
     },
     {
       "announcement_date": "2026-01-30",
@@ -184,7 +208,9 @@
       "acc_amount": 7031394,
       "acc_avg_price": 205.62,
       "market_volume": 6303,
-      "buyback_pct_of_volume": 31.7
+      "buyback_pct_of_volume": 31.7,
+      "max_allowed_week": 2033,
+      "utilization_pct": 98.4
     },
     {
       "announcement_date": "2026-02-07",
@@ -197,7 +223,9 @@
       "acc_amount": 7368534,
       "acc_avg_price": 206.25,
       "market_volume": 5799,
-      "buyback_pct_of_volume": 26.4
+      "buyback_pct_of_volume": 26.4,
+      "max_allowed_week": 1948,
+      "utilization_pct": 78.5
     },
     {
       "announcement_date": "2026-02-16",
@@ -210,7 +238,9 @@
       "acc_amount": 7707298,
       "acc_avg_price": 207.29,
       "market_volume": 12202,
-      "buyback_pct_of_volume": 11.9
+      "buyback_pct_of_volume": 11.9,
+      "max_allowed_week": 1477,
+      "utilization_pct": 98.5
     },
     {
       "announcement_date": "2026-02-23",
@@ -223,7 +253,9 @@
       "acc_amount": 8182360,
       "acc_avg_price": 208.49,
       "market_volume": 7616,
-      "buyback_pct_of_volume": 27.1
+      "buyback_pct_of_volume": 27.1,
+      "max_allowed_week": 2090,
+      "utilization_pct": 98.8
     },
     {
       "announcement_date": "2026-03-02",
@@ -236,7 +268,9 @@
       "acc_amount": 8412040,
       "acc_avg_price": 209.07,
       "market_volume": 4574,
-      "buyback_pct_of_volume": 21.6
+      "buyback_pct_of_volume": 21.6,
+      "max_allowed_week": 1963,
+      "utilization_pct": 50.4
     },
     {
       "announcement_date": "2026-03-06",
@@ -249,7 +283,9 @@
       "acc_amount": 8649886,
       "acc_avg_price": 209.56,
       "market_volume": 2989,
-      "buyback_pct_of_volume": 34.8
+      "buyback_pct_of_volume": 34.8,
+      "max_allowed_week": 1790,
+      "utilization_pct": 58.2
     },
     {
       "announcement_date": "2026-03-16",
@@ -262,7 +298,9 @@
       "acc_amount": 8905286,
       "acc_avg_price": 209.9,
       "market_volume": 4207,
-      "buyback_pct_of_volume": 27.3
+      "buyback_pct_of_volume": 27.3,
+      "max_allowed_week": 1408,
+      "utilization_pct": 81.7
     },
     {
       "announcement_date": "2026-03-20",
@@ -275,7 +313,9 @@
       "acc_amount": 9054158,
       "acc_avg_price": 210.08,
       "market_volume": 3617,
-      "buyback_pct_of_volume": 18.6
+      "buyback_pct_of_volume": 18.6,
+      "max_allowed_week": 1122,
+      "utilization_pct": 59.9
     },
     {
       "announcement_date": "2026-03-25",
@@ -309,7 +349,9 @@
       ],
       "page_index": 128,
       "market_volume": 6466,
-      "buyback_pct_of_volume": 10.7
+      "buyback_pct_of_volume": 10.7,
+      "max_allowed_week": 407,
+      "utilization_pct": 169.5
     },
     {
       "announcement_date": "2026-04-01",
@@ -343,7 +385,9 @@
       ],
       "page_index": 129,
       "market_volume": 5869,
-      "buyback_pct_of_volume": 14.1
+      "buyback_pct_of_volume": 14.1,
+      "max_allowed_week": 766,
+      "utilization_pct": 108.4
     },
     {
       "announcement_date": "2026-04-10",
@@ -383,9 +427,29 @@
       ],
       "page_index": 130,
       "market_volume": 5916,
-      "buyback_pct_of_volume": 23.3
+      "buyback_pct_of_volume": 23.3,
+      "max_allowed_week": 1174,
+      "utilization_pct": 117.5
     }
   ],
-  "last_updated": "2026-04-16T17:53:41.260513Z",
-  "current_price": 220.0
+  "last_updated": "2026-04-17T15:31:12.309864Z",
+  "current_price": 216.0,
+  "programs": [
+    {
+      "id": 1,
+      "start": "2025-10-24",
+      "end": "2026-10-23",
+      "max_amount": 10000000,
+      "announced": "2025-10-23",
+      "closed_on": "2026-04-17"
+    },
+    {
+      "id": 2,
+      "start": "2026-04-20",
+      "end": "2027-04-19",
+      "max_amount": 10000000,
+      "announced": "2026-04-17",
+      "closed_on": null
+    }
+  ]
 }
