@@ -34,6 +34,27 @@ NAV_HISTORY = [
     {"from": "2026-02-17", "nav": 306.60, "label": "FY 2025"},
 ]
 
+# Buyback programs — UPDATE when new programs are announced
+# Each program has its own frame (ramme) and period
+PROGRAMS = [
+    {
+        "id": 1,
+        "start": "2025-10-24",
+        "end": "2026-10-23",
+        "max_amount": 10000000,  # 10 mio. DKK
+        "announced": "2025-10-23",
+        "closed_on": "2026-04-17",  # Closed early (hit 10 mio)
+    },
+    {
+        "id": 2,
+        "start": "2026-04-20",
+        "end": "2027-04-19",
+        "max_amount": 10000000,  # 10 mio. DKK
+        "announced": "2026-04-17",
+        "closed_on": None,  # Still active
+    },
+]
+
 TOTAL_SHARES = 2659442
 
 
@@ -303,10 +324,11 @@ def fetch_weekly_volumes(announcements):
     """
     Fetch daily trading volumes from Yahoo Finance for FED.CO
     and calculate weekly totals matching each announcement period.
+    Also calculates the theoretical 25% Safe Harbour max per announcement.
     """
     print("\nFetching trading volumes from Yahoo Finance...")
     try:
-        url = 'https://query1.finance.yahoo.com/v8/finance/chart/FED.CO?interval=1d&range=1y'
+        url = 'https://query1.finance.yahoo.com/v8/finance/chart/FED.CO?interval=1d&range=2y'
         req = Request(url, headers=HEADERS)
         with urlopen(req, timeout=15) as resp:
             raw = json.loads(resp.read())
@@ -315,34 +337,69 @@ def fetch_weekly_volumes(announcements):
         timestamps = result['timestamp']
         volumes = result['indicators']['quote'][0]['volume']
 
-        # Build date->volume map
+        # Build sorted list of (date, volume) pairs
+        daily_list = []
         daily_vol = {}
         for ts, vol in zip(timestamps, volumes):
             d = datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d')
             if vol is not None:
+                daily_list.append((d, vol))
                 daily_vol[d] = vol
+        daily_list.sort()
 
         print(f"  Got {len(daily_vol)} daily volume entries")
 
-        # For each announcement, sum the volume for its period
+        # Build date->index map for fast lookup
+        date_to_idx = {d: i for i, (d, _) in enumerate(daily_list)}
+
+        def max_allowed_on(date_str):
+            """
+            25% of average daily volume over the 20 trading days
+            PRECEDING the given date.
+            """
+            idx = date_to_idx.get(date_str)
+            if idx is None or idx < 20:
+                return None  # Not enough history
+            prior_20 = [daily_list[i][1] for i in range(idx - 20, idx)]
+            avg = sum(prior_20) / 20
+            return round(0.25 * avg)
+
+        # For each announcement, compute weekly market volume AND theoretical max
         for a in announcements:
             start = a.get('period_start', '')
             end = a.get('period_end', '')
             if not start or not end:
                 continue
 
-            week_vol = 0
-            for date_str, vol in daily_vol.items():
-                if start <= date_str <= end:
-                    week_vol += vol
+            # Find all trading days in this announcement period (where buys happened)
+            period_dates = sorted([d for d in daily_vol if start <= d <= end])
+
+            week_vol = sum(daily_vol[d] for d in period_dates)
+
+            # Sum up max allowed for each buyback day in the period
+            max_allowed_sum = 0
+            valid_days = 0
+            for d in period_dates:
+                m = max_allowed_on(d)
+                if m is not None:
+                    max_allowed_sum += m
+                    valid_days += 1
 
             a['market_volume'] = week_vol
+            a['max_allowed_week'] = max_allowed_sum if valid_days > 0 else 0
+
             if a['week_shares'] > 0 and week_vol > 0:
                 a['buyback_pct_of_volume'] = round(a['week_shares'] / week_vol * 100, 1)
             else:
                 a['buyback_pct_of_volume'] = 0
 
-        print("  Volume data matched to announcements")
+            # Utilization: actual buys / theoretical max (how aggressively they're buying)
+            if max_allowed_sum > 0:
+                a['utilization_pct'] = round(a['week_shares'] / max_allowed_sum * 100, 1)
+            else:
+                a['utilization_pct'] = 0
+
+        print("  Volume and 25% Safe Harbour limits matched to announcements")
 
     except Exception as e:
         print(f"  Warning: Could not fetch volumes: {e}")
@@ -389,8 +446,8 @@ def main():
 
     new_count = scan_for_new_announcements(data)
 
-    # Sort announcements by accumulated shares (chronological order)
-    data["announcements"].sort(key=lambda a: a["acc_shares"])
+    # Sort announcements by date (handles program transitions where acc_shares resets)
+    data["announcements"].sort(key=lambda a: a["announcement_date"])
 
     # Fetch trading volumes
     fetch_weekly_volumes(data["announcements"])
@@ -398,9 +455,11 @@ def main():
     # Fetch current price
     fetch_current_price(data)
 
-    # Update NAV history
+    # Update NAV history and programs config
     data["nav_history"] = NAV_HISTORY
     data["total_shares"] = TOTAL_SHARES
+    data["programs"] = PROGRAMS
+    data["program_max"] = sum(p["max_amount"] for p in PROGRAMS)  # Cumulative cap
 
     save_data(data)
 
