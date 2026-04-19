@@ -371,29 +371,52 @@ def fetch_weekly_volumes(announcements):
             if not start or not end:
                 continue
 
-            # Find all trading days in this announcement period (where buys happened)
+            # Find all trading days in this announcement period
+            # (all days with volume data, which are all Nasdaq Copenhagen trading days)
             period_dates = sorted([d for d in daily_vol if start <= d <= end])
 
             week_vol = sum(daily_vol[d] for d in period_dates)
 
-            # Sum up max allowed for each buyback day in the period
+            # Sum up max allowed for each TRADING DAY in the period
+            # (not just days with buys — the limit applies to every trading day)
             max_allowed_sum = 0
             valid_days = 0
+            daily_detail = []  # Debug: per-day breakdown
             for d in period_dates:
-                m = max_allowed_on(d)
-                if m is not None:
-                    max_allowed_sum += m
+                idx = date_to_idx.get(d)
+                if idx is not None and idx >= 20:
+                    prior_20 = [daily_list[i][1] for i in range(idx - 20, idx)]
+                    avg_20 = sum(prior_20) / 20
+                    max_d = round(0.25 * avg_20)
+                    max_allowed_sum += max_d
                     valid_days += 1
+                    daily_detail.append({
+                        "date": d,
+                        "day_volume": daily_vol[d],
+                        "avg_20d": round(avg_20),
+                        "max_allowed": max_d
+                    })
 
             a['market_volume'] = week_vol
             a['max_allowed_week'] = max_allowed_sum if valid_days > 0 else 0
+            a['daily_volume_detail'] = daily_detail  # For debugging
+
+            # Average 20-day volume at end of period (summary stat)
+            if daily_detail:
+                a['avg_volume_20d'] = round(sum(d['avg_20d'] for d in daily_detail) / len(daily_detail))
+            else:
+                a['avg_volume_20d'] = 0
 
             if a['week_shares'] > 0 and week_vol > 0:
                 a['buyback_pct_of_volume'] = round(a['week_shares'] / week_vol * 100, 1)
             else:
                 a['buyback_pct_of_volume'] = 0
 
-            # Utilization: actual buys / theoretical max (how aggressively they're buying)
+            # Utilization: actual buys / theoretical max
+            # NOTE: The 25% limit is a per-day rule. If FED concentrates buys on
+            # fewer days, utilization can exceed 100% of the weekly sum without
+            # violating the rule. This metric shows overall aggression relative
+            # to the weekly ceiling; per-day compliance requires daily data.
             if max_allowed_sum > 0:
                 a['utilization_pct'] = round(a['week_shares'] / max_allowed_sum * 100, 1)
             else:
