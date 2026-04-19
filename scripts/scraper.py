@@ -322,47 +322,102 @@ def scan_for_new_announcements(data):
 
 def fetch_weekly_volumes(announcements):
     """
-    Fetch daily trading volumes from Yahoo Finance for FED.CO
-    and calculate weekly totals matching each announcement period.
+    Fetch daily trading volumes from Nasdaq Nordic XML API for FED.CO.
+    This is the primary data source — provides accurate total volume
+    including all on-exchange trades (XCSE).
+    Falls back to Yahoo Finance if Nasdaq fails.
     Also calculates the theoretical 25% Safe Harbour max per announcement.
     """
-    print("\nFetching trading volumes from Yahoo Finance...")
+    daily_list = []
+    daily_vol = {}
+
+    # Try Nasdaq Nordic XML API first (more accurate for Danish small caps)
+    print("\nFetching trading volumes from Nasdaq Nordic XML API...")
     try:
-        url = 'https://query1.finance.yahoo.com/v8/finance/chart/FED.CO?interval=1d&range=2y'
-        req = Request(url, headers=HEADERS)
+        # Calculate date range: 2 years back from today
+        from datetime import timedelta
+        end_date = datetime.utcnow().strftime('%Y-%m-%d')
+        start_date = (datetime.utcnow() - timedelta(days=730)).strftime('%Y-%m-%d')
+
+        # Nasdaq Nordic uses CSE98410 as instrument ID for FED.CO
+        nasdaq_url = (
+            'https://www.nasdaqomxnordic.com/webproxy/DataFeedProxy.aspx'
+            '?SubSystem=History&Action=GetDataSeries'
+            f'&FromDate={start_date}&ToDate={end_date}'
+            '&Instrument=CSE98410&hi__a=0,5,6,3,1,2,4,21,9,10,25,7,8,11'
+            '&ext_xslt=/nordicV3/hi_csv.xsl&ext_xslt_lang=en'
+            '&ext_xslt_options=,'
+        )
+        req = Request(nasdaq_url, headers=HEADERS)
         with urlopen(req, timeout=15) as resp:
-            raw = json.loads(resp.read())
+            raw_csv = resp.read().decode('utf-8', errors='replace')
 
-        result = raw['chart']['result'][0]
-        timestamps = result['timestamp']
-        volumes = result['indicators']['quote'][0]['volume']
+        # Parse CSV: expect header + rows with date and volume columns
+        lines = [l.strip() for l in raw_csv.splitlines() if l.strip()]
+        if len(lines) > 1:
+            header = [h.strip().strip('"').lower() for h in lines[0].split(';')]
+            # Find column indices
+            date_idx = None
+            vol_idx = None
+            for i, h in enumerate(header):
+                if 'date' in h:
+                    date_idx = i
+                elif 'total volume' in h or h == 'volume' or 'trading volume' in h:
+                    vol_idx = i
 
-        # Build sorted list of (date, volume) pairs
+            if date_idx is not None and vol_idx is not None:
+                for line in lines[1:]:
+                    parts = [p.strip().strip('"') for p in line.split(';')]
+                    if len(parts) > max(date_idx, vol_idx):
+                        try:
+                            d = parts[date_idx]
+                            # Parse date (could be DD.MM.YYYY or YYYY-MM-DD)
+                            if '.' in d:
+                                dt = datetime.strptime(d, '%d.%m.%Y')
+                                d = dt.strftime('%Y-%m-%d')
+                            vol_str = parts[vol_idx].replace(' ', '').replace(',', '').replace('.', '')
+                            if vol_str and vol_str.isdigit():
+                                vol = int(vol_str)
+                                daily_vol[d] = vol
+                                daily_list.append((d, vol))
+                        except (ValueError, IndexError):
+                            continue
+
+        if daily_vol:
+            print(f"  ✓ Got {len(daily_vol)} daily volume entries from Nasdaq Nordic")
+        else:
+            raise ValueError("Nasdaq returned no usable data")
+
+    except Exception as e:
+        print(f"  Nasdaq API failed: {e}")
+        print("  Falling back to Yahoo Finance...")
         daily_list = []
         daily_vol = {}
-        for ts, vol in zip(timestamps, volumes):
-            d = datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d')
-            if vol is not None:
-                daily_list.append((d, vol))
-                daily_vol[d] = vol
-        daily_list.sort()
+        try:
+            url = 'https://query1.finance.yahoo.com/v8/finance/chart/FED.CO?interval=1d&range=2y'
+            req = Request(url, headers=HEADERS)
+            with urlopen(req, timeout=15) as resp:
+                raw = json.loads(resp.read())
 
-        print(f"  Got {len(daily_vol)} daily volume entries")
+            result = raw['chart']['result'][0]
+            timestamps = result['timestamp']
+            volumes = result['indicators']['quote'][0]['volume']
+
+            for ts, vol in zip(timestamps, volumes):
+                d = datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d')
+                if vol is not None:
+                    daily_list.append((d, vol))
+                    daily_vol[d] = vol
+            print(f"  ✓ Got {len(daily_vol)} daily volume entries from Yahoo Finance")
+        except Exception as e2:
+            print(f"  Both data sources failed: {e2}")
+            return
+
+    try:
+        daily_list.sort()
 
         # Build date->index map for fast lookup
         date_to_idx = {d: i for i, (d, _) in enumerate(daily_list)}
-
-        def max_allowed_on(date_str):
-            """
-            25% of average daily volume over the 20 trading days
-            PRECEDING the given date.
-            """
-            idx = date_to_idx.get(date_str)
-            if idx is None or idx < 20:
-                return None  # Not enough history
-            prior_20 = [daily_list[i][1] for i in range(idx - 20, idx)]
-            avg = sum(prior_20) / 20
-            return round(0.25 * avg)
 
         # For each announcement, compute weekly market volume AND theoretical max
         for a in announcements:
@@ -372,13 +427,11 @@ def fetch_weekly_volumes(announcements):
                 continue
 
             # Find all trading days in this announcement period
-            # (all days with volume data, which are all Nasdaq Copenhagen trading days)
             period_dates = sorted([d for d in daily_vol if start <= d <= end])
 
             week_vol = sum(daily_vol[d] for d in period_dates)
 
             # Sum up max allowed for each TRADING DAY in the period
-            # (not just days with buys — the limit applies to every trading day)
             max_allowed_sum = 0
             valid_days = 0
             daily_detail = []  # Debug: per-day breakdown
@@ -399,9 +452,8 @@ def fetch_weekly_volumes(announcements):
 
             a['market_volume'] = week_vol
             a['max_allowed_week'] = max_allowed_sum if valid_days > 0 else 0
-            a['daily_volume_detail'] = daily_detail  # For debugging
+            a['daily_volume_detail'] = daily_detail
 
-            # Average 20-day volume at end of period (summary stat)
             if daily_detail:
                 a['avg_volume_20d'] = round(sum(d['avg_20d'] for d in daily_detail) / len(daily_detail))
             else:
@@ -412,11 +464,6 @@ def fetch_weekly_volumes(announcements):
             else:
                 a['buyback_pct_of_volume'] = 0
 
-            # Utilization: actual buys / theoretical max
-            # NOTE: The 25% limit is a per-day rule. If FED concentrates buys on
-            # fewer days, utilization can exceed 100% of the weekly sum without
-            # violating the rule. This metric shows overall aggression relative
-            # to the weekly ceiling; per-day compliance requires daily data.
             if max_allowed_sum > 0:
                 a['utilization_pct'] = round(a['week_shares'] / max_allowed_sum * 100, 1)
             else:
@@ -425,8 +472,7 @@ def fetch_weekly_volumes(announcements):
         print("  Volume and 25% Safe Harbour limits matched to announcements")
 
     except Exception as e:
-        print(f"  Warning: Could not fetch volumes: {e}")
-        # Don't fail — volume is supplementary data
+        print(f"  Warning: Error processing volume data: {e}")
 
 
 def fetch_current_price(data):
