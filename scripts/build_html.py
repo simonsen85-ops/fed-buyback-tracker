@@ -170,7 +170,7 @@ tr:hover td{background:rgba(16,185,129,.02)}
   <div class="sh">Ugentligt køb og likviditet</div>
   <div class="ts"><table id="tbl"><thead><tr>
     <th>#</th><th>Dato</th><th>Købt</th><th>Kurs</th><th>Beløb</th>
-    <th>Mkt.vol</th><th>% af vol</th><th>Udnyttelse</th>
+    <th>Mkt.vol</th><th>% af vol</th><th>Tempo</th>
     <th>Akk.stk</th><th>Akk.DKK</th><th>NAV</th><th>Rabat</th>
     <th>Accr.</th><th>Værdi</th><th>ROIC</th>
   </tr></thead><tbody id="tb"></tbody></table></div>
@@ -209,7 +209,8 @@ function calc(){
       aS:grandShares,aAmt:grandAmount,aA:gA,  // Use grand totals as "akkumuleret"
       nav,disc,nNAV,accr,vc,nSh,roic,
       mVol:a.market_volume||0,bPct:a.buyback_pct_of_volume||0,
-      maxW:a.max_allowed_week||0,util:a.utilization_pct||0
+      maxW:a.max_allowed_week||0,util:a.utilization_pct||0,
+      avg20:a.avg_volume_20d||0,detail:a.daily_volume_detail||[]
     });
   }
   return r;
@@ -361,7 +362,7 @@ function render(){
     {k:'wAmt',l:'Beløb'},
     {k:'mVol',l:'Mkt.vol'},
     {k:'bPct',l:'% af vol'},
-    {k:'util',l:'Udnyttelse'},
+    {k:'util',l:'Tempo'},
     {k:'aS',l:'Akk.stk'},
     {k:'aAmt',l:'Akk.DKK'},
     {k:'nav',l:'NAV'},
@@ -399,7 +400,7 @@ function render(){
       <td>${fK(r.wAmt)}K</td>
       <td>${r.mVol>0?fD(r.mVol):'—'}</td>
       <td style="color:${r.bPct>40?'var(--red)':r.bPct>20?'var(--amb)':'var(--g3)'}">${r.bPct>0?r.bPct.toFixed(1)+'%':'—'}</td>
-      <td style="color:${r.util>80?'var(--g3)':r.util>50?'var(--amb)':r.util>0?'var(--red)':'var(--t3)'}">${r.util>0?r.util.toFixed(0)+'%':'—'}</td>
+      <td style="color:${r.util>100?'var(--red)':r.util>80?'var(--g3)':r.util>50?'var(--amb)':r.util>0?'var(--red)':'var(--t3)'}" title="${r.avg20>0?`20-dages snit: ${fD(r.avg20)} aktier/dag\nMax tilladt i ugen: ${fD(r.maxW)} aktier (25% × snit × ${r.detail.length} dage)\nFaktisk købt: ${fD(r.wS)} aktier\nUdnyttelse: ${r.util.toFixed(1)}%`:'Ikke nok historik til 20-dages beregning'}">${r.util>0?r.util.toFixed(0)+'%':'—'}</td>
       <td><b>${fD(r.aS)}</b></td>
       <td>${fM(r.aAmt)}M</td>
       <td>${r.nav.toFixed(2)}</td>
