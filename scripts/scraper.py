@@ -330,16 +330,26 @@ def fetch_today_nasdaq_volume():
         url = ('https://api.nasdaq.com/api/nordic//instruments/TX1484734/trades'
                '?type=INTRADAY&assetClass=SHARES&lang=en')
         req = Request(url, headers={
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
             'Accept': 'application/json',
-            'Referer': 'https://www.nasdaq.com/european-market-activity/shares/fed'
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Referer': 'https://www.nasdaq.com/european-market-activity/shares/fed?id=TX1484734',
+            'Origin': 'https://www.nasdaq.com',
         })
         with urlopen(req, timeout=15) as resp:
-            data = json.loads(resp.read())
+            status = resp.status
+            raw_body = resp.read()
+            print(f"  [debug] Nasdaq intraday: status={status}, bytes={len(raw_body)}")
+            data = json.loads(raw_body)
 
         # Response structure: data.data.rows contains trades
         rows = data.get('data', {}).get('rows', []) if data.get('data') else []
         if not rows:
+            # Debug: show top-level keys so we can understand the response shape
+            top_keys = list(data.keys()) if isinstance(data, dict) else []
+            print(f"  [debug] No rows. Top-level keys: {top_keys}")
+            if 'status' in data:
+                print(f"  [debug] status field: {data.get('status')}")
             return None
 
         total_vol = 0
@@ -396,12 +406,21 @@ def load_nasdaq_csv_bulk():
             f'?assetClass=SHARES&fromDate={start_date}&toDate={end_date}'
         )
         req = Request(url, headers={
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-            'Accept': 'text/csv,*/*',
-            'Referer': 'https://www.nasdaq.com/european-market-activity/shares/fed?id=TX1484734'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/csv,application/json,*/*',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Referer': 'https://www.nasdaq.com/european-market-activity/shares/fed?id=TX1484734',
+            'Origin': 'https://www.nasdaq.com',
         })
         with urlopen(req, timeout=20) as resp:
+            status = resp.status
+            content_type = resp.headers.get('Content-Type', 'unknown')
             raw = resp.read().decode('utf-8-sig', errors='replace')
+            print(f"  [debug] Nasdaq chart/download: status={status}, content-type={content_type}, bytes={len(raw)}")
+            if len(raw) < 500:
+                print(f"  [debug] Response preview: {raw[:500]!r}")
+            else:
+                print(f"  [debug] First line: {raw.splitlines()[0][:200] if raw else '(empty)'}")
 
         # Parse: first line is "sep=;", second line is header, rest is data
         lines = raw.splitlines()
