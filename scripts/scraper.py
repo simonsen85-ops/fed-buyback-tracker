@@ -423,67 +423,32 @@ def load_nasdaq_csv_bulk():
         with urlopen(req, timeout=20) as resp:
             raw = resp.read().decode('utf-8-sig', errors='replace')
 
-        # Response is JSON
+        # Response is JSON. Actual structure:
+        # data.charts.rows[] with fields: dateTime, totalVolume, ...
         data = json.loads(raw)
 
-        # Navigate to rows array
-        chart_data = data.get('data', {})
-        if chart_data is None:
-            chart_data = {}
-        chart_inner = chart_data.get('chartData', {}) if isinstance(chart_data, dict) else {}
-
-        # Find the rows — could be under 'rows', 'marketData', 'series', etc.
-        rows = None
-        for key in ['rows', 'marketData', 'series', 'data']:
-            candidate = chart_inner.get(key)
-            if isinstance(candidate, list) and candidate:
-                rows = candidate
-                print(f"  [debug] Found {len(rows)} rows under chartData.{key}")
-                break
+        rows = (data.get('data') or {}).get('charts', {}).get('rows', []) or []
 
         if not rows:
-            # Show top-level keys to help debug
-            top_keys = list(chart_inner.keys()) if isinstance(chart_inner, dict) else []
-            print(f"  [debug] No rows found. chartData keys: {top_keys}")
+            # Debug: show what IS in the response
+            d_keys = list((data.get('data') or {}).keys())
+            print(f"  [debug] No rows at data.charts.rows. data.* keys: {d_keys}")
             return {}
 
-        # Parse each row — try multiple field name variants
         for row in rows:
             if not isinstance(row, dict):
                 continue
-            # Date field candidates
-            d = None
-            for k in ['Date', 'date', 'tradeDate']:
-                if k in row and row[k]:
-                    d = str(row[k]).strip()
-                    break
-            # Volume field candidates
-            v_str = None
-            for k in ['Volume', 'volume', 'totalVolume', 'Total volume', 'shareVolume']:
-                if k in row and row[k] is not None:
-                    v_str = str(row[k])
-                    break
-
-            if d and v_str:
-                v_clean = v_str.replace(',', '').replace('"', '').replace(' ', '').strip()
-                if v_clean.isdigit():
-                    # Normalize date to YYYY-MM-DD
-                    if '/' in d:
-                        # Could be MM/DD/YYYY
-                        try:
-                            dt = datetime.strptime(d, '%m/%d/%Y')
-                            d = dt.strftime('%Y-%m-%d')
-                        except ValueError:
-                            pass
-                    result[d] = int(v_clean)
+            d = str(row.get('dateTime', '')).strip()
+            v_str = str(row.get('totalVolume', '')).replace(',', '').replace('"', '').strip()
+            if d and v_str.isdigit():
+                result[d] = int(v_str)
 
         if result:
             print(f"  ✓ Nasdaq chart/download: {len(result)} daily volumes")
         else:
-            print(f"  (Parsed JSON but extracted 0 volumes — field names may differ)")
-            # Show first row's keys to aid debugging
+            print(f"  (Found {len(rows)} rows but extracted 0 volumes)")
             if rows:
-                print(f"  [debug] First row keys: {list(rows[0].keys())[:15]}")
+                print(f"  [debug] First row: {rows[0]}")
     except Exception as e:
         print(f"  Nasdaq chart/download failed: {e}")
 
