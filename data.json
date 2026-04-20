@@ -75,7 +75,9 @@
           "source": "nasdaq"
         }
       ],
-      "avg_volume_20d": 3050
+      "avg_volume_20d": 3050,
+      "uid": "fed-legacy-2025-10-31-3550",
+      "source": "legacy"
     },
     {
       "announcement_date": "2025-11-07",
@@ -128,7 +130,9 @@
           "source": "nasdaq"
         }
       ],
-      "avg_volume_20d": 3827
+      "avg_volume_20d": 3827,
+      "uid": "fed-legacy-2025-11-07-7193",
+      "source": "legacy"
     },
     {
       "announcement_date": "2025-11-14",
@@ -181,7 +185,9 @@
           "source": "nasdaq"
         }
       ],
-      "avg_volume_20d": 4198
+      "avg_volume_20d": 4198,
+      "uid": "fed-legacy-2025-11-14-12187",
+      "source": "legacy"
     },
     {
       "announcement_date": "2025-11-21",
@@ -234,7 +240,9 @@
           "source": "nasdaq"
         }
       ],
-      "avg_volume_20d": 4142
+      "avg_volume_20d": 4142,
+      "uid": "fed-legacy-2025-11-21-16163",
+      "source": "legacy"
     },
     {
       "announcement_date": "2025-11-28",
@@ -287,7 +295,9 @@
           "source": "nasdaq"
         }
       ],
-      "avg_volume_20d": 2170
+      "avg_volume_20d": 2170,
+      "uid": "fed-legacy-2025-11-28-18128",
+      "source": "legacy"
     },
     {
       "announcement_date": "2025-12-08",
@@ -340,7 +350,9 @@
           "source": "nasdaq"
         }
       ],
-      "avg_volume_20d": 1925
+      "avg_volume_20d": 1925,
+      "uid": "fed-legacy-2025-12-08-19563",
+      "source": "legacy"
     },
     {
       "announcement_date": "2025-12-15",
@@ -393,7 +405,9 @@
           "source": "nasdaq"
         }
       ],
-      "avg_volume_20d": 1858
+      "avg_volume_20d": 1858,
+      "uid": "fed-legacy-2025-12-15-21863",
+      "source": "legacy"
     },
     {
       "announcement_date": "2025-12-19",
@@ -446,7 +460,9 @@
           "source": "nasdaq"
         }
       ],
-      "avg_volume_20d": 2016
+      "avg_volume_20d": 2016,
+      "uid": "fed-legacy-2025-12-19-23873",
+      "source": "legacy"
     },
     {
       "announcement_date": "2026-01-04",
@@ -492,7 +508,9 @@
           "source": "nasdaq"
         }
       ],
-      "avg_volume_20d": 2033
+      "avg_volume_20d": 2033,
+      "uid": "fed-legacy-2026-01-04-25661",
+      "source": "legacy"
     },
     {
       "announcement_date": "2026-01-09",
@@ -552,7 +570,9 @@
           "source": "nasdaq"
         }
       ],
-      "avg_volume_20d": 1837
+      "avg_volume_20d": 1837,
+      "uid": "fed-legacy-2026-01-09-28371",
+      "source": "legacy"
     },
     {
       "announcement_date": "2026-01-16",
@@ -605,7 +625,9 @@
           "source": "nasdaq"
         }
       ],
-      "avg_volume_20d": 1917
+      "avg_volume_20d": 1917,
+      "uid": "fed-legacy-2026-01-16-30166",
+      "source": "legacy"
     },
     {
       "announcement_date": "2026-01-23",
@@ -658,7 +680,9 @@
           "source": "nasdaq"
         }
       ],
-      "avg_volume_20d": 1654
+      "avg_volume_20d": 1654,
+      "uid": "fed-legacy-2026-01-23-32196",
+      "source": "legacy"
     },
     {
       "announcement_date": "2026-01-30",
@@ -711,7 +735,9 @@
           "source": "nasdaq"
         }
       ],
-      "avg_volume_20d": 1627
+      "avg_volume_20d": 1627,
+      "uid": "fed-legacy-2026-01-30-34196",
+      "source": "legacy"
     },
     {
       "announcement_date": "2026-02-07",
@@ -764,7 +790,9 @@
           "source": "nasdaq"
         }
       ],
-      "avg_volume_20d": 1559
+      "avg_volume_20d": 1559,
+      "uid": "fed-legacy-2026-02-07-35726",
+      "source": "legacy"
     },
     {
       "announcement_date": "2026-02-16",
@@ -810,7 +838,9 @@
           "source": "nasdaq"
         }
       ],
-      "avg_volume_20d": 1476
+      "avg_volume_20d": 1476,
+      "uid": "fed-legacy-2026-02-16-37181",
+      "source": "legacy"
     },
     {
       "announcement_date": "2026-02-23",
@@ -863,7 +893,9 @@
           "source": "nasdaq"
         }
       ],
-      "avg_volume_20d": 1672
+      "avg_volume_20d": 1672,
+      "uid": "fed-legacy-2026-02-23-39246",
+      "source": "legacy"
     },
     {
       "announcement_date": "2026-03-02",
@@ -916,7 +948,9 @@
           "source": "nasdaq"
         }
       ],
-      "avg_volume_20d": 1571
+      "avg_volume_20d": 1571,
+      "uid": "fed-legacy-2026-03-02-40236",
+      "source": "legacy"
     },
     {
       "announcement_date": "2026-03-06",
@@ -969,7 +1003,9 @@
           "source": "nasdaq"
         }
       ],
-      "avg_volume_20d": 1433
+      "avg_volume_20d": 1433,
+      "uid": "fed-legacy-2026-03-06-41277",
+      "source": "legacy"
     },
     {
       "announcement_date": "2026-03-16",
@@ -1022,7 +1058,9 @@
           "source": "nasdaq"
         }
       ],
-      "avg_volume_20d": 1127
+      "avg_volume_20d": 1127,
+      "uid": "fed-legacy-2026-03-16-42427",
+      "source": "legacy"
     },
     {
       "announcement_date": "2026-03-20",
@@ -1075,7 +1113,9 @@
           "source": "nasdaq"
         }
       ],
-      "avg_volume_20d": 898
+      "avg_volume_20d": 898,
+      "uid": "fed-legacy-2026-03-20-43099",
+      "source": "legacy"
     },
     {
       "announcement_date": "2026-03-25",
@@ -1135,7 +1175,9 @@
           "source": "nasdaq"
         }
       ],
-      "avg_volume_20d": 927
+      "avg_volume_20d": 927,
+      "uid": "fed-fed-page128",
+      "source": "fastejendom"
     },
     {
       "announcement_date": "2026-04-01",
@@ -1195,7 +1237,9 @@
           "source": "nasdaq"
         }
       ],
-      "avg_volume_20d": 1239
+      "avg_volume_20d": 1239,
+      "uid": "fed-fed-page129",
+      "source": "fastejendom"
     },
     {
       "announcement_date": "2026-04-10",
@@ -1268,10 +1312,100 @@
           "source": "nasdaq"
         }
       ],
-      "avg_volume_20d": 1401
+      "avg_volume_20d": 1401,
+      "uid": "fed-fed-page130",
+      "source": "fastejendom"
+    },
+    {
+      "uid": "fed-gnw-3276074",
+      "announcement_date": "2026-04-17",
+      "source": "globenewswire",
+      "source_url": "https://www.globenewswire.com/news-release/2026/04/17/3276074/0/da/aktietilbagek%c3%b8bsprogram-konklusion.html",
+      "period_start": "2026-04-13",
+      "period_end": "2026-04-17",
+      "week_shares": 1444,
+      "week_amount": 313732,
+      "week_avg_price": 217.27,
+      "acc_shares": 47443,
+      "acc_amount": 9999890,
+      "program_id": null,
+      "daily_transactions": [
+        {
+          "date": "2026-04-13",
+          "shares": 375,
+          "price": 216.0,
+          "amount": 81000
+        },
+        {
+          "date": "2026-04-14",
+          "shares": 410,
+          "price": 216.0,
+          "amount": 88560
+        },
+        {
+          "date": "2026-04-15",
+          "shares": 395,
+          "price": 220.0,
+          "amount": 86900
+        },
+        {
+          "date": "2026-04-16",
+          "shares": 62,
+          "price": 220.0,
+          "amount": 13640
+        },
+        {
+          "date": "2026-04-17",
+          "shares": 202,
+          "price": 216.0,
+          "amount": 43632
+        }
+      ],
+      "market_volume": 9401,
+      "max_allowed_week": 2087,
+      "daily_volume_detail": [
+        {
+          "date": "2026-04-13",
+          "day_volume": 3476,
+          "avg_20d": 1523,
+          "max_allowed": 381,
+          "source": "nasdaq"
+        },
+        {
+          "date": "2026-04-14",
+          "day_volume": 2358,
+          "avg_20d": 1666,
+          "max_allowed": 416,
+          "source": "nasdaq"
+        },
+        {
+          "date": "2026-04-15",
+          "day_volume": 831,
+          "avg_20d": 1722,
+          "max_allowed": 430,
+          "source": "nasdaq"
+        },
+        {
+          "date": "2026-04-16",
+          "day_volume": 584,
+          "avg_20d": 1718,
+          "max_allowed": 430,
+          "source": "nasdaq"
+        },
+        {
+          "date": "2026-04-17",
+          "day_volume": 2152,
+          "avg_20d": 1718,
+          "max_allowed": 430,
+          "source": "nasdaq"
+        }
+      ],
+      "avg_volume_20d": 1669,
+      "buyback_pct_of_volume": 15.4,
+      "utilization_pct": 69.2
     }
   ],
-  "last_updated": "2026-04-20T08:45:45.314630Z",
+  "last_updated": "2026-04-20T13:58:24.856291+00:00",
   "current_price": 216.0,
   "programs": [
     {
