@@ -342,31 +342,55 @@ class GlobeNewswireSource(AnnouncementSource):
 
     @staticmethod
     def _extract_title_near(html: str, path: str) -> str:
-        """Find the anchor text associated with a given release path."""
-        # Match: <a href="{path}">TITLE</a> (case-insensitive, non-greedy)
+        """
+        Find the anchor text associated with a given release path.
+        Tries multiple strategies because GlobeNewswire's HTML varies —
+        sometimes the link wraps an <img> with a title attribute instead
+        of plain text, sometimes there's whitespace we need to handle.
+        """
         escaped = re.escape(path)
+
+        # Strategy 1: <a href="{path}">Plain Text</a>
         m = re.search(
-            rf'<a[^>]+href="{escaped}"[^>]*>([^<]+)</a>',
-            html, re.IGNORECASE,
+            rf'<a[^>]+href="{escaped}"[^>]*>\s*([^<]+?)\s*</a>',
+            html, re.IGNORECASE | re.DOTALL,
         )
         if m:
             return m.group(1).strip()
+
+        # Strategy 2: URL slug itself contains the title (dashes → spaces)
+        # e.g. /news-release/.../aktietilbagek%c3%b8bsprogram-konklusion.html
+        slug_match = re.search(r"/([^/]+)\.html?$", path, re.IGNORECASE)
+        if slug_match:
+            from urllib.parse import unquote
+            slug = unquote(slug_match.group(1))
+            return slug.replace("-", " ").strip()
+
         return ""
 
     def _matches_buyback(self, title: str) -> bool:
-        """Check if a release title looks like a buyback announcement."""
+        """
+        Check if a release title looks like a buyback transaction announcement.
+
+        We want weekly transaction reports AND program conclusions (which contain
+        the final week's buys). We do NOT want program-start announcements
+        ("igangsætning" / "igangsaettelse") as they contain no transaction data.
+        """
         if not title:
             return False
         low = title.lower()
-        # Exclude program-start announcements (no transactions yet)
-        # We want the weekly transaction announcements
-        exclude = ("igangsætning", "konklusion")
-        if any(x in low for x in exclude):
-            # Still include conclusion announcements — they contain the final week's buys
-            if "konklusion" in low:
-                return True
+
+        # Must mention a buyback-related keyword at all
+        if not any(kw in low for kw in self.buyback_keywords):
             return False
-        return any(kw in low for kw in self.buyback_keywords)
+
+        # Reject program-start announcements — they have no transactions
+        # "igangsætning" (Danish), "igangsaettelse" (Swedish), "launch" (English)
+        start_markers = ("igangsætning", "igangsaettelse", "launch of", "start of")
+        if any(marker in low for marker in start_markers):
+            return False
+
+        return True
 
     # --------------------------------------------------------
     # Main entry point
