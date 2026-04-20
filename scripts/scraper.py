@@ -320,103 +320,196 @@ def scan_for_new_announcements(data):
     return new_count
 
 
-def fetch_weekly_volumes(announcements):
+def fetch_today_nasdaq_volume():
     """
-    Fetch daily trading volumes from Nasdaq Nordic XML API for FED.CO.
-    This is the primary data source — provides accurate total volume
-    including all on-exchange trades (XCSE).
-    Falls back to Yahoo Finance if Nasdaq fails.
-    Also calculates the theoretical 25% Safe Harbour max per announcement.
+    Fetch today's intraday trades from Nasdaq's JSON API.
+    Returns total volume for the current trading day, or None on failure.
+    This is the authoritative source for FED.CO volume.
     """
-    daily_list = []
-    daily_vol = {}
-
-    # Try Nasdaq Nordic XML API first (more accurate for Danish small caps)
-    print("\nFetching trading volumes from Nasdaq Nordic XML API...")
     try:
-        # Calculate date range: 2 years back from today
-        from datetime import timedelta
-        end_date = datetime.utcnow().strftime('%Y-%m-%d')
-        start_date = (datetime.utcnow() - timedelta(days=730)).strftime('%Y-%m-%d')
-
-        # Nasdaq Nordic uses CSE98410 as instrument ID for FED.CO
-        nasdaq_url = (
-            'https://www.nasdaqomxnordic.com/webproxy/DataFeedProxy.aspx'
-            '?SubSystem=History&Action=GetDataSeries'
-            f'&FromDate={start_date}&ToDate={end_date}'
-            '&Instrument=CSE98410&hi__a=0,5,6,3,1,2,4,21,9,10,25,7,8,11'
-            '&ext_xslt=/nordicV3/hi_csv.xsl&ext_xslt_lang=en'
-            '&ext_xslt_options=,'
-        )
-        req = Request(nasdaq_url, headers=HEADERS)
+        url = ('https://api.nasdaq.com/api/nordic//instruments/TX1484734/trades'
+               '?type=INTRADAY&assetClass=SHARES&lang=en')
+        req = Request(url, headers={
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'Accept': 'application/json',
+            'Referer': 'https://www.nasdaq.com/european-market-activity/shares/fed'
+        })
         with urlopen(req, timeout=15) as resp:
-            raw_csv = resp.read().decode('utf-8', errors='replace')
+            data = json.loads(resp.read())
 
-        # Parse CSV: expect header + rows with date and volume columns
-        lines = [l.strip() for l in raw_csv.splitlines() if l.strip()]
-        if len(lines) > 1:
-            header = [h.strip().strip('"').lower() for h in lines[0].split(';')]
-            # Find column indices
-            date_idx = None
-            vol_idx = None
-            for i, h in enumerate(header):
-                if 'date' in h:
-                    date_idx = i
-                elif 'total volume' in h or h == 'volume' or 'trading volume' in h:
-                    vol_idx = i
+        # Response structure: data.data.rows contains trades
+        rows = data.get('data', {}).get('rows', []) if data.get('data') else []
+        if not rows:
+            return None
 
-            if date_idx is not None and vol_idx is not None:
-                for line in lines[1:]:
-                    parts = [p.strip().strip('"') for p in line.split(';')]
-                    if len(parts) > max(date_idx, vol_idx):
-                        try:
-                            d = parts[date_idx]
-                            # Parse date (could be DD.MM.YYYY or YYYY-MM-DD)
-                            if '.' in d:
-                                dt = datetime.strptime(d, '%d.%m.%Y')
-                                d = dt.strftime('%Y-%m-%d')
-                            vol_str = parts[vol_idx].replace(' ', '').replace(',', '').replace('.', '')
-                            if vol_str and vol_str.isdigit():
-                                vol = int(vol_str)
-                                daily_vol[d] = vol
-                                daily_list.append((d, vol))
-                        except (ValueError, IndexError):
-                            continue
+        total_vol = 0
+        trade_date = None
+        for row in rows:
+            # Volume field might be string with commas/quotes
+            vol_str = str(row.get('volume', '')).replace(',', '').replace('"', '').strip()
+            if vol_str.isdigit():
+                total_vol += int(vol_str)
+            # Capture date from first trade's timestamp
+            if trade_date is None:
+                ts = row.get('time') or row.get('executionTime') or ''
+                # Format: "2026-04-17T14:54:41+0200" or "14:54:41"
+                if 'T' in ts:
+                    trade_date = ts.split('T')[0]
 
-        if daily_vol:
-            print(f"  ✓ Got {len(daily_vol)} daily volume entries from Nasdaq Nordic")
-        else:
-            raise ValueError("Nasdaq returned no usable data")
+        # If no date from trades, assume today
+        if trade_date is None:
+            trade_date = datetime.utcnow().strftime('%Y-%m-%d')
 
+        return {'date': trade_date, 'volume': total_vol, 'trades': len(rows)}
     except Exception as e:
-        print(f"  Nasdaq API failed: {e}")
-        print("  Falling back to Yahoo Finance...")
-        daily_list = []
-        daily_vol = {}
-        try:
-            url = 'https://query1.finance.yahoo.com/v8/finance/chart/FED.CO?interval=1d&range=2y'
-            req = Request(url, headers=HEADERS)
-            with urlopen(req, timeout=15) as resp:
-                raw = json.loads(resp.read())
+        print(f"  Nasdaq intraday fetch failed: {e}")
+        return None
 
-            result = raw['chart']['result'][0]
-            timestamps = result['timestamp']
-            volumes = result['indicators']['quote'][0]['volume']
 
-            for ts, vol in zip(timestamps, volumes):
-                d = datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d')
-                if vol is not None:
-                    daily_list.append((d, vol))
-                    daily_vol[d] = vol
-            print(f"  ✓ Got {len(daily_vol)} daily volume entries from Yahoo Finance")
-        except Exception as e2:
-            print(f"  Both data sources failed: {e2}")
-            return
+def load_nasdaq_csv_bulk():
+    """
+    Fetch daily historical volumes directly from Nasdaq's chart download endpoint.
+
+    This endpoint returns the same CSV as the "CSV" button on
+    https://www.nasdaq.com/european-market-activity/shares/fed?id=TX1484734
+
+    Format (semicolon-separated):
+        sep=;
+        Date;Bid;Ask;Opening price;High price;Low price;Closing price;Average price;Total volume;Turnover;Trades
+        2026-04-17;218.00;220.00;214.00;216.00;212.00;216.00;213.3717;"2152";"459,176";19
+        ...
+
+    Returns dict of {date_str: volume_int}.
+    """
+    import csv as csvmod
+    from datetime import timedelta
+    from io import StringIO
+
+    result = {}
+    try:
+        # Fetch 1 year of history (enough for 20-day rolling average with buffer)
+        end_date = datetime.utcnow().strftime('%Y-%m-%d')
+        start_date = (datetime.utcnow() - timedelta(days=400)).strftime('%Y-%m-%d')
+
+        url = (
+            'https://api.nasdaq.com/api/nordic/instruments/TX1484734/chart/download'
+            f'?assetClass=SHARES&fromDate={start_date}&toDate={end_date}'
+        )
+        req = Request(url, headers={
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'Accept': 'text/csv,*/*',
+            'Referer': 'https://www.nasdaq.com/european-market-activity/shares/fed?id=TX1484734'
+        })
+        with urlopen(req, timeout=20) as resp:
+            raw = resp.read().decode('utf-8-sig', errors='replace')
+
+        # Parse: first line is "sep=;", second line is header, rest is data
+        lines = raw.splitlines()
+        if not lines:
+            return {}
+
+        # Skip "sep=;" if present
+        start_idx = 0
+        if lines[0].lower().startswith('sep='):
+            start_idx = 1
+
+        csv_text = '\n'.join(lines[start_idx:])
+        reader = csvmod.DictReader(StringIO(csv_text), delimiter=';')
+
+        for row in reader:
+            d = (row.get('Date') or '').strip()
+            v = (row.get('Total volume') or '').replace('"', '').replace(',', '').strip()
+            if d and v.isdigit():
+                result[d] = int(v)
+
+        if result:
+            print(f"  ✓ Nasdaq chart/download: {len(result)} daily volumes")
+        else:
+            print(f"  (Nasdaq chart/download returned no data)")
+    except Exception as e:
+        print(f"  Nasdaq chart/download failed: {e}")
+
+    return result
+
+
+def fetch_yahoo_history():
+    """Fetch 2 years of daily volumes from Yahoo Finance (fallback)."""
+    daily_vol = {}
+    try:
+        url = 'https://query1.finance.yahoo.com/v8/finance/chart/FED.CO?interval=1d&range=2y'
+        req = Request(url, headers=HEADERS)
+        with urlopen(req, timeout=15) as resp:
+            raw = json.loads(resp.read())
+
+        result = raw['chart']['result'][0]
+        timestamps = result['timestamp']
+        volumes = result['indicators']['quote'][0]['volume']
+
+        for ts, vol in zip(timestamps, volumes):
+            d = datetime.utcfromtimestamp(ts).strftime('%Y-%m-%d')
+            if vol is not None:
+                daily_vol[d] = vol
+    except Exception as e:
+        print(f"  Yahoo history fetch failed: {e}")
+    return daily_vol
+
+
+def fetch_weekly_volumes(announcements, data):
+    """
+    Build daily volume history using three sources (priority order):
+    1. Nasdaq chart/download API — 1-year historical daily volumes (automatic)
+    2. Nasdaq intraday API — today's volume, accumulates into data.json
+    3. Yahoo Finance — fallback for any gaps
+    """
+    print("\nFetching trading volumes...")
+
+    # SOURCE 1: Bulk Nasdaq CSV (manually maintained)
+    nasdaq_bulk = load_nasdaq_csv_bulk()
+
+    # SOURCE 2: Accumulated daily Nasdaq data (from API calls)
+    nasdaq_history = data.get('nasdaq_daily_volumes', {})
+
+    # Fetch today's volume from Nasdaq intraday API
+    today_data = fetch_today_nasdaq_volume()
+    if today_data and today_data['volume'] > 0:
+        nasdaq_history[today_data['date']] = today_data['volume']
+        print(f"  ✓ Nasdaq today ({today_data['date']}): {today_data['volume']} aktier in {today_data['trades']} trades")
+    else:
+        print(f"  (Nasdaq intraday unavailable — using existing history only)")
+
+    data['nasdaq_daily_volumes'] = nasdaq_history
+
+    # SOURCE 3: Yahoo Finance fallback
+    yahoo_vol = fetch_yahoo_history()
+    if yahoo_vol:
+        print(f"  ✓ Yahoo Finance: {len(yahoo_vol)} daily entries")
+
+    # Merge in priority order: bulk CSV wins > intraday API > Yahoo
+    daily_vol = dict(yahoo_vol)           # Start with Yahoo
+    daily_vol.update(nasdaq_history)      # Override with intraday-accumulated
+    daily_vol.update(nasdaq_bulk)         # Override with bulk CSV (highest priority)
+
+    # Track source for each date (for tooltip)
+    source_map = {}
+    for d in daily_vol:
+        if d in nasdaq_bulk:
+            source_map[d] = 'nasdaq'
+        elif d in nasdaq_history:
+            source_map[d] = 'nasdaq'
+        else:
+            source_map[d] = 'yahoo'
+
+    nasdaq_count = sum(1 for s in source_map.values() if s == 'nasdaq')
+    yahoo_count = len(source_map) - nasdaq_count
+    print(f"  Merged: {len(daily_vol)} days ({nasdaq_count} Nasdaq, {yahoo_count} Yahoo)")
+
+    if not daily_vol:
+        print("  Warning: No volume data available from any source")
+        return
 
     try:
-        daily_list.sort()
-
-        # Build date->index map for fast lookup
+        # Build sorted list for 20-day rolling average
+        daily_list = sorted(daily_vol.items())
         date_to_idx = {d: i for i, (d, _) in enumerate(daily_list)}
 
         # For each announcement, compute weekly market volume AND theoretical max
@@ -426,15 +519,12 @@ def fetch_weekly_volumes(announcements):
             if not start or not end:
                 continue
 
-            # Find all trading days in this announcement period
             period_dates = sorted([d for d in daily_vol if start <= d <= end])
-
             week_vol = sum(daily_vol[d] for d in period_dates)
 
-            # Sum up max allowed for each TRADING DAY in the period
             max_allowed_sum = 0
             valid_days = 0
-            daily_detail = []  # Debug: per-day breakdown
+            daily_detail = []
             for d in period_dates:
                 idx = date_to_idx.get(d)
                 if idx is not None and idx >= 20:
@@ -447,7 +537,8 @@ def fetch_weekly_volumes(announcements):
                         "date": d,
                         "day_volume": daily_vol[d],
                         "avg_20d": round(avg_20),
-                        "max_allowed": max_d
+                        "max_allowed": max_d,
+                        "source": source_map.get(d, 'yahoo')
                     })
 
             a['market_volume'] = week_vol
@@ -519,7 +610,7 @@ def main():
     data["announcements"].sort(key=lambda a: a["announcement_date"])
 
     # Fetch trading volumes
-    fetch_weekly_volumes(data["announcements"])
+    fetch_weekly_volumes(data["announcements"], data)
 
     # Fetch current price
     fetch_current_price(data)
