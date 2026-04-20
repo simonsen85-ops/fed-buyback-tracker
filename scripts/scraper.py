@@ -378,26 +378,34 @@ def fetch_today_nasdaq_volume():
 
 def load_nasdaq_csv_bulk():
     """
-    Fetch daily historical volumes directly from Nasdaq's chart download endpoint.
+    Fetch daily historical volumes from Nasdaq's chart download endpoint.
 
-    This endpoint returns the same CSV as the "CSV" button on
-    https://www.nasdaq.com/european-market-activity/shares/fed?id=TX1484734
+    Despite the 'download' in the URL, this endpoint returns JSON, not CSV.
+    The browser's CSV button converts the JSON to CSV client-side.
 
-    Format (semicolon-separated):
-        sep=;
-        Date;Bid;Ask;Opening price;High price;Low price;Closing price;Average price;Total volume;Turnover;Trades
-        2026-04-17;218.00;220.00;214.00;216.00;212.00;216.00;213.3717;"2152";"459,176";19
-        ...
+    Response shape (simplified):
+        {
+          "data": {
+            "chartData": {
+              "orderbookId": "TX1484734",
+              ...
+              "rows": [
+                {"Date": "2026-04-17", "High": "216.00", "Low": "212.00",
+                 "ClosePrice": "216.00", "Volume": "2,152", "Turnover": "459,176",
+                 "Trades": "19"},
+                ...
+              ]
+            }
+          }
+        }
 
     Returns dict of {date_str: volume_int}.
     """
-    import csv as csvmod
     from datetime import timedelta
-    from io import StringIO
 
     result = {}
     try:
-        # Fetch 1 year of history (enough for 20-day rolling average with buffer)
+        # Fetch ~400 days of history (enough for 20-day rolling average with buffer)
         end_date = datetime.utcnow().strftime('%Y-%m-%d')
         start_date = (datetime.utcnow() - timedelta(days=400)).strftime('%Y-%m-%d')
 
@@ -407,44 +415,75 @@ def load_nasdaq_csv_bulk():
         )
         req = Request(url, headers={
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Accept': 'text/csv,application/json,*/*',
+            'Accept': 'application/json,text/csv,*/*',
             'Accept-Language': 'en-US,en;q=0.9',
             'Referer': 'https://www.nasdaq.com/european-market-activity/shares/fed?id=TX1484734',
             'Origin': 'https://www.nasdaq.com',
         })
         with urlopen(req, timeout=20) as resp:
-            status = resp.status
-            content_type = resp.headers.get('Content-Type', 'unknown')
             raw = resp.read().decode('utf-8-sig', errors='replace')
-            print(f"  [debug] Nasdaq chart/download: status={status}, content-type={content_type}, bytes={len(raw)}")
-            if len(raw) < 500:
-                print(f"  [debug] Response preview: {raw[:500]!r}")
-            else:
-                print(f"  [debug] First line: {raw.splitlines()[0][:200] if raw else '(empty)'}")
 
-        # Parse: first line is "sep=;", second line is header, rest is data
-        lines = raw.splitlines()
-        if not lines:
+        # Response is JSON
+        data = json.loads(raw)
+
+        # Navigate to rows array
+        chart_data = data.get('data', {})
+        if chart_data is None:
+            chart_data = {}
+        chart_inner = chart_data.get('chartData', {}) if isinstance(chart_data, dict) else {}
+
+        # Find the rows — could be under 'rows', 'marketData', 'series', etc.
+        rows = None
+        for key in ['rows', 'marketData', 'series', 'data']:
+            candidate = chart_inner.get(key)
+            if isinstance(candidate, list) and candidate:
+                rows = candidate
+                print(f"  [debug] Found {len(rows)} rows under chartData.{key}")
+                break
+
+        if not rows:
+            # Show top-level keys to help debug
+            top_keys = list(chart_inner.keys()) if isinstance(chart_inner, dict) else []
+            print(f"  [debug] No rows found. chartData keys: {top_keys}")
             return {}
 
-        # Skip "sep=;" if present
-        start_idx = 0
-        if lines[0].lower().startswith('sep='):
-            start_idx = 1
+        # Parse each row — try multiple field name variants
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            # Date field candidates
+            d = None
+            for k in ['Date', 'date', 'tradeDate']:
+                if k in row and row[k]:
+                    d = str(row[k]).strip()
+                    break
+            # Volume field candidates
+            v_str = None
+            for k in ['Volume', 'volume', 'totalVolume', 'Total volume', 'shareVolume']:
+                if k in row and row[k] is not None:
+                    v_str = str(row[k])
+                    break
 
-        csv_text = '\n'.join(lines[start_idx:])
-        reader = csvmod.DictReader(StringIO(csv_text), delimiter=';')
-
-        for row in reader:
-            d = (row.get('Date') or '').strip()
-            v = (row.get('Total volume') or '').replace('"', '').replace(',', '').strip()
-            if d and v.isdigit():
-                result[d] = int(v)
+            if d and v_str:
+                v_clean = v_str.replace(',', '').replace('"', '').replace(' ', '').strip()
+                if v_clean.isdigit():
+                    # Normalize date to YYYY-MM-DD
+                    if '/' in d:
+                        # Could be MM/DD/YYYY
+                        try:
+                            dt = datetime.strptime(d, '%m/%d/%Y')
+                            d = dt.strftime('%Y-%m-%d')
+                        except ValueError:
+                            pass
+                    result[d] = int(v_clean)
 
         if result:
             print(f"  ✓ Nasdaq chart/download: {len(result)} daily volumes")
         else:
-            print(f"  (Nasdaq chart/download returned no data)")
+            print(f"  (Parsed JSON but extracted 0 volumes — field names may differ)")
+            # Show first row's keys to aid debugging
+            if rows:
+                print(f"  [debug] First row keys: {list(rows[0].keys())[:15]}")
     except Exception as e:
         print(f"  Nasdaq chart/download failed: {e}")
 
