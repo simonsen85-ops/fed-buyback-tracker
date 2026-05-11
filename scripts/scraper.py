@@ -184,11 +184,11 @@ def fetch_all_announcements(data: dict) -> int:
         GlobeNewswireSource(
             company=COMPANY_NAME,
             uid_prefix=UID_PREFIX,
-            listing_max_pages=3,
+            listing_max_pages=10,
         ),
         FastEjendomSource(
             starting_page_slug=next_slug,
-            max_consecutive_404s=3,
+            max_consecutive_404s=10,
         ),
     ]
 

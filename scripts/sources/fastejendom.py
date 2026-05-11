@@ -117,12 +117,18 @@ class FastEjendomSource(AnnouncementSource):
     This is FED-specific — fastejendom.dk is FED's own website, and the
     URL pattern is theirs. Cannot be reused for other companies.
 
+    Two URL patterns are scanned:
+      1. Sequential numeric slugs: /aktietilbagekoebsprogram-{N}/
+      2. Named slugs: known descriptive URLs like /aktietilbagekoebsprogram-konklusion/
+         and /igangsaetning-af-nyt-aktietilbagekoebsprogram-{N}/
+
     Args:
         starting_page_slug: First page slug to scan from. Tracker keeps
                             track of the latest found slug and passes it in
                             on subsequent runs.
-        max_consecutive_404s: How many 404s in a row before giving up
-                              (in case slugs skip numbers).
+        max_consecutive_404s: How many 404s in a row before giving up.
+                              Default 10 — high because FED sometimes uses
+                              named slugs that break the numeric sequence.
     """
 
     name = "fastejendom"
@@ -130,10 +136,24 @@ class FastEjendomSource(AnnouncementSource):
 
     URL_PATTERN = "https://fastejendom.dk/aktietilbagekoebsprogram-{idx}/"
 
+    # Named slugs (non-numeric) that FED uses for special-case announcements.
+    # Scanned in addition to the numeric slug loop. These are typically:
+    #   - Program conclusion announcements
+    #   - New program launch announcements (numbered: -1, -2, -3...)
+    # Add new ones here as FED publishes them.
+    NAMED_SLUGS = [
+        "aktietilbagekoebsprogram-konklusion",
+        "igangsaetning-af-nyt-aktietilbagekoebsprogram",
+        "igangsaetning-af-nyt-aktietilbagekoebsprogram-2",
+        "igangsaetning-af-nyt-aktietilbagekoebsprogram-3",
+        "igangsaetning-af-nyt-aktietilbagekoebsprogram-4",
+        "igangsaetning-af-nyt-aktietilbagekoebsprogram-5",
+    ]
+
     def __init__(
         self,
         starting_page_slug: int = 108,
-        max_consecutive_404s: int = 3,
+        max_consecutive_404s: int = 10,
     ):
         self.starting_page_slug = starting_page_slug
         self.max_consecutive_404s = max_consecutive_404s
@@ -256,12 +276,42 @@ class FastEjendomSource(AnnouncementSource):
     # --------------------------------------------------------
     def fetch_recent(self, max_announcements: int = 20) -> list[Announcement]:
         """
-        Scan fastejendom.dk starting from `starting_page_slug`, looking for
-        new announcements. Stops after `max_consecutive_404s` in a row.
+        Scan fastejendom.dk for FED buyback announcements.
+
+        Two passes:
+          1. Named slugs (known descriptive URLs) — for conclusions, new
+             program launches, and other non-numeric pages.
+          2. Sequential numeric slugs starting from `starting_page_slug`.
+
+        Stops numeric scan after `max_consecutive_404s` in a row.
         """
         print(f"\n[fastejendom] Scanning from slug {self.starting_page_slug}...")
 
         results: list[Announcement] = []
+
+        # Pass 1: Named slugs
+        for named_slug in self.NAMED_SLUGS:
+            if len(results) >= max_announcements:
+                break
+            url = f"https://fastejendom.dk/{named_slug}/"
+            html = self._fetch(url)
+            if not html or "aktietilbagekøbsprogram" not in html.lower():
+                continue
+
+            # Try to parse — named pages MAY contain transaction tables
+            # (e.g. conclusion announcements do), but launches typically don't
+            ann = self._extract_announcement(html, page_idx=named_slug, url=url)
+            if ann:
+                print(
+                    f"  [fastejendom] ✓ named '{named_slug}' → {ann.announcement_date}: "
+                    f"week {ann.week_shares}sh / acc {ann.acc_shares}sh"
+                )
+                results.append(ann)
+            else:
+                # Not a transaction (probably program-start announcement)
+                print(f"  [fastejendom] named '{named_slug}': no transaction table")
+
+        # Pass 2: Numeric slugs
         idx = self.starting_page_slug
         consecutive_fails = 0
 
