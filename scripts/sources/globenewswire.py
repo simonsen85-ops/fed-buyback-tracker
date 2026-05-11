@@ -296,14 +296,152 @@ class GlobeNewswireSource(AnnouncementSource):
             return None
 
     # --------------------------------------------------------
-    # Listing page → list of release metadata
+    # Listing page → list of release metadata (via RSS feed)
     # --------------------------------------------------------
     def _list_releases(self) -> list[dict]:
         """
-        Scan the listing pages and return a list of release metadata dicts:
+        Fetch release metadata via RSS feed (primary, more stable than HTML
+        listing scraping) with HTML-search fallback.
+
+        Returns metadata dicts:
             {url, release_id, announcement_date, title}
 
         Only releases whose title contains a buyback keyword are returned.
+        """
+        # Try RSS feed first — server-rendered XML, much more stable than
+        # the JS-heavy /en/search/ HTML listing page.
+        rss_items = self._list_releases_via_rss()
+        if rss_items:
+            print(f"  [globenewswire] RSS feed returned {len(rss_items)} items, "
+                  f"filtering for buyback keywords...")
+            filtered = []
+            for item in rss_items:
+                if self._matches_buyback(item["title"]):
+                    filtered.append(item)
+            return filtered
+
+        # Fallback: original HTML scraping approach
+        print(f"  [globenewswire] RSS failed, falling back to HTML listing scraping")
+        return self._list_releases_via_html()
+
+    def _list_releases_via_rss(self) -> list[dict]:
+        """
+        Try GlobeNewswire's RSS feed for this company.
+
+        GlobeNewswire publishes per-organization RSS feeds at several URL
+        patterns. We try them in order and use the first one that works.
+        """
+        # URL-encode company name in various ways since GlobeNewswire's
+        # canonical format isn't documented
+        encoded_basic = quote(self.company, safe="")
+        encoded_no_slash = quote(self.company.replace("/", " "), safe="")
+        encoded_double = encoded_basic.replace("%", "%25")
+
+        rss_url_candidates = [
+            # Primary: dedicated RSS subdomain (most stable per docs)
+            f"https://rss.globenewswire.com/search/organization/{encoded_basic}",
+            # Fallback 1: same but double-encoded (matches old listing URL style)
+            f"https://www.globenewswire.com/search/organization/{encoded_double}/feedType/RSS",
+            # Fallback 2: no slash in company name
+            f"https://rss.globenewswire.com/search/organization/{encoded_no_slash}",
+            # Fallback 3: search-feed format
+            f"https://www.globenewswire.com/SearchResults.aspx?keywords={encoded_basic}&format=RSS",
+        ]
+
+        rss_headers = {
+            **HEADERS,
+            "Accept": "application/rss+xml, application/xml, text/xml, */*;q=0.9",
+        }
+
+        for url in rss_url_candidates:
+            try:
+                req = Request(url, headers=rss_headers)
+                with urlopen(req, timeout=20) as resp:
+                    data = resp.read().decode("utf-8", errors="replace")
+
+                # Validate it actually looks like RSS/XML, not HTML or empty
+                if "<rss" not in data and "<feed" not in data:
+                    print(f"  [globenewswire] RSS URL returned non-XML content "
+                          f"(len={len(data)}), trying next...")
+                    continue
+
+                items = self._parse_rss(data)
+                if items:
+                    print(f"  [globenewswire] RSS source: {url[:80]}...")
+                    return items
+            except Exception as e:
+                print(f"  [globenewswire] RSS fetch failed for {url[:80]}: {e}")
+                continue
+
+        return []
+
+    @staticmethod
+    def _parse_rss(xml_text: str) -> list[dict]:
+        """
+        Parse RSS XML into a list of release metadata dicts.
+
+        Each <item> contains:
+            <title>Aktietilbagekøbsprogram</title>
+            <link>https://www.globenewswire.com/news-release/2026/05/07/...</link>
+            <pubDate>Thu, 07 May 2026 04:02:00 -0400</pubDate>
+            <description>...</description>
+        """
+        items = []
+        # Use stdlib XML parser (no external deps)
+        import xml.etree.ElementTree as ET
+
+        try:
+            root = ET.fromstring(xml_text)
+        except ET.ParseError as e:
+            print(f"  [globenewswire] RSS parse error: {e}")
+            return []
+
+        # Find all <item> elements regardless of namespace
+        # RSS 2.0 doesn't use namespaces for core elements
+        item_elements = root.iter("item")
+
+        # Regex to extract release ID from URL like /news-release/YYYY/MM/DD/{ID}/...
+        url_re = re.compile(
+            r"/news-release/(\d{4})/(\d{2})/(\d{2})/(\d+)/", re.IGNORECASE
+        )
+
+        for it in item_elements:
+            title_elem = it.find("title")
+            link_elem = it.find("link")
+            pubdate_elem = it.find("pubDate")
+
+            if title_elem is None or link_elem is None:
+                continue
+
+            title = (title_elem.text or "").strip()
+            link = (link_elem.text or "").strip()
+            pubdate = (pubdate_elem.text or "").strip() if pubdate_elem is not None else ""
+
+            # Extract release ID and date from link
+            url_match = url_re.search(link)
+            if not url_match:
+                continue
+
+            year, month, day, rel_id = url_match.groups()
+            announcement_date = f"{year}-{month}-{day}"
+
+            # Extract just the path portion for compatibility with existing code
+            path_match = re.search(r"(/news-release/[^?#]+)", link)
+            path = path_match.group(1) if path_match else link
+
+            items.append({
+                "url": link,
+                "path": path,
+                "release_id": rel_id,
+                "announcement_date": announcement_date,
+                "title": title,
+            })
+
+        return items
+
+    def _list_releases_via_html(self) -> list[dict]:
+        """
+        Original HTML listing scraping (fallback when RSS is unavailable).
         """
         found = []
         seen_ids = set()
@@ -314,7 +452,6 @@ class GlobeNewswireSource(AnnouncementSource):
             if not html:
                 break
 
-            # Find all release URLs on this page
             matches = self._RELEASE_URL_RE.findall(html)
             if not matches:
                 break
@@ -324,10 +461,7 @@ class GlobeNewswireSource(AnnouncementSource):
                     continue
                 seen_ids.add(rel_id)
 
-                # Extract title near this URL for keyword matching
-                # Titles appear in <a> anchors after the URL match
                 title = self._extract_title_near(html, path)
-
                 if not self._matches_buyback(title):
                     continue
 
