@@ -4,14 +4,14 @@ Fast Ejendom Danmark — Buyback Scraper (orchestrator).
 
 This is a thin coordinator. All the real work lives in sources/:
 
-  sources.globenewswire.GlobeNewswireSource — primary announcement source
-  sources.fastejendom.FastEjendomSource     — fallback for FED
-  sources.volume.compute                    — Safe Harbour calculations
-  sources.volume.nasdaq / yahoo             — volume data providers
+  sources.finanstilsynet_oam.FinanstilsynetSource — primary regulatory source
+  sources.fastejendom.FastEjendomSource           — fallback for FED
+  sources.volume.compute                          — Safe Harbour calculations
+  sources.volume.nasdaq / yahoo                   — volume data providers
 
 Flow:
   1. Load data.json
-  2. Fetch recent announcements from GlobeNewswire (+ fastejendom.dk as fallback)
+  2. Fetch recent announcements from Finanstilsynet OAM (+ fastejendom.dk fallback)
   3. Dedup & merge into data.json
   4. Fetch daily volume data (Nasdaq primary, Yahoo fallback)
   5. Compute Safe Harbour metrics (25% rule, tempo, etc.)
@@ -24,7 +24,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from sources.base import merge_announcements
-from sources.globenewswire import GlobeNewswireSource
+from sources.finanstilsynet_oam import FinanstilsynetSource
 from sources.fastejendom import FastEjendomSource
 from sources.volume.compute import (
     build_daily_volume_dict,
@@ -41,6 +41,7 @@ DATA_FILE = Path(__file__).parent.parent / "data.json"
 # Company identity
 COMPANY_NAME = "Fast Ejendom Danmark A/S"
 UID_PREFIX = "fed"
+CVR = "28500971"
 YAHOO_TICKER = "FED.CO"
 NASDAQ_INSTRUMENT_ID = "TX1484734"
 NASDAQ_REFERER = (
@@ -111,8 +112,8 @@ def _ensure_uids(data: dict) -> int:
 def _dedup_by_period(data: dict) -> int:
     """
     Additional dedup: if we have two announcements covering the exact same
-    period (e.g. one from legacy fastejendom + one from new GlobeNewswire),
-    prefer the GlobeNewswire one (it's authoritative).
+    period (e.g. one from legacy fastejendom + one from new Finanstilsynet OAM),
+    prefer the Finanstilsynet one (primary regulatory source).
 
     Returns number of duplicates removed.
     """
@@ -126,7 +127,13 @@ def _dedup_by_period(data: dict) -> int:
     for key, indices in by_period.items():
         if len(indices) <= 1 or key == (None, None, None):
             continue
-        priority = {"globenewswire": 0, "fastejendom": 1, "legacy": 2}
+        # Priority order: regulatory > company IR > commercial > legacy
+        priority = {
+            "finanstilsynet": 0,
+            "globenewswire": 1,
+            "fastejendom": 2,
+            "legacy": 3,
+        }
         indices_sorted = sorted(
             indices,
             key=lambda i: priority.get(announcements[i].get("source", "legacy"), 99),
@@ -181,10 +188,12 @@ def fetch_all_announcements(data: dict) -> int:
     next_slug = data.get("last_page_index", 107) + 1
 
     sources = [
-        GlobeNewswireSource(
+        FinanstilsynetSource(
             company=COMPANY_NAME,
             uid_prefix=UID_PREFIX,
-            listing_max_pages=10,
+            cvr=CVR,
+            programs=PROGRAMS,
+            max_pages=2,
         ),
         FastEjendomSource(
             starting_page_slug=next_slug,
