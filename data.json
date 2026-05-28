@@ -15,7 +15,7 @@
   "program_max": 20000000,
   "program_start": "2025-10-24",
   "program_end": "2026-10-23",
-  "last_page_index": 135,
+  "last_page_index": 136,
   "announcements": [
     {
       "uid": "fed-fed-page131",
@@ -2497,9 +2497,84 @@
       "avg_volume_20d": 2391,
       "buyback_pct_of_volume": 23.3,
       "utilization_pct": 98.2
+    },
+    {
+      "uid": "fed-oam-300009556",
+      "announcement_date": "2026-05-28",
+      "source": "finanstilsynet",
+      "source_url": "https://saegressprod.blob.core.windows.net/attachments/d97905c7-67b1-4edc-809f-ffcb0c4ee925/FastEjendo-1001184498-da_fa013693-8229-4053-9b7a-f0c0b6141b0d.html",
+      "period_start": "2026-05-22",
+      "period_end": "2026-05-28",
+      "week_shares": 1413,
+      "week_amount": 314886,
+      "week_avg_price": 222.8493,
+      "acc_shares": 11574,
+      "acc_amount": 2608728,
+      "program_id": 2,
+      "daily_transactions": [
+        {
+          "date": "2026-05-22",
+          "shares": 213,
+          "avg_price": 222.0,
+          "amount": 47286
+        },
+        {
+          "date": "2026-05-26",
+          "shares": 600,
+          "avg_price": 224.0,
+          "amount": 134400
+        },
+        {
+          "date": "2026-05-27",
+          "shares": 0,
+          "avg_price": 0.0,
+          "amount": 0
+        },
+        {
+          "date": "2026-05-28",
+          "shares": 600,
+          "avg_price": 222.0,
+          "amount": 133200
+        }
+      ],
+      "market_volume": 9715,
+      "max_allowed_week": 2510,
+      "daily_volume_detail": [
+        {
+          "date": "2026-05-22",
+          "day_volume": 463,
+          "avg_20d": 2520,
+          "max_allowed": 630,
+          "source": "nasdaq"
+        },
+        {
+          "date": "2026-05-26",
+          "day_volume": 5791,
+          "avg_20d": 2428,
+          "max_allowed": 607,
+          "source": "nasdaq"
+        },
+        {
+          "date": "2026-05-27",
+          "day_volume": 729,
+          "avg_20d": 2550,
+          "max_allowed": 638,
+          "source": "nasdaq"
+        },
+        {
+          "date": "2026-05-28",
+          "day_volume": 2732,
+          "avg_20d": 2540,
+          "max_allowed": 635,
+          "source": "nasdaq"
+        }
+      ],
+      "avg_volume_20d": 2510,
+      "buyback_pct_of_volume": 14.5,
+      "utilization_pct": 56.3
     }
   ],
-  "last_updated": "2026-05-27T18:40:35.169099+00:00",
+  "last_updated": "2026-05-28T19:13:51.945374+00:00",
   "current_price": 220.0,
   "programs": [
     {
