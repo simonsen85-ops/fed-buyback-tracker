@@ -15,7 +15,7 @@
   "program_max": 20000000,
   "program_start": "2025-10-24",
   "program_end": "2026-10-23",
-  "last_page_index": 139,
+  "last_page_index": 140,
   "announcements": [
     {
       "uid": "fed-fed-page131",
@@ -2988,8 +2988,8 @@
       "utilization_pct": 78.9
     }
   ],
-  "last_updated": "2026-06-25T18:34:13.395815+00:00",
-  "current_price": 224.0,
+  "last_updated": "2026-06-26T18:12:28.901220+00:00",
+  "current_price": 222.0,
   "programs": [
     {
       "id": 1,
