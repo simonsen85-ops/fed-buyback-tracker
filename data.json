@@ -15,7 +15,7 @@
   "program_max": 20000000,
   "program_start": "2025-10-24",
   "program_end": "2026-10-23",
-  "last_page_index": 151,
+  "last_page_index": 152,
   "announcements": [
     {
       "uid": "fed-fed-page131",
@@ -4104,10 +4104,98 @@
       "avg_volume_20d": 1516,
       "buyback_pct_of_volume": 17.7,
       "utilization_pct": 98.4
+    },
+    {
+      "uid": "fed-oam-300014498",
+      "announcement_date": "2026-09-17",
+      "source": "finanstilsynet",
+      "source_url": "https://saegressprod.blob.core.windows.net/attachments/04af76ee-1c50-430c-bd06-6ef1714c0df7/FastEjendo-1001263243-da_5e95b6eb-d16b-4f15-b6b2-8d478cda5faf.html",
+      "period_start": "2026-09-11",
+      "period_end": "2026-09-17",
+      "week_shares": 2300,
+      "week_amount": 519584,
+      "week_avg_price": 225.9061,
+      "acc_shares": 40518,
+      "acc_amount": 9067294,
+      "program_id": 2,
+      "daily_transactions": [
+        {
+          "date": "2026-09-11",
+          "shares": 430,
+          "avg_price": 228.0,
+          "amount": 98040
+        },
+        {
+          "date": "2026-09-14",
+          "shares": 460,
+          "avg_price": 226.0,
+          "amount": 103960
+        },
+        {
+          "date": "2026-09-15",
+          "shares": 465,
+          "avg_price": 226.0,
+          "amount": 105090
+        },
+        {
+          "date": "2026-09-16",
+          "shares": 470,
+          "avg_price": 224.0,
+          "amount": 105280
+        },
+        {
+          "date": "2026-09-17",
+          "shares": 475,
+          "avg_price": 225.71,
+          "amount": 107214
+        }
+      ],
+      "market_volume": 8241,
+      "max_allowed_week": 2322,
+      "daily_volume_detail": [
+        {
+          "date": "2026-09-11",
+          "day_volume": 3735,
+          "avg_20d": 1726,
+          "max_allowed": 432,
+          "source": "nasdaq"
+        },
+        {
+          "date": "2026-09-14",
+          "day_volume": 798,
+          "avg_20d": 1872,
+          "max_allowed": 468,
+          "source": "nasdaq"
+        },
+        {
+          "date": "2026-09-15",
+          "day_volume": 882,
+          "avg_20d": 1885,
+          "max_allowed": 471,
+          "source": "nasdaq"
+        },
+        {
+          "date": "2026-09-16",
+          "day_volume": 1730,
+          "avg_20d": 1890,
+          "max_allowed": 472,
+          "source": "nasdaq"
+        },
+        {
+          "date": "2026-09-17",
+          "day_volume": 1096,
+          "avg_20d": 1916,
+          "max_allowed": 479,
+          "source": "nasdaq"
+        }
+      ],
+      "avg_volume_20d": 1858,
+      "buyback_pct_of_volume": 27.9,
+      "utilization_pct": 99.1
     }
   ],
-  "last_updated": "2026-09-16T19:40:10.720099+00:00",
-  "current_price": 222.0,
+  "last_updated": "2026-09-17T19:49:06.170900+00:00",
+  "current_price": 226.0,
   "programs": [
     {
       "id": 1,
