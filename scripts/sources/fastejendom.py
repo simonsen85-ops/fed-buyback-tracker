@@ -251,8 +251,12 @@ class FastEjendomSource(AnnouncementSource):
             period_start = announcement_date or ""
             period_end = announcement_date or ""
 
-        # Fallback for announcement date: use period_end
-        if not announcement_date:
+        # Announcement date: weekly reports are published at the end of the
+        # period they cover, so period_end is the reliable value. The regex
+        # above grabs the FIRST Danish date on the page, which is usually the
+        # program start in the boilerplate ("løber i perioden fra og med den
+        # 20. april 2026"), not the publication date.
+        if daily_transactions or not announcement_date:
             announcement_date = period_end
 
         # UID — stable across re-runs

@@ -408,11 +408,6 @@ def fetch_fed_transactions(
     results: list[DailyTransaction] = []
     skipped_cvr = 0
     for ann in announcements:
-        if ann.is_konklusion():
-            print(f"{LOG_PREFIX}   {ann.id} {ann.publication_date.date()} "
-                  f"[konklusion, no daily transactions]")
-            continue
-
         time.sleep(REQUEST_DELAY)
         try:
             doc = get_document_info(ann.id, session=session)
@@ -540,7 +535,11 @@ class FinanstilsynetSource(AnnouncementSource):
             self.company, category="OwnShares",
             max_pages=pages_needed, session=session,
         ))
-        print(f"  [{self.name}] Found {len(oam_anns)} OAM entries (first {pages_needed} pages)")
+        # Don't trust API ordering (search may rank by relevance): newest first
+        oam_anns.sort(key=lambda a: a.publication_date, reverse=True)
+        newest = oam_anns[0].publication_date.date() if oam_anns else None
+        print(f"  [{self.name}] Found {len(oam_anns)} OAM entries "
+              f"(first {pages_needed} pages, newest {newest})")
 
         results: list[Announcement] = []
         skipped_pre_program = 0
@@ -549,11 +548,10 @@ class FinanstilsynetSource(AnnouncementSource):
         for oam_ann in oam_anns:
             if len(results) >= max_announcements:
                 break
-            if oam_ann.is_konklusion():
-                # Konklusion meddelelse marks program completion — no new
-                # transactions, so skip. The previous weekly announcement
-                # already carries the final cumulative.
-                continue
+            # NB: 'Konklusion' announcements are NOT skipped. They carry the
+            # program's final week of transactions (e.g. 13-17 Apr 2026).
+            # If one has no transaction table, the empty-parse check below
+            # drops it with a log line.
 
             time.sleep(REQUEST_DELAY)
             try:
@@ -579,6 +577,8 @@ class FinanstilsynetSource(AnnouncementSource):
                 continue
 
             if not parsed.daily_transactions:
+                print(f"  [{self.name}]   {oam_ann.id} {oam_ann.publication_date.date()} "
+                      f"'{oam_ann.headline}': no transaction rows parsed")
                 continue
 
             period_start = min(t[0] for t in parsed.daily_transactions)
@@ -588,6 +588,10 @@ class FinanstilsynetSource(AnnouncementSource):
             prog = self._program_for_date(period_start)
             if self.programs and prog is None:
                 skipped_pre_program += 1
+                if period_start.isoformat() > max(p.get("start", "") for p in self.programs):
+                    # Newer than every configured program -> PROGRAMS is out of date
+                    print(f"  [{self.name}]   {oam_ann.id}: week {period_start} is outside "
+                          f"all configured programs — add the new program to PROGRAMS")
                 continue
 
             # Cross-validate parsed daily totals against accumulator rows
