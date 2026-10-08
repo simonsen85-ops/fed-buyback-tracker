@@ -25,7 +25,7 @@
   "program_max": 30000000,
   "program_start": "2025-10-24",
   "program_end": "2026-10-23",
-  "last_page_index": 154,
+  "last_page_index": 155,
   "announcements": [
     {
       "announcement_date": "2025-10-31",
@@ -3955,10 +3955,85 @@
       "avg_volume_20d": 1867,
       "buyback_pct_of_volume": 30.5,
       "utilization_pct": 69.7
+    },
+    {
+      "uid": "fed-fed-page155",
+      "announcement_date": "2026-10-08",
+      "source": "fastejendom",
+      "source_url": "https://fastejendom.dk/aktietilbagekoebsprogram-155/",
+      "period_start": "2026-10-05",
+      "period_end": "2026-10-08",
+      "week_shares": 1306,
+      "week_amount": 296026,
+      "week_avg_price": 226.67,
+      "acc_shares": 1306,
+      "acc_amount": 296026,
+      "program_id": null,
+      "daily_transactions": [
+        {
+          "date": "2026-10-05",
+          "shares": 415,
+          "price": 226.0,
+          "amount": 93790
+        },
+        {
+          "date": "2026-10-06",
+          "shares": 435,
+          "price": 228.0,
+          "amount": 99180
+        },
+        {
+          "date": "2026-10-07",
+          "shares": 46,
+          "price": 226.0,
+          "amount": 10396
+        },
+        {
+          "date": "2026-10-08",
+          "shares": 410,
+          "price": 226.0,
+          "amount": 92660
+        }
+      ],
+      "market_volume": 7006,
+      "max_allowed_week": 1673,
+      "daily_volume_detail": [
+        {
+          "date": "2026-10-05",
+          "day_volume": 2224,
+          "avg_20d": 1671,
+          "max_allowed": 418,
+          "source": "nasdaq"
+        },
+        {
+          "date": "2026-10-06",
+          "day_volume": 2834,
+          "avg_20d": 1746,
+          "max_allowed": 436,
+          "source": "nasdaq"
+        },
+        {
+          "date": "2026-10-07",
+          "day_volume": 1295,
+          "avg_20d": 1621,
+          "max_allowed": 405,
+          "source": "nasdaq"
+        },
+        {
+          "date": "2026-10-08",
+          "day_volume": 653,
+          "avg_20d": 1656,
+          "max_allowed": 414,
+          "source": "nasdaq"
+        }
+      ],
+      "avg_volume_20d": 1674,
+      "buyback_pct_of_volume": 18.6,
+      "utilization_pct": 78.1
     }
   ],
-  "last_updated": "2026-10-07T21:30:44.287820+00:00",
-  "current_price": 228.0,
+  "last_updated": "2026-10-08T21:27:40.194206+00:00",
+  "current_price": 226.0,
   "programs": [
     {
       "id": 1,
