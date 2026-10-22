@@ -20,6 +20,11 @@
       "from": "2026-08-24",
       "nav": 315.42,
       "label": "H1 2026"
+    },
+    {
+      "from": "2026-10-22",
+      "nav": 323.55,
+      "label": "Q3 2026 (auto)"
     }
   ],
   "program_max": 30000000,
@@ -4120,8 +4125,8 @@
       "utilization_pct": 98.9
     }
   ],
-  "last_updated": "2026-10-21T20:20:05.447681+00:00",
-  "current_price": 226.0,
+  "last_updated": "2026-10-22T20:16:07.543881+00:00",
+  "current_price": 230.0,
   "programs": [
     {
       "id": 1,
@@ -4149,5 +4154,11 @@
     }
   ],
   "nasdaq_daily_volumes": {},
-  "nav_auto": []
+  "nav_auto": [
+    {
+      "from": "2026-10-22",
+      "nav": 323.55,
+      "label": "Q3 2026 (auto)"
+    }
+  ]
 }
