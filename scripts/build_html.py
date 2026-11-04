@@ -115,12 +115,9 @@ th{text-align:right;padding:6px 8px;border-bottom:2px solid var(--t4);font-size:
 th:hover{color:var(--t1)}
 th .arrow{font-size:.55rem;margin-left:3px;opacity:.4}
 th.active .arrow{opacity:1;color:var(--g3)}
-th:first-child,th:nth-child(2){text-align:left}
-th:first-child{width:28px}
-th:nth-child(2){width:62px}
+th:first-child{text-align:left;width:62px}
 td{text-align:right;padding:5px 8px;border-bottom:1px solid rgba(61,74,92,.4);font-size:.72rem;white-space:nowrap;color:var(--t1)}
-td:first-child,td:nth-child(2){text-align:left}
-td:first-child{color:var(--t3)}
+td:first-child{text-align:left}
 tr:hover td{background:rgba(16,185,129,.02)}
 
 .foot{display:flex;justify-content:center;gap:16px;padding:14px 0;font-size:.65rem;color:var(--t3)}
@@ -169,10 +166,8 @@ tr:hover td{background:rgba(16,185,129,.02)}
 <div class="tc">
   <div class="sh">Ugentligt køb og likviditet</div>
   <div class="ts"><table id="tbl"><thead><tr>
-    <th>#</th><th>Dato</th><th>Købt</th><th>Kurs</th><th>Beløb</th>
-    <th>Mkt.vol</th><th>% af vol</th><th>Tempo</th>
-    <th>Akk.stk</th><th>Akk.DKK</th><th>NAV</th><th>NAV v. køb</th><th>Rabat v. køb</th>
-    <th>Accr.</th><th>Værdi</th><th>ROI v. køb</th><th>NAV-udv.</th><th>ROI i dag</th>
+    <th>Dato</th><th>Købt</th><th>Gns. kurs</th><th>Beløb</th><th>NAV v. køb</th>
+    <th>Afkast pr. krone</th><th>Udnyttelse</th><th>Akk. investeret</th><th>Værdi skabt</th>
   </tr></thead><tbody id="tb"></tbody></table></div>
 </div>
 
@@ -270,8 +265,8 @@ function render(){
     {l:'Investeret',v:fM(R.aAmt)+' mio.',s:pU.toFixed(1)+'% af ramme',c:''},
     {l:'Gns. købskurs',v:R.aA.toFixed(2),s:dB.toFixed(1)+'% under NAV v. køb',c:''},
     {l:'ROI v. køb',v:R.roiAt.toFixed(1)+'%',s:'Rabat fanget ved købet',c:'color:var(--g2)'},
-    {l:'NAV-udv. siden',v:(R.grw>=0?'+':'')+R.grw.toFixed(1)+' pp',s:'Ejendomme/drift efter køb',c:'color:var(--g3)'},
-    {l:'ROI i dag',v:R.roic.toFixed(1)+'%',s:'Mark-to-NAV · ikke annualiseret',c:'color:var(--g4)'},
+    {l:'Værdi skabt v. køb',v:fM(R.vAt)+' mio.',s:'Købte aktier × NAV v. køb − beløb',c:'color:var(--g3)'},
+    {l:'Afkast på næste krone',v:((nav/kurs-1)*100).toFixed(1)+'%',s:'vs. ~3,2% efter skat ved gældsnedbringelse',c:'color:var(--g4)'},
   ].map(k=>`<div class="kpi"><div class="l">${k.l}</div><div class="v" style="${k.c}">${k.v}</div><div class="s">${k.s}</div></div>`).join('');
 
   document.getElementById('vcG').innerHTML=`
@@ -399,30 +394,21 @@ function render(){
 
   // Sortable table
   const cols=[
-    {k:'i',l:'#',left:true},
     {k:'d',l:'Dato',left:true},
     {k:'wS',l:'Købt'},
-    {k:'wA',l:'Kurs'},
+    {k:'wA',l:'Gns. kurs'},
     {k:'wAmt',l:'Beløb'},
-    {k:'mVol',l:'Mkt.vol'},
-    {k:'bPct',l:'% af vol'},
-    {k:'util',l:'Tempo'},
-    {k:'aS',l:'Akk.stk'},
-    {k:'aAmt',l:'Akk.DKK'},
-    {k:'nav',l:'NAV'},
-    {k:'navAt',l:'NAV v. køb'},
-    {k:'disc',l:'Rabat v. køb'},
-    {k:'accr',l:'Accr.'},
-    {k:'vc',l:'Værdi'},
-    {k:'roiAt',l:'ROI v. køb'},
-    {k:'grw',l:'NAV-udv.'},
-    {k:'roic',l:'ROI i dag'}
+    {k:'navAt',l:'NAV v. køb',t:'Indre værdi pr. aktie på handelsdagene, renset for tidligere tilbagekøbs effekt (vægtet over ugens handler).'},
+    {k:'apk',l:'Afkast pr. krone',t:'Indre værdi købt pr. betalt krone: NAV v. køb / gns. kurs − 1.'},
+    {k:'util',l:'Udnyttelse',t:'Ugens køb i % af Safe Harbour-loftet (25 % af 20-dages gns. volumen).'},
+    {k:'aAmt',l:'Akk. investeret'},
+    {k:'vAt',l:'Værdi skabt',t:'Akkumuleret værdi ved køb: købte aktier × NAV v. køb − betalt beløb.'}
   ];
 
   let sortCol='i', sortDir='desc'; // default: newest first
 
   function renderTable(){
-    const sorted=[...rows].map((r,i)=>({...r,i:i+1}));
+    const sorted=[...rows].map((r,i)=>({...r,i:i+1,apk:r.wA>0?(r.navAt/r.wA-1)*100:0}));
     sorted.sort((a,b)=>{
       let va=a[sortCol],vb=b[sortCol];
       if(sortCol==='d'){va=a.d;vb=b.d;}
@@ -440,24 +426,15 @@ function render(){
     });
 
     document.getElementById('tb').innerHTML=sorted.map(r=>`<tr>
-      <td>${r.i}</td>
       <td>${new Date(r.d).toLocaleDateString('da-DK',{day:'numeric',month:'short'})}</td>
       <td>${fD(r.wS)}</td>
       <td>${r.wA.toFixed(2)}</td>
       <td>${fK(r.wAmt)}K</td>
-      <td>${r.mVol>0?fD(r.mVol):'—'}</td>
-      <td style="color:${r.bPct>40?'var(--red)':r.bPct>20?'var(--amb)':'var(--g3)'}">${r.bPct>0?r.bPct.toFixed(1)+'%':'—'}</td>
+      <td>${r.navAt.toFixed(2)}</td>
+      <td style="color:var(--g1)">${r.wA>0?r.apk.toFixed(1)+'%':'—'}</td>
       <td style="color:${r.util>100?'var(--red)':r.util>80?'var(--g3)':r.util>50?'var(--amb)':r.util>0?'var(--red)':'var(--t3)'}" title="${r.avg20>0?`20-dages snit: ${fD(r.avg20)} aktier/dag\nMax tilladt i ugen: ${fD(r.maxW)} aktier (25% × snit × ${r.detail.length} dage)\nFaktisk købt: ${fD(r.wS)} aktier\nUdnyttelse: ${r.util.toFixed(1)}%`:'Ikke nok historik til 20-dages beregning'}">${r.util>0?r.util.toFixed(0)+'%':'—'}</td>
-      <td><b>${fD(r.aS)}</b></td>
       <td>${fM(r.aAmt)}M</td>
-      <td>${r.nav.toFixed(2)}</td>
-      <td title="Ex-program NAV kendt på handelsdagene (vægtet)">${r.navAt.toFixed(2)}</td>
-      <td style="color:var(--g1)">${r.disc.toFixed(1)}%</td>
-      <td style="color:var(--g2)">+${r.accr.toFixed(2)}</td>
-      <td style="color:var(--g3)"><b>${fM(r.vc)}M</b></td>
-      <td style="color:var(--g2)">${r.roiAt.toFixed(1)}%</td>
-      <td style="color:var(--g3)">${r.grw>=0?'+':''}${r.grw.toFixed(1)}</td>
-      <td style="color:var(--g4)"><b>${r.roic.toFixed(1)}%</b></td>
+      <td style="color:var(--g3)"><b>${fM(r.vAt)}M</b></td>
     </tr>`).join('');
   }
 
@@ -467,6 +444,7 @@ function render(){
   cols.forEach(col=>{
     const th=document.createElement('th');
     if(col.left)th.style.textAlign='left';
+    if(col.t)th.title=col.t;
     th.addEventListener('click',()=>{
       if(sortCol===col.k){sortDir=sortDir==='desc'?'asc':'desc';}
       else{sortCol=col.k;sortDir='desc';}
