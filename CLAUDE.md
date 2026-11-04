@@ -28,7 +28,10 @@ via `actions/deploy-pages`. Dependencies: `requests`, `beautifulsoup4`.
 - **Preview, approve, push to `main`.** Build `index.html` locally and show
   Rasmus the page (screenshots plus the HTML file) before pushing. Push
   directly to `main` once he approves. No pull requests. If you parked work
-  on a branch, delete it afterwards. The dashboard only changes when the
+  on a branch while waiting, don't delete it yourself: cloud sessions can't
+  delete branches. `.github/workflows/cleanup-branches.yml` deletes every
+  `claude/*` branch whose changes are all on `main` when you push to `main`.
+  The dashboard only changes when the
   workflow next runs: tell him to run it from the Actions tab if the change
   should show today.
 - **Cloud sessions have a network allowlist.** This repo needs: appft.gold.extension.gopublic.dk, saegressprod.blob.core.windows.net, fastejendom.dk, *.nasdaq.com, *.finance.yahoo.com.
