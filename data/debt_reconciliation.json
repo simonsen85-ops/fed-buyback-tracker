@@ -172,8 +172,5 @@
    "31.12.25 amounts include the loans on the four properties sold 1 July 2026 (their pantebreve are now cancelled in the tingbog)."
   ],
   "interpretation": "The fixed 4% class fell ~44m in 2026 (range ~37-51m given the rounded percentages) although none of the fixed loans sits on a sold property, which matches the ~40m voluntary redemptions in version B. The rentetilpasning classes fell ~59m, about the ~50m debt on the sold properties plus afdrag. So the 2026 early redemptions went mainly into the two fixed 4% loans (Baltorpvej 156-172: 97.1m Obligationslån; Kærup Industrivej 1: 90.0m). The tingbog cannot show how the redemptions were split between those two loans. Supporting: the Q3 report mentions realised price gains on paying down selected loans, which fits buying back 4% bonds below par. At 30.09.26 ~50.7m of the 76.3m tingbog excess sits in the fixed class and ~25.6m in the rentetilpasning class."
- },
- "excluded_by_user_confirmation": [
-  "Rådhusvej 11A/13, 2920 Charlottenlund (BFE 2039286): owner Ejendomsselskabet Rådhusvej 11 ApS, CVR 42923508 - user confirmed 04.11.2026 that it is not owned by Fast Ejendom Danmark; excluded from totals."
- ]
+ }
 }

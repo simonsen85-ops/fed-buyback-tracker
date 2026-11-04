@@ -721,7 +721,7 @@ function renderDebt(){
   document.getElementById('dPropN').innerHTML=
     `<p>Tinglyste beløb er hovedstolen ved tinglysning og dermed en <b>øvre grænse</b>: afdrag og ekstraordinære indfrielser nedskriver ikke pantebrevet. Summen ligger ${dn(DB.registered_total_m-DB.nominal_latest_m)} mio. over FED's nominelle gæld.</p>`+
     `<p>De ca. 40 mio. ekstraordinære indfrielser i 2026 gik til de faste lån (Baltorpvej og Kærup Industrivej), men fordelingen mellem de to lån er ikke offentlig.</p>`+
-    `<p>Gældfri = ingen tinglyste realkreditlån. Lånetype afledt af tinglysningsdato. Ejendomme solgt pr. 1.7.26 er ikke med. ${DB.excluded.join(' ')}</p>`+
+    `<p>Gældfri = ingen tinglyste realkreditlån. Lånetype afledt af tinglysningsdato. Ejendomme solgt pr. 1.7.26 er ikke med.</p>`+
     `<p>Kilde: tinglysning.dk (udtræk 04.11.26, kun ejendomme ejet af FED-selskaber), FED's årsrapport 2025 og delårsrapport 1.-3. kvt. 2026, Nasdaq Copenhagen.</p>`;
 }
 

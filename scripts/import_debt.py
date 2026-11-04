@@ -77,6 +77,7 @@ def main(src: Path) -> None:
         w.writerows(props)
 
     comp = json.loads((src / "fed_debt.json").read_text(encoding="utf-8"))["comparison"]
+    comp.pop("excluded_by_user_confirmation", None)  # names a non-FED company; not for the public repo
     with open(OUT / "debt_reconciliation.json", "w", encoding="utf-8", newline="\n") as f:
         f.write(json.dumps(comp, indent=1, ensure_ascii=False) + "\n")
 

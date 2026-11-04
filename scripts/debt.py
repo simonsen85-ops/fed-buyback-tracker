@@ -31,7 +31,7 @@ PROPERTY_NAME = {
     10: "Ringager 2A", 12: "Ørbækvej 262/268", 19: "Handelsvej 28–30", 26: "Sletvej 38–40",
 }
 MERGE = {20: 19}  # Handelsvej 30 is a building on the Handelsvej 28 property (BFE 10108657)
-NOT_FED = {13: "Rådhusvej 13 ejes af Ejendomsselskabet Rådhusvej 11 ApS (CVR 42923508), ikke af FED, og er udeladt."}
+NOT_FED = {13}  # in FED's property list, but the tingbog owner is not a FED company → left out (not shown)
 # Fallback if data.json has no flows_2026 yet (see DEBT_FLOWS_2026 in scraper.py)
 SOLD_PROPERTIES_DEBT_M = 15.267 + 34.667
 # A callable (konvertibel) bond can always be redeemed at par, so a rate fall can't
@@ -371,7 +371,6 @@ def build_model(data: dict, asof: date | None = None) -> dict:
         "nav": nav, "kurs": kurs,
         "properties": table,
         "loans_count": len(loans),
-        "excluded": list(NOT_FED.values()),
         "bridge_B": rec.get("reconciliation_dkk_000", {}).get("version_B_current", {}).get("bridge", []),
     }
 
