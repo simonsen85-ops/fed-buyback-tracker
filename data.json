@@ -4289,7 +4289,7 @@
       "utilization_pct": 98.9
     }
   ],
-  "last_updated": "2026-11-04T22:06:12.152097+00:00",
+  "last_updated": "2026-11-04T22:38:46.850497+00:00",
   "current_price": 232.0,
   "programs": [
     {
@@ -4319,5 +4319,102 @@
   ],
   "nasdaq_daily_volumes": {},
   "nav_auto": [],
-  "shares_outstanding_start": 2606979
+  "shares_outstanding_start": 2606979,
+  "bond_prices": {
+    "DK0006355532": [
+      {
+        "date": "2026-11-04",
+        "price": 98.4,
+        "nasdaq_ts": "2026-11-04 17:00:00 CET"
+      }
+    ],
+    "DK0006355961": [
+      {
+        "date": "2026-11-04",
+        "price": 99.0,
+        "nasdaq_ts": "2026-11-04 17:00:00 CET"
+      }
+    ]
+  },
+  "debt_config": {
+    "mix_history": [
+      {
+        "period_end": "2025-12-31",
+        "label": "31.12.25",
+        "base_m": 752.8,
+        "basis": "Samlet gældsportefølje inkl. aktiver bestemt for salg (Årsrapport 2025)",
+        "fixed": 24,
+        "f5": 42,
+        "cibor6": 34
+      },
+      {
+        "period_end": "2026-06-30",
+        "label": "30.06.26",
+        "base_m": 729.9,
+        "basis": "Samlet gældsportefølje inkl. aktiver bestemt for salg (Delårsrapport H1 2026)",
+        "fixed": 25,
+        "f5": 40,
+        "cibor6": 35
+      },
+      {
+        "period_end": "2026-09-30",
+        "label": "30.09.26",
+        "base_m": 649.623,
+        "basis": "Nominel prioritetsgæld (Delårsrapport 1.-3. kvt. 2026, note 3)",
+        "fixed": 21,
+        "f5": 40,
+        "cibor6": 39
+      }
+    ],
+    "nominal_latest_m": 649.623,
+    "flows_2026": {
+      "period": "1.-3. kvt. 2026",
+      "afdrag_m": 12.519,
+      "indfrielse_m": 89.674,
+      "sale_debt_m": 49.934
+    },
+    "avg_loan_rate_pct": 4.06,
+    "tax_rate": 0.22,
+    "bonds": [
+      {
+        "loan_ref": "25.09.2024-1016045407",
+        "property": "Baltorpvej 156–172",
+        "name": "DLR 4 B 2053 OA",
+        "isin": "DK0006355532",
+        "orderbook_id": "TX4372156",
+        "coupon_pct": 4.0,
+        "expiry": "2053-04-01",
+        "repayment": "Afdragsfrihed (OA)",
+        "io_until": "2030-01-01"
+      },
+      {
+        "loan_ref": "20.09.2024-1016027256",
+        "property": "Kærup Industrivej 1",
+        "name": "DLR 4 B 2053",
+        "isin": "DK0006355961",
+        "orderbook_id": "TX4373452",
+        "coupon_pct": 4.0,
+        "expiry": "2053-10-01",
+        "repayment": "Annuitet"
+      }
+    ],
+    "cibor6": {
+      "fixing_pct": 2.9467,
+      "as_of": "2026-11-03",
+      "source": "DFBF",
+      "history": [
+        {
+          "date": "2023-12-22",
+          "pct": 3.9733,
+          "period": "2024H1"
+        },
+        {
+          "date": "2024-06-25",
+          "pct": 3.74,
+          "period": "2024H2"
+        }
+      ],
+      "margin_pp": null
+    }
+  }
 }
