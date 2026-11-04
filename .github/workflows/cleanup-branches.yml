@@ -1,0 +1,53 @@
+# Deletes claude/* work branches whose changes are already on main.
+#
+# Claude Code cloud sessions can push branches but cannot delete them, so
+# preview work parked on a branch is cleaned up here after it lands on main.
+# A branch is deleted only if every one of its commits is on main, either as
+# the same commit or as an identical change (rebased). Anything else is kept.
+#
+# Note: pushes made by the scraper bot (GITHUB_TOKEN) do not trigger this
+# workflow; pushes from Claude sessions and people do. It can also be run by
+# hand from the Actions tab.
+
+name: Clean up merged Claude branches
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: cleanup-branches
+  cancel-in-progress: false
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Delete claude/* branches already contained in main
+        run: |
+          set -euo pipefail
+          git fetch --prune origin '+refs/heads/*:refs/remotes/origin/*'
+          branches=$(git for-each-ref --format='%(refname:strip=3)' 'refs/remotes/origin/claude/')
+          if [ -z "$branches" ]; then
+            echo "No claude/* branches."
+            exit 0
+          fi
+          for b in $branches; do
+            if git merge-base --is-ancestor "origin/$b" origin/main \
+               || ! git cherry origin/main "origin/$b" | grep -q '^+'; then
+              echo "Deleting $b (all changes are on main)"
+              git push origin --delete "$b"
+            else
+              echo "Keeping $b (has changes not on main):"
+              git cherry -v origin/main "origin/$b" | grep '^+' || true
+            fi
+          done
