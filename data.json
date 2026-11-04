@@ -24,7 +24,7 @@
     {
       "from": "2026-10-22",
       "nav": 323.55,
-      "label": "Q3 2026 (auto)"
+      "label": "Q3 2026"
     }
   ],
   "program_max": 30000000,
@@ -4289,7 +4289,7 @@
       "utilization_pct": 98.9
     }
   ],
-  "last_updated": "2026-11-03T21:55:24.153030+00:00",
+  "last_updated": "2026-11-04T12:25:58.254148+00:00",
   "current_price": 232.0,
   "programs": [
     {
@@ -4318,11 +4318,6 @@
     }
   ],
   "nasdaq_daily_volumes": {},
-  "nav_auto": [
-    {
-      "from": "2026-10-22",
-      "nav": 323.55,
-      "label": "Q3 2026 (auto)"
-    }
-  ]
+  "nav_auto": [],
+  "shares_outstanding_start": 2606979
 }
