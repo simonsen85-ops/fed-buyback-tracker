@@ -22,12 +22,15 @@ via `actions/deploy-pages`. Dependencies: `requests`, `beautifulsoup4`.
 ## Working from a Claude Code session
 
 - **Commit code, not data.** Don't commit `data.json` or `index.html`: the
-  Actions bot commits both to `main` every weekday, so a branch that touches
+  Actions bot commits both to `main` every weekday, so a commit that touches
   them will conflict. Change data through code (migrations in `scraper.py`)
   and let the workflow regenerate both files.
-- Work on a branch and open a pull request; Rasmus merges it on GitHub. After
-  a merge, the dashboard only changes when the workflow next runs. Tell him to
-  run it from the Actions tab if the change should show today.
+- **Preview, approve, push to `main`.** Build `index.html` locally and show
+  Rasmus the page (screenshots plus the HTML file) before pushing. Push
+  directly to `main` once he approves. No pull requests. If you parked work
+  on a branch, delete it afterwards. The dashboard only changes when the
+  workflow next runs: tell him to run it from the Actions tab if the change
+  should show today.
 - **Cloud sessions have a network allowlist.** This repo needs: appft.gold.extension.gopublic.dk, saegressprod.blob.core.windows.net, fastejendom.dk, *.nasdaq.com, *.finance.yahoo.com.
   If a fetch fails from a cloud session, check the allowlist before concluding
   that the site or its format has changed.
@@ -84,6 +87,17 @@ commercial distributors (GlobeNewswire, Cision) last.
 
 ## Value model (dashboard)
 
+The dashboard judges capital-allocation decisions: was each krone spent on
+buybacks a better use than the alternative? NAV development after a purchase
+is property performance, not a buyback effect, so it appears only in the
+value box ("Værdiskabelse ved annullering"), never in the KPI cards, the
+weekly table or the charts.
+
+The alternative is paying down debt: ~3.2 % = FED's average loan rate of
+4.06 % (Q3 2026 report) after 22 % tax. It is the `DEBT_AT` constant in
+`build_html.py` (KPI subtitle and the dashed line in the Afkast pr. krone
+chart). Update it when a new report changes the loan rate.
+
 All logic is JavaScript inside `build_html.py`.
 
 - **NAV without buybacks (`navEx`).** Reported NAV already contains the
@@ -101,6 +115,20 @@ All logic is JavaScript inside `build_html.py`.
 - **NAV development (`grw`)** = ROI today − ROI at purchase, in pp. This is
   growth every FED share got, not value created by the buyback itself.
 - Accretion per share = value created / shares outstanding after buybacks.
+- **Afkast pr. krone** (per week) = NAV v. køb / avg price − 1 (`aPK()`).
+  **Afkast på næste krone** = reported NAV / current price − 1.
+
+Presentation (calculations above are unchanged by it):
+
+- KPI cards: Tilbagekøbt, Investeret, Gns. købskurs, ROI v. køb, Værdi skabt
+  v. køb, Afkast på næste krone.
+- Weekly table: Dato, Købt, Gns. kurs, Beløb, NAV v. køb, Afkast pr. krone,
+  Udnyttelse (Safe Harbour utilisation), Akk. investeret, Værdi skabt
+  (cumulative value at purchase). The last row's Værdi skabt must equal the
+  Værdi skabt v. køb card.
+- Charts: Købskurs vs. NAV; Afkast pr. krone (weekly bars vs. the dashed
+  3.2 % line); Værdi skabt v. køb (cumulative); trading volume; buyback as %
+  of market volume.
 - GoatCounter analytics is embedded in `build_html.py`.
 
 ## Known gaps / to check
@@ -109,8 +137,6 @@ All logic is JavaScript inside `build_html.py`.
   failing the run. This is exactly how the IMB tracker went silent for four
   weeks in Oct 2026. First improvement: record parse failures in `data.json`
   and fail the workflow on them, as the IMB repo now does.
-- The "NAV-udv." column shows "-0.0" on a few early rows (floating-point
-  rounding). Cosmetic.
 - The latest row (29 Oct 2026) came from the fastejendom.dk fallback with uid
   `fed-fed-page158`. Check whether OAM still returns new filings, and why the
   uid is double-prefixed.

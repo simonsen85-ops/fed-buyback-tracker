@@ -157,8 +157,8 @@ tr:hover td{background:rgba(16,185,129,.02)}
 
 <div class="charts">
   <div class="chc"><h3>Købskurs vs. NAV <span>— DKK/aktie</span></h3><div class="chw"><canvas id="ch1"></canvas></div></div>
-  <div class="chc"><h3>ROI <span>— v. køb vs. i dag, akkumuleret %</span></h3><div class="chw"><canvas id="ch2"></canvas></div></div>
-  <div class="chc"><h3>Værdiskabelse <span>— akkumuleret DKK</span></h3><div class="chw"><canvas id="ch3"></canvas></div></div>
+  <div class="chc"><h3>Afkast pr. krone <span>— ugentlig, %</span></h3><div class="chw"><canvas id="ch2"></canvas></div></div>
+  <div class="chc"><h3>Værdi skabt v. køb <span>— akkumuleret DKK</span></h3><div class="chw"><canvas id="ch3"></canvas></div></div>
   <div class="chc"><h3>Handelsvolumen <span>— tilbagekøb vs. marked</span></h3><div class="chw"><canvas id="ch4"></canvas></div></div>
   <div class="chc" style="grid-column:1/-1"><h3>Tilbagekøb som % af markedsvolumen <span>— ugentlig</span></h3><div class="chw" style="height:200px"><canvas id="ch5"></canvas></div></div>
 </div>
@@ -249,6 +249,10 @@ function markNow(R){const L=NX[NX.length-1];if(!(L.from>R.d))return R;
 function fD(n){return n.toLocaleString('da-DK')}
 function fM(n){return(n/1e6).toFixed(2)}
 function fK(n){return(n/1e3).toFixed(0)}
+// Afkast pr. krone for one week: NAV v. køb / avg price − 1, in % (null if nothing was bought)
+function aPK(r){return r.wA>0?(r.navAt/r.wA-1)*100:null}
+// FED's average loan rate 4.06 % (Q3 2026 report) after 22 % tax ≈ 3.2 %: the alternative use of the krone
+const DEBT_AT=3.2;
 
 function render(){
   const rows=calc(),R=markNow(rows[rows.length-1]),kurs=D.current_price||222,nav=R.nav,
@@ -266,7 +270,7 @@ function render(){
     {l:'Gns. købskurs',v:R.aA.toFixed(2),s:dB.toFixed(1)+'% under NAV v. køb',c:''},
     {l:'ROI v. køb',v:R.roiAt.toFixed(1)+'%',s:'Rabat fanget ved købet',c:'color:var(--g2)'},
     {l:'Værdi skabt v. køb',v:fM(R.vAt)+' mio.',s:'Købte aktier × NAV v. køb − beløb',c:'color:var(--g3)'},
-    {l:'Afkast på næste krone',v:((nav/kurs-1)*100).toFixed(1)+'%',s:'vs. ~3,2% efter skat ved gældsnedbringelse',c:'color:var(--g4)'},
+    {l:'Afkast på næste krone',v:((nav/kurs-1)*100).toFixed(1)+'%',s:'vs. ~'+DEBT_AT.toFixed(1).replace('.',',')+'% efter skat ved gældsnedbringelse',c:'color:var(--g4)'},
   ].map(k=>`<div class="kpi"><div class="l">${k.l}</div><div class="v" style="${k.c}">${k.v}</div><div class="s">${k.s}</div></div>`).join('');
 
   document.getElementById('vcG').innerHTML=`
@@ -324,26 +328,21 @@ function render(){
     {label:'Købskurs',data:rows.map(r=>Math.round(r.wA*100)/100),borderColor:'#f8fafc',backgroundColor:'rgba(248,250,252,.04)',borderWidth:2,fill:true,tension:.3,pointRadius:2.5,pointBackgroundColor:'#f8fafc'}
   ]},options:cO({lg:{display:true,labels:{color:'#b0bac9',font:{family:'JetBrains Mono',size:10},boxWidth:10,padding:12}}})});
 
-  // Chart 2: ROI at purchase vs. ROI today (gap = NAV development since purchase)
+  // Chart 2: Afkast pr. krone per week vs. the after-tax return on paying down debt
   const lgO={display:true,labels:{color:'#b0bac9',font:{family:'JetBrains Mono',size:10},boxWidth:10,padding:12}};
-  new Chart(document.getElementById('ch2'),{type:'line',data:{labels:lbl,datasets:[
-    {label:'ROI i dag',data:rows.map(r=>Math.round(r.roic*10)/10),
-     borderColor:'#059669',backgroundColor:'rgba(5,150,105,.08)',borderWidth:2,fill:'+1',tension:.3,
-     pointRadius:2.5,pointBackgroundColor:'#059669',pct:true},
-    {label:'ROI v. køb',data:rows.map(r=>Math.round(r.roiAt*10)/10),
-     borderColor:'#6ee7b7',borderWidth:2,borderDash:[5,3],fill:false,tension:.3,
-     pointRadius:2,pointBackgroundColor:'#6ee7b7',pct:true}
+  new Chart(document.getElementById('ch2'),{type:'bar',data:{labels:lbl,datasets:[
+    {label:'Afkast pr. krone',data:rows.map(r=>{const v=aPK(r);return v===null?null:Math.round(v*10)/10}),
+     backgroundColor:'rgba(110,231,183,.45)',borderColor:'rgba(110,231,183,.8)',borderWidth:1,borderRadius:2,pct:true,order:2},
+    {label:'Gældsnedbringelse efter skat',data:rows.map(()=>DEBT_AT),type:'line',
+     borderColor:'#b0bac9',borderWidth:1.5,borderDash:[6,4],pointRadius:0,fill:false,pct:true,order:1}
   ]},options:cO({y:{beginAtZero:true},yt:{callback:v=>v+'%'},lg:lgO})});
 
-  // Chart 3: Value creation — at purchase vs. marked to latest NAV
+  // Chart 3: Value created at purchase, cumulative
   new Chart(document.getElementById('ch3'),{type:'line',data:{labels:lbl,datasets:[
-    {label:'Værdi i dag',data:rows.map(r=>Math.round(r.vc)),
-     borderColor:'#059669',backgroundColor:'rgba(5,150,105,.08)',borderWidth:2,fill:'+1',tension:.3,
-     pointRadius:2.5,pointBackgroundColor:'#059669'},
-    {label:'Værdi v. køb',data:rows.map(r=>Math.round(r.vAt)),
-     borderColor:'#6ee7b7',borderWidth:2,borderDash:[5,3],fill:false,tension:.3,
-     pointRadius:2,pointBackgroundColor:'#6ee7b7'}
-  ]},options:cO({lg:lgO})});
+    {label:'Værdi skabt v. køb',data:rows.map(r=>Math.round(r.vAt)),
+     borderColor:'#10b981',backgroundColor:'rgba(16,185,129,.08)',borderWidth:2,fill:true,tension:.3,
+     pointRadius:2.5,pointBackgroundColor:'#10b981'}
+  ]},options:cO()});
 
   // Chart 4: Volume — market volume (grey) vs buyback (white)
   // Skip first data point for y-axis max calc if it's a spike (>2x median)
@@ -408,7 +407,7 @@ function render(){
   let sortCol='i', sortDir='desc'; // default: newest first
 
   function renderTable(){
-    const sorted=[...rows].map((r,i)=>({...r,i:i+1,apk:r.wA>0?(r.navAt/r.wA-1)*100:0}));
+    const sorted=[...rows].map((r,i)=>({...r,i:i+1,apk:aPK(r)??-1e9}));
     sorted.sort((a,b)=>{
       let va=a[sortCol],vb=b[sortCol];
       if(sortCol==='d'){va=a.d;vb=b.d;}
@@ -431,7 +430,7 @@ function render(){
       <td>${r.wA.toFixed(2)}</td>
       <td>${fK(r.wAmt)}K</td>
       <td>${r.navAt.toFixed(2)}</td>
-      <td style="color:var(--g1)">${r.wA>0?r.apk.toFixed(1)+'%':'—'}</td>
+      <td style="color:var(--g1)">${r.wA>0?aPK(r).toFixed(1)+'%':'—'}</td>
       <td style="color:${r.util>100?'var(--red)':r.util>80?'var(--g3)':r.util>50?'var(--amb)':r.util>0?'var(--red)':'var(--t3)'}" title="${r.avg20>0?`20-dages snit: ${fD(r.avg20)} aktier/dag\nMax tilladt i ugen: ${fD(r.maxW)} aktier (25% × snit × ${r.detail.length} dage)\nFaktisk købt: ${fD(r.wS)} aktier\nUdnyttelse: ${r.util.toFixed(1)}%`:'Ikke nok historik til 20-dages beregning'}">${r.util>0?r.util.toFixed(0)+'%':'—'}</td>
       <td>${fM(r.aAmt)}M</td>
       <td style="color:var(--g3)"><b>${fM(r.vAt)}M</b></td>
