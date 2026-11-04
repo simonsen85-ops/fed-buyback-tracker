@@ -160,7 +160,7 @@ tr:hover td{background:rgba(16,185,129,.02)}
 
 <div class="charts">
   <div class="chc"><h3>Købskurs vs. NAV <span>— DKK/aktie</span></h3><div class="chw"><canvas id="ch1"></canvas></div></div>
-  <div class="chc"><h3>ROIC <span>— akkumuleret %</span></h3><div class="chw"><canvas id="ch2"></canvas></div></div>
+  <div class="chc"><h3>ROI <span>— v. køb vs. i dag, akkumuleret %</span></h3><div class="chw"><canvas id="ch2"></canvas></div></div>
   <div class="chc"><h3>Værdiskabelse <span>— akkumuleret DKK</span></h3><div class="chw"><canvas id="ch3"></canvas></div></div>
   <div class="chc"><h3>Handelsvolumen <span>— tilbagekøb vs. marked</span></h3><div class="chw"><canvas id="ch4"></canvas></div></div>
   <div class="chc" style="grid-column:1/-1"><h3>Tilbagekøb som % af markedsvolumen <span>— ugentlig</span></h3><div class="chw" style="height:200px"><canvas id="ch5"></canvas></div></div>
@@ -171,8 +171,8 @@ tr:hover td{background:rgba(16,185,129,.02)}
   <div class="ts"><table id="tbl"><thead><tr>
     <th>#</th><th>Dato</th><th>Købt</th><th>Kurs</th><th>Beløb</th>
     <th>Mkt.vol</th><th>% af vol</th><th>Tempo</th>
-    <th>Akk.stk</th><th>Akk.DKK</th><th>NAV</th><th>Rabat</th>
-    <th>Accr.</th><th>Værdi</th><th>ROIC</th>
+    <th>Akk.stk</th><th>Akk.DKK</th><th>NAV</th><th>NAV v. køb</th><th>Rabat v. køb</th>
+    <th>Accr.</th><th>Værdi</th><th>ROI v. køb</th><th>NAV-udv.</th><th>ROI i dag</th>
   </tr></thead><tbody id="tb"></tbody></table></div>
 </div>
 
@@ -184,30 +184,60 @@ tr:hover td{background:rgba(16,185,129,.02)}
 </div>
 <script>
 const D=__DATA_JSON__,TS=D.total_shares;
+// Shares outstanding (excl. treasury) before the programmes. FED's NAV/share is
+// equity / shares OUTSTANDING, so this is the base for "NAV without buybacks".
+const N0=D.shares_outstanding_start||2606979;
 function gN(d){let n=D.nav_history[0].nav;for(const e of D.nav_history)if(d>=e.from)n=e.nav;return n}
+
+// Every individual trade (daily where available, else the week booked at period_end)
+const TR=D.announcements.flatMap(a=>{
+  const dl=a.daily_transactions;
+  if(dl&&dl.length)return dl.filter(x=>x.shares>0).map(x=>({d:x.date,s:x.shares,a:x.amount}));
+  return a.week_shares>0?[{d:a.period_end||a.announcement_date,s:a.week_shares,a:a.week_amount}]:[];
+}).sort((x,y)=>x.d.localeCompare(y.d));
+
+// Balance-sheet date a NAV refers to: explicit period_end, else last quarter-end before publication
+function qEnd(e){if(e.period_end)return e.period_end;
+  const t=new Date(e.from+'T00:00:00Z'),q=Math.floor(t.getUTCMonth()/3);
+  return new Date(Date.UTC(t.getUTCFullYear(),q*3,0)).toISOString().slice(0,10)}
+
+// Reported NAV already contains the accretion from buybacks made before its balance-sheet
+// date. Strip it out: NAVex = (NAV × shares outstanding + amount spent) / N0.
+// Value created vs. "no buybacks" is then simply  shares bought × NAVex − amount paid.
+const NX=D.nav_history.map(e=>{const qe=qEnd(e);let s=0,a=0;
+  for(const t of TR)if(t.d<=qe){s+=t.s;a+=t.a}
+  return {...e,qe,navEx:(e.nav*(N0-s)+a)/N0}});
+function gX(d){let r=NX[0];for(const e of NX)if(d>=e.from)r=e;return r}
 
 function calc(){
   const r=[];
-  let grandShares=0, grandAmount=0;
+  let grandShares=0, grandAmount=0, vAt=0, sNavAt=0;
   for(const a of D.announcements){
-    // Grand total accumulates through all programs (for combined view)
     grandShares += a.week_shares;
     grandAmount += a.week_amount;
-
-    const nav=gN(a.announcement_date),
+    // Trades in this announcement, each valued at the ex-programme NAV known on the trade date
+    const dl=(a.daily_transactions&&a.daily_transactions.length)?a.daily_transactions.filter(x=>x.shares>0).map(x=>({d:x.date,s:x.shares,a:x.amount}))
+            :(a.week_shares>0?[{d:a.period_end||a.announcement_date,s:a.week_shares,a:a.week_amount}]:[]);
+    let wNav=0;
+    for(const t of dl){const nx=gX(t.d).navEx;wNav+=t.s*nx;vAt+=t.s*nx-t.a;sNavAt+=t.s*nx}
+    const nav=gN(a.announcement_date),            // reported NAV known at announcement
+      mk=gX(a.announcement_date),                 // latest NAV anchor, ex-programme
       wA=a.week_shares>0?a.week_amount/a.week_shares:0,
-      gA=grandShares>0?grandAmount/grandShares:0,  // Grand avg price
-      disc=(nav-wA)/nav*100,
-      nSh=TS-grandShares,  // Remaining shares after all buybacks
-      nNAV=(nav*TS-grandAmount)/nSh,
-      accr=nNAV-nav,
-      vc=accr*nSh,
-      roic=grandAmount>0?vc/grandAmount*100:0;
+      gA=grandShares>0?grandAmount/grandShares:0,
+      navAt=a.week_shares>0?wNav/a.week_shares:mk.navEx,   // ex-programme NAV at purchase (week avg)
+      disc=navAt>0?(1-wA/navAt)*100:0,                   // discount to NAV at purchase
+      nSh=N0-grandShares,                                // shares outstanding after buybacks
+      vc=grandShares*mk.navEx-grandAmount,               // value created today (mark-to-NAV)
+      accr=nSh>0?vc/nSh:0,                               // NAV/share uplift vs. no buybacks
+      roiAt=grandAmount>0?vAt/grandAmount*100:0,         // ROI at purchase
+      roic=grandAmount>0?vc/grandAmount*100:0,           // ROI today (mark-to-NAV)
+      grw=roic-roiAt;                                    // NAV development since purchase, pp
     r.push({
       d:a.announcement_date,
       wS:a.week_shares,wAmt:a.week_amount,wA,
-      aS:grandShares,aAmt:grandAmount,aA:gA,  // Use grand totals as "akkumuleret"
-      nav,disc,nNAV,accr,vc,nSh,roic,
+      aS:grandShares,aAmt:grandAmount,aA:gA,
+      nav,navEx:mk.navEx,navAt,disc,accr,vc,vAt,nSh,roiAt,roic,grw,
+      navAtAvg:grandShares>0?sNavAt/grandShares:0,
       mVol:a.market_volume||0,bPct:a.buyback_pct_of_volume||0,
       maxW:a.max_allowed_week||0,util:a.utilization_pct||0,
       avg20:a.avg_volume_20d||0,detail:a.daily_volume_detail||[]
@@ -216,14 +246,19 @@ function calc(){
   return r;
 }
 
+// Headline figures are marked at the LATEST NAV, even if it was published after the last buyback week
+function markNow(R){const L=NX[NX.length-1];if(!(L.from>R.d))return R;
+  const vc=R.aS*L.navEx-R.aAmt,roic=R.aAmt>0?vc/R.aAmt*100:0;
+  return {...R,nav:L.nav,navEx:L.navEx,vc,accr:R.nSh>0?vc/R.nSh:0,roic,grw:roic-R.roiAt}}
+
 function fD(n){return n.toLocaleString('da-DK')}
 function fM(n){return(n/1e6).toFixed(2)}
 function fK(n){return(n/1e3).toFixed(0)}
 
 function render(){
-  const rows=calc(),R=rows[rows.length-1],kurs=D.current_price||222,nav=R.nav,
+  const rows=calc(),R=markNow(rows[rows.length-1]),kurs=D.current_price||222,nav=R.nav,
     totMax=(D.programs||[{max_amount:D.program_max}]).reduce((s,p)=>s+p.max_amount,0),
-    pU=R.aAmt/totMax*100,dB=(nav-R.aA)/nav*100,dM=(nav-kurs)/nav*100,vPS=R.vc/R.nSh;
+    pU=R.aAmt/totMax*100,dB=(1-R.aA/R.navAtAvg)*100,dM=(nav-kurs)/nav*100,vPS=R.vc/R.nSh;
 
   document.getElementById('hNav').textContent=nav.toFixed(2);
   document.getElementById('hKrs').textContent=kurs;
@@ -231,23 +266,25 @@ function render(){
 
   // KPIs: T1 white for facts, green spectrum for value metrics
   document.getElementById('kpis').innerHTML=[
-    {l:'Tilbagekøbt',v:fD(R.aS),s:(R.aS/TS*100).toFixed(2)+'% af udstedte',c:''},
+    {l:'Tilbagekøbt',v:fD(R.aS),s:(R.aS/N0*100).toFixed(2)+'% af aktier i omløb',c:''},
     {l:'Investeret',v:fM(R.aAmt)+' mio.',s:pU.toFixed(1)+'% af ramme',c:''},
-    {l:'Gns. købskurs',v:R.aA.toFixed(2),s:dB.toFixed(1)+'% under NAV',c:''},
-    {l:'NAV-accretion',v:'+'+R.accr.toFixed(2),s:nav.toFixed(0)+' → '+R.nNAV.toFixed(2),c:'color:var(--g2)'},
-    {l:'Værdiskabelse',v:fM(R.vc)+' mio.',s:vPS.toFixed(2)+' DKK/aktie',c:'color:var(--g3)'},
-    {l:'ROIC',v:R.roic.toFixed(1)+'%',s:'Afkast/inv. krone',c:'color:var(--g4)'},
+    {l:'Gns. købskurs',v:R.aA.toFixed(2),s:dB.toFixed(1)+'% under NAV v. køb',c:''},
+    {l:'ROI v. køb',v:R.roiAt.toFixed(1)+'%',s:'Rabat fanget ved købet',c:'color:var(--g2)'},
+    {l:'NAV-udv. siden',v:(R.grw>=0?'+':'')+R.grw.toFixed(1)+' pp',s:'Ejendomme/drift efter køb',c:'color:var(--g3)'},
+    {l:'ROI i dag',v:R.roic.toFixed(1)+'%',s:'Mark-to-NAV · ikke annualiseret',c:'color:var(--g4)'},
   ].map(k=>`<div class="kpi"><div class="l">${k.l}</div><div class="v" style="${k.c}">${k.v}</div><div class="s">${k.s}</div></div>`).join('');
 
   document.getElementById('vcG').innerHTML=`
     <div class="vb a"><div class="nm">${fD(R.aS)} stk.</div><div class="lb">Tilbagekøbt til gns.</div><div class="dt">${R.aA.toFixed(2)} DKK/aktie · ${fM(R.aAmt)} mio. DKK</div></div>
     <div class="vc-ar">→</div>
-    <div class="vb b"><div class="nm" style="color:var(--g2)">+${R.accr.toFixed(2)} DKK</div><div class="lb">NAV-accretion pr. aktie</div><div class="dt">${nav.toFixed(2)} → ${R.nNAV.toFixed(2)} ved annullering</div></div>
+    <div class="vb b"><div class="nm" style="color:var(--g2)">+${R.accr.toFixed(2)} DKK</div><div class="lb">NAV-accretion pr. aktie</div><div class="dt">NAV uden tilbagekøb ${R.navEx.toFixed(2)} → ${(R.navEx+R.accr).toFixed(2)}</div></div>
     <div class="vc-ar">→</div>
-    <div class="vb c"><div class="nm" style="color:var(--g4)">${fM(R.vc)} mio.</div><div class="lb">Total værdiskabelse</div><div class="dt">${vPS.toFixed(2)} DKK/aktie · ROIC ${R.roic.toFixed(1)}%</div></div>`;
+    <div class="vb c"><div class="nm" style="color:var(--g4)">${fM(R.vc)} mio.</div><div class="lb">Total værdiskabelse</div><div class="dt">${fM(R.vAt)} mio. ved køb + ${fM(R.vc-R.vAt)} mio. NAV-udv. · ${vPS.toFixed(2)} DKK/aktie</div></div>`;
 
   document.getElementById('mn').textContent=
-    'Ny NAV = (egenkapital − købsbeløb) / (udstedte − tilbagekøbte). Værdiskabelse = (ny NAV − nuv. NAV) × '+fD(R.nSh)+' resterende aktier.';
+    'NAV uden tilbagekøb = (rapporteret NAV × aktier i omløb + beløb brugt før balancedagen) / '+fD(N0)+' (aktier i omløb før program). '+
+    'ROI v. køb måler hvert køb mod NAV kendt på handelsdagen; ROI i dag måler mod seneste NAV. Forskellen er NAV-udviklingen efter købet. '+
+    'Rapporteret NAV indeholder allerede tidligere tilbagekøbs accretion — den fjernes, så den ikke tælles dobbelt. Værdiskabelse = tilbagekøbte aktier × NAV uden tilbagekøb − købsbeløb.';
 
   // Progress bar — combined across all programs
   const progs = D.programs || [{id:1, max_amount:D.program_max}];
@@ -292,19 +329,26 @@ function render(){
     {label:'Købskurs',data:rows.map(r=>Math.round(r.wA*100)/100),borderColor:'#f8fafc',backgroundColor:'rgba(248,250,252,.04)',borderWidth:2,fill:true,tension:.3,pointRadius:2.5,pointBackgroundColor:'#f8fafc'}
   ]},options:cO({lg:{display:true,labels:{color:'#b0bac9',font:{family:'JetBrains Mono',size:10},boxWidth:10,padding:12}}})});
 
-  // Chart 2: ROIC
-  new Chart(document.getElementById('ch2'),{type:'line',data:{labels:lbl,datasets:[{
-    label:'ROIC',data:rows.map(r=>Math.round(r.roic*10)/10),
-    borderColor:'#10b981',backgroundColor:'rgba(16,185,129,.06)',borderWidth:2,fill:true,tension:.3,
-    pointRadius:2.5,pointBackgroundColor:'#10b981',pct:true
-  }]},options:cO({y:{beginAtZero:true},yt:{callback:v=>v+'%'}})});
+  // Chart 2: ROI at purchase vs. ROI today (gap = NAV development since purchase)
+  const lgO={display:true,labels:{color:'#b0bac9',font:{family:'JetBrains Mono',size:10},boxWidth:10,padding:12}};
+  new Chart(document.getElementById('ch2'),{type:'line',data:{labels:lbl,datasets:[
+    {label:'ROI i dag',data:rows.map(r=>Math.round(r.roic*10)/10),
+     borderColor:'#059669',backgroundColor:'rgba(5,150,105,.08)',borderWidth:2,fill:'+1',tension:.3,
+     pointRadius:2.5,pointBackgroundColor:'#059669',pct:true},
+    {label:'ROI v. køb',data:rows.map(r=>Math.round(r.roiAt*10)/10),
+     borderColor:'#6ee7b7',borderWidth:2,borderDash:[5,3],fill:false,tension:.3,
+     pointRadius:2,pointBackgroundColor:'#6ee7b7',pct:true}
+  ]},options:cO({y:{beginAtZero:true},yt:{callback:v=>v+'%'},lg:lgO})});
 
-  // Chart 3: Value creation
-  new Chart(document.getElementById('ch3'),{type:'line',data:{labels:lbl,datasets:[{
-    label:'Værdiskabelse',data:rows.map(r=>Math.round(r.vc)),
-    borderColor:'#059669',backgroundColor:'rgba(5,150,105,.08)',borderWidth:2,fill:true,tension:.3,
-    pointRadius:2.5,pointBackgroundColor:'#059669'
-  }]},options:cO()});
+  // Chart 3: Value creation — at purchase vs. marked to latest NAV
+  new Chart(document.getElementById('ch3'),{type:'line',data:{labels:lbl,datasets:[
+    {label:'Værdi i dag',data:rows.map(r=>Math.round(r.vc)),
+     borderColor:'#059669',backgroundColor:'rgba(5,150,105,.08)',borderWidth:2,fill:'+1',tension:.3,
+     pointRadius:2.5,pointBackgroundColor:'#059669'},
+    {label:'Værdi v. køb',data:rows.map(r=>Math.round(r.vAt)),
+     borderColor:'#6ee7b7',borderWidth:2,borderDash:[5,3],fill:false,tension:.3,
+     pointRadius:2,pointBackgroundColor:'#6ee7b7'}
+  ]},options:cO({lg:lgO})});
 
   // Chart 4: Volume — market volume (grey) vs buyback (white)
   // Skip first data point for y-axis max calc if it's a spike (>2x median)
@@ -366,10 +410,13 @@ function render(){
     {k:'aS',l:'Akk.stk'},
     {k:'aAmt',l:'Akk.DKK'},
     {k:'nav',l:'NAV'},
-    {k:'disc',l:'Rabat'},
+    {k:'navAt',l:'NAV v. køb'},
+    {k:'disc',l:'Rabat v. køb'},
     {k:'accr',l:'Accr.'},
     {k:'vc',l:'Værdi'},
-    {k:'roic',l:'ROIC'}
+    {k:'roiAt',l:'ROI v. køb'},
+    {k:'grw',l:'NAV-udv.'},
+    {k:'roic',l:'ROI i dag'}
   ];
 
   let sortCol='i', sortDir='desc'; // default: newest first
@@ -404,10 +451,13 @@ function render(){
       <td><b>${fD(r.aS)}</b></td>
       <td>${fM(r.aAmt)}M</td>
       <td>${r.nav.toFixed(2)}</td>
+      <td title="Ex-program NAV kendt på handelsdagene (vægtet)">${r.navAt.toFixed(2)}</td>
       <td style="color:var(--g1)">${r.disc.toFixed(1)}%</td>
       <td style="color:var(--g2)">+${r.accr.toFixed(2)}</td>
       <td style="color:var(--g3)"><b>${fM(r.vc)}M</b></td>
-      <td style="color:var(--g4)">${r.roic.toFixed(1)}%</td>
+      <td style="color:var(--g2)">${r.roiAt.toFixed(1)}%</td>
+      <td style="color:var(--g3)">${r.grw>=0?'+':''}${r.grw.toFixed(1)}</td>
+      <td style="color:var(--g4)"><b>${r.roic.toFixed(1)}%</b></td>
     </tr>`).join('');
   }
 

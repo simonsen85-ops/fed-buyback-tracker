@@ -50,7 +50,13 @@ NASDAQ_REFERER = (
 )
 
 # Share count (used by the dashboard for NAV-accretion calculations)
-TOTAL_SHARES = 2659442
+TOTAL_SHARES = 2659442  # issued shares incl. treasury
+
+# Shares OUTSTANDING (excl. treasury) when the buyback programmes started.
+# FED's NAV/share = equity / shares outstanding, so this — not TOTAL_SHARES —
+# is the base for "NAV without buybacks". 2,659,442 issued − 52,463 treasury
+# held before programme 1 (Q3 2025 report / AR 2025 note 19) = 2,606,979.
+SHARES_OUTSTANDING_START = 2606979
 
 # NAV history — manual anchors ("from" = report publication date).
 # New quarters are also auto-detected from fastejendom.dk (see
@@ -60,7 +66,10 @@ NAV_HISTORY = [
     {"from": "2026-02-17", "nav": 306.60, "label": "FY 2025"},
     {"from": "2026-04-22", "nav": 311.99, "label": "Q1 2026"},
     {"from": "2026-08-24", "nav": 315.42, "label": "H1 2026"},
+    {"from": "2026-10-22", "nav": 323.55, "label": "Q3 2026"},
 ]
+# Optional per entry: "period_end": "YYYY-MM-DD" (balance-sheet date the NAV
+# refers to). If omitted, the dashboard uses the last quarter-end before "from".
 NAV_SOURCE_URL = "https://fastejendom.dk/investor/aktionaer/"
 
 # Buyback programs — UPDATE when new programs are announced
@@ -261,6 +270,7 @@ def load_data() -> dict:
             return json.load(f)
     return {
         "total_shares": TOTAL_SHARES,
+        "shares_outstanding_start": SHARES_OUTSTANDING_START,
         "nav_history": NAV_HISTORY,
         "programs": PROGRAMS,
         "program_max": sum(p["max_amount"] for p in PROGRAMS),
@@ -374,6 +384,7 @@ def main():
     _auto_detect_nav(data)
     data["nav_history"] = _merged_nav_history(data)
     data["total_shares"] = TOTAL_SHARES
+    data["shares_outstanding_start"] = SHARES_OUTSTANDING_START
     data["programs"] = PROGRAMS
     data["program_max"] = sum(p["max_amount"] for p in PROGRAMS)
 
