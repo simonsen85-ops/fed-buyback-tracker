@@ -1,0 +1,32 @@
+id,adresse,postnr,by,segment,areal_m2,ejer_selskab,ejer_cvr,status,note
+1,Aldersrogade 6 C,2100,København Ø,Kontor og bolig,3644,Fast Ejendom Danmark 1 ApS,28720815,ejet,
+2,Baltorpvej 154,2750,Ballerup,Kontor og bolig,4240,Fast Ejendom Danmark 1 ApS,28720815,ejet,
+3,Baltorpvej 156,2750,Ballerup,Kontor og bolig,8236,Fast Ejendom Danmark 1 ApS,28720815,ejet,Rapporten angiver Baltorpvej 156-172 (96 boliger); kan bestå af flere matrikler
+4,Hejrevej 37,2400,København NV,Kontor og bolig,4892,Fast Ejendom Danmark 1 ApS,28720815,ejet,Rapporten angiver Hejrevej 37-39
+5,Mølledamsvej 2,3460,Birkerød,Kontor og bolig,2446,Fast Ejendom Danmark 1 ApS,28720815,ejet,
+6,Produktionsvej 12,2600,Glostrup,Kontor og bolig,1443,Fast Ejendom Danmark 1 ApS,28720815,ejet,
+7,Produktionsvej 14,2600,Glostrup,Kontor og bolig,1442,Fast Ejendom Danmark 1 ApS,28720815,ejet,
+8,Produktionsvej 24,2600,Glostrup,Kontor og bolig,1402,Fast Ejendom Danmark 1 ApS,28720815,ejet,
+9,Produktionsvej 26,2600,Glostrup,Kontor og bolig,1496,Fast Ejendom Danmark 1 ApS,28720815,ejet,
+10,Ringager 2,2605,Brøndby,Kontor og bolig,19509,Ejendomsselskabet Ringager ApS,33505396,ejet,"Rapporten angiver kun ""Ringager""; købet i 2019 omfattede Ringager 2-4 og Vallensbækvej 12 - søg alle tre"
+11,Sydmarken 42,2860,Søborg,Kontor og bolig,3006,Fast Ejendom Danmark 1 ApS,28720815,ejet,Rapporten skriver Gladsaxe; postnr 2860 hedder Søborg
+12,Ørbækvej 268,5220,Odense SØ,Kontor og bolig,2426,Fast Ejendom Danmark 1 ApS,28720815,ejet,
+13,Rådhusvej 13,2920,Charlottenlund,Kontor og bolig,505,Fast Ejendom Danmark 1 ApS,28720815,ejet,"Rapporten angiver kun ""Kontorhotel Rådhusvej""; husnummer 13 er FED's tidligere adresse - bekræft"
+14,Bredebjergvej 1,2630,Taastrup,Lager og logistik,12436,Fast Ejendom Danmark 1 ApS,28720815,ejet,
+15,Gunnar Clausens Vej 26A,8260,Viby J,Lager og logistik,3062,Fast Ejendom Danmark 1 ApS,28720815,ejet,26A-C kan være én matrikel
+16,Gunnar Clausens Vej 26B,8260,Viby J,Lager og logistik,2091,Fast Ejendom Danmark 1 ApS,28720815,ejet,26A-C kan være én matrikel
+17,Gunnar Clausens Vej 26C,8260,Viby J,Lager og logistik,1717,Fast Ejendom Danmark 1 ApS,28720815,ejet,26A-C kan være én matrikel
+18,Gunnar Clausens Vej 58,8260,Viby J,Lager og logistik,1702,Fast Ejendom Danmark 1 ApS,28720815,ejet,
+19,Handelsvej 28,5260,Odense S,Lager og logistik,8199,Fast Ejendom Danmark 1 ApS,28720815,ejet,
+20,Handelsvej 30,5260,Odense S,Lager og logistik,3289,Fast Ejendom Danmark 1 ApS,28720815,ejet,Rapporten angiver Handelsvej 30-32
+21,Hjulmagervej 6,7100,Vejle,Lager og logistik,6868,Fast Ejendom Danmark 1 ApS,28720815,ejet,
+22,Hvidelvej 19,7400,Herning,Lager og logistik,3806,Fast Ejendom Danmark 1 ApS,28720815,ejet,
+23,Jens Juuls Vej 2,8260,Viby J,Lager og logistik,5097,Fast Ejendom Danmark 1 ApS,28720815,ejet,
+24,Kærup Industrivej 1,4100,Ringsted,Lager og logistik,26405,Fast Ejendom Danmark 1 ApS,28720815,ejet,
+25,Mørupvej 9,7400,Herning,Lager og logistik,11272,Fast Ejendom Danmark 1 ApS,28720815,ejet,
+26,Sletvej 38,8310,Tranbjerg J,Lager og logistik,12375,Fast Ejendom Danmark 1 ApS,28720815,ejet,Rapporten angiver Sletvej 38-40
+27,Vesterlundvej 6,2730,Herlev,Lager og logistik,3261,Fast Ejendom Danmark 1 ApS,28720815,ejet,
+28,Rudolfsgårdsvej 9,8260,Viby J,Lager og logistik,,Fast Ejendom Danmark 1 ApS,28720815,solgt,Solgt i H1 2026 (overtaget 1. juli 2026); tjek at skøde og lån er overført/aflyst
+29,Gunnar Clausens Vej 36,8260,Viby J,Lager og logistik,,Fast Ejendom Danmark 1 ApS,28720815,solgt,Solgt i H1 2026 (overtaget 1. juli 2026)
+30,Gunnar Clausens Vej 40,8260,Viby J,Lager og logistik,,Fast Ejendom Danmark 1 ApS,28720815,solgt,Solgt i H1 2026 (overtaget 1. juli 2026)
+31,Handelsvej 21,5260,Odense S,Lager og logistik,,Fast Ejendom Danmark 1 ApS,28720815,solgt,Solgt i H1 2026 (overtaget 1. juli 2026)

@@ -134,6 +134,45 @@ Presentation (calculations above are unchanged by it):
   of market volume.
 - GoatCounter analytics is embedded in `build_html.py`.
 
+## Gæld tab (mortgage debt)
+
+The page has two tabs: Tilbagekøb (everything above) and Gæld (`#gaeld`).
+
+- **Inputs:** `data/debt_raw.csv`, `data/debt_properties.csv`,
+  `data/debt_reconciliation.json` — a tingbog extract Rasmus made offline from
+  tinglysning.dk (MitID). Regenerate with
+  `python scripts/import_debt.py <folder with fed_debt.csv, fed_debt.json, fed_properties.csv>`.
+  It keeps FED-owned attests only and replaces non-entity party names with
+  "(privatperson)": the repo and Pages are public. Never copy the raw files by hand.
+- **Config** in `scraper.py` (rewritten to `data.json["debt_config"]`):
+  `DEBT_MIX_HISTORY` (FED's reported fixed/F5/CIBOR6 split per quarter — add
+  each new report), `DEBT_NOMINAL_LATEST_M`, `DEBT_AVG_LOAN_RATE_PCT`,
+  `DEBT_BONDS`, `CIBOR6_INPUT`.
+- **Bond prices:** `sources/bonds.py` stores Nasdaq's last price for the two
+  proxy bonds once per run in `data.json["bond_prices"]` (history from
+  2026-11-04). Nasdaq's chart/download endpoint times out for these bonds — don't
+  rely on it. The bonds (DLR 4 B 2053 OA / 4 B 2053) are proxies inferred from
+  the loan terms; the tingbog doesn't name the series.
+- **CIBOR6 is a manual input** (`CIBOR6_INPUT`): Rasmus copies the 6-month
+  fixing from DFBF's information portal (his own login) about monthly. Don't
+  automate it. DLR's margin is derived per loan: rate at registration − the
+  fixing in `CIBOR6_INPUT["history"]` for that coupon period (≈0.06 pp weighted).
+  The bidrag estimate (FED's 4.06 % average − weighted coupons) is provisional
+  until the 2026H1/2026H2 fixings are added to `history`.
+- Rate sensitivity (NAV/share after tax, shown in each type's KPI card):
+  fixed = cash-flow repricing (annuity; the OA bond interest-only to `io_until`
+  2030 — an assumption), −1 pp capped at price 100 (`CALL_CAP`, callable);
+  F5 = non-callable bullet to ~1.4.2030 at par (symmetric); CIBOR6 = duration to
+  the next reset (tiny).
+- `DEBT_MIX_HISTORY` has 31.12.25, 30.06.26 and 30.09.26; 31.03.26 is missing.
+- **Model:** `scripts/debt.py` (Python, run it directly to print the model);
+  `build_html.py` injects it as `DB` and the JS only renders. Loan type is
+  derived from the registration date: no "Rentetilpasning" = fixed; 2024 =
+  CIBOR6; May/June 2025 = F5 (reset 2030). Registered principal is an upper
+  bound (repayments don't reduce the pantebrev).
+- Series colours (validated against `#141a24`): fixed `#3987e5`, F5 `#d95926`,
+  CIBOR6 `#199e70`.
+
 ## Known gaps / to check
 
 - **No fail-loud guard.** An announcement that fails to parse is skipped without

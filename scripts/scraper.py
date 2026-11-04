@@ -32,6 +32,7 @@ from sources.volume.compute import (
     compute_safe_harbour_metrics,
 )
 from sources.volume.yahoo import fetch_yahoo_current_price
+from sources.bonds import update_bond_prices
 
 
 # ============================================================
@@ -99,6 +100,77 @@ PROGRAMS = [
         "closed_on": None,
     },
 ]
+
+
+# ============================================================
+# Gæld tab — mortgage debt config (rewritten into data.json["debt_config"])
+# ============================================================
+# Loan-level data comes from the tingbog extract in data/debt_*.{csv,json}
+# (regenerate with scripts/import_debt.py). The figures below come from FED's
+# reports and are maintained by hand, like NAV_HISTORY.
+
+# FED's reported split of the debt by loan type, per balance-sheet date.
+# Add Q1 / H1 / later quarters as reports come out ("ca." whole percentages).
+DEBT_MIX_HISTORY = [
+    {"period_end": "2025-12-31", "label": "31.12.25", "base_m": 752.8,
+     "basis": "Samlet gældsportefølje inkl. aktiver bestemt for salg (Årsrapport 2025)",
+     "fixed": 24, "f5": 42, "cibor6": 34},
+    {"period_end": "2026-06-30", "label": "30.06.26", "base_m": 729.9,
+     "basis": "Samlet gældsportefølje inkl. aktiver bestemt for salg (Delårsrapport H1 2026)",
+     "fixed": 25, "f5": 40, "cibor6": 35},
+    {"period_end": "2026-09-30", "label": "30.09.26", "base_m": 649.623,
+     "basis": "Nominel prioritetsgæld (Delårsrapport 1.-3. kvt. 2026, note 3)",
+     "fixed": 21, "f5": 40, "cibor6": 39},
+]
+DEBT_NOMINAL_LATEST_M = 649.623     # Q3 2026 note 3: nominel værdi af prioritetsgæld 30.09.26
+
+# How the debt fell in 2026 so far (FED's cash-flow statement / H1 report), mio. DKK.
+# sale_debt_m: debt on the four properties sold 1 July 2026 = 15.267 extraordinary
+# repayment in H1 "i forbindelse med salg af ejendomme" + 34.667 debt on them as held
+# for sale at 30.06.26 (redeemed at takeover). Matches 86.9m price − ~37m freed.
+# Update with each report (period label + cumulative year-to-date figures).
+DEBT_FLOWS_2026 = {
+    "period": "1.-3. kvt. 2026",
+    "afdrag_m": 12.519,       # Afdrag på prioritetsgæld
+    "indfrielse_m": 89.674,   # Indfrielse af prioritetsgæld (incl. the sales-related part)
+    "sale_debt_m": 15.267 + 34.667,
+}
+DEBT_AVG_LOAN_RATE_PCT = 4.06       # Q3 2026: gennemsnitlig lånerente 1.-3. kvt. (incl. bidrag)
+DEBT_TAX_RATE = 0.22
+
+# The tingbog does not name the bonds behind FED's two fixed-rate loans. These DLR
+# 4 % 2053 series are PROXIES chosen from the loan terms (4 %, 30-year, open Sept 2024;
+# the interest-only option on Baltorpvej → the OA series).
+DEBT_BONDS = [
+    {"loan_ref": "25.09.2024-1016045407", "property": "Baltorpvej 156–172",
+     "name": "DLR 4 B 2053 OA", "isin": "DK0006355532", "orderbook_id": "TX4372156",
+     "coupon_pct": 4.0, "expiry": "2053-04-01", "repayment": "Afdragsfrihed (OA)",
+     # assumption: interest-only until 2030 (FED: ~44 % of the debt has deferred amortisation to 2030)
+     "io_until": "2030-01-01"},
+    {"loan_ref": "20.09.2024-1016027256", "property": "Kærup Industrivej 1",
+     "name": "DLR 4 B 2053", "isin": "DK0006355961", "orderbook_id": "TX4373452",
+     "coupon_pct": 4.0, "expiry": "2053-10-01", "repayment": "Annuitet"},
+]
+
+# CIBOR6 — MANUAL INPUT, Rasmus updates it monthly from DFBF's information portal
+# (his own login; not fetched automatically). Enter the latest 6-month fixing (pct)
+# and its date. FED's CIBOR6 loans reset 1 January and 1 July, so today's fixing is
+# a proxy for the next reset.
+# "history": 6M fixings that set a coupon period (DLR fixes on the 4th-last banking
+# day before 1 Jan / 1 Jul). The model derives DLR's margin per loan as
+# rate at registration − the fixing for the period it was registered in, and uses
+# 2026H1/2026H2 (if present) for the bidrag estimate (FED's 2026 average rate).
+# "margin_pp": set a number only to override the derived margin.
+CIBOR6_INPUT = {
+    "fixing_pct": 2.9467, "as_of": "2026-11-03", "source": "DFBF",
+    "history": [
+        {"date": "2023-12-22", "pct": 3.9733, "period": "2024H1"},
+        {"date": "2024-06-25", "pct": 3.7400, "period": "2024H2"},
+        # add {"date": "2025-12-23", ..., "period": "2026H1"} and
+        #     {"date": "2026-06-25", ..., "period": "2026H2"} for a firmer bidrag estimate
+    ],
+    "margin_pp": None,
+}
 
 
 # ============================================================
@@ -379,6 +451,9 @@ def main():
         data["current_price"] = price
         print(f"  Current price: {price} DKK")
 
+    print("\nFetching mortgage-bond prices (Gæld tab)...")
+    update_bond_prices(data, DEBT_BONDS)
+
     # Refresh config (in case manually edited)
     print("\nChecking NAV...")
     _auto_detect_nav(data)
@@ -387,6 +462,15 @@ def main():
     data["shares_outstanding_start"] = SHARES_OUTSTANDING_START
     data["programs"] = PROGRAMS
     data["program_max"] = sum(p["max_amount"] for p in PROGRAMS)
+    data["debt_config"] = {
+        "mix_history": DEBT_MIX_HISTORY,
+        "nominal_latest_m": DEBT_NOMINAL_LATEST_M,
+        "flows_2026": DEBT_FLOWS_2026,
+        "avg_loan_rate_pct": DEBT_AVG_LOAN_RATE_PCT,
+        "tax_rate": DEBT_TAX_RATE,
+        "bonds": DEBT_BONDS,
+        "cibor6": CIBOR6_INPUT,
+    }
 
     save_data(data)
 
