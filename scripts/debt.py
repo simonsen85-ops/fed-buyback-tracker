@@ -61,6 +61,24 @@ def _next_reset(asof: date) -> date:
     return date(asof.year, 7, 1) if asof < date(asof.year, 7, 1) else date(asof.year + 1, 1, 1)
 
 
+def _fixing_date(reset: date) -> date:
+    """DLR fixes the CIBOR6 coupon on the 4th-last Danish banking day before the reset
+    (weekdays; 24-26 and 31 December closed)."""
+    d, n = reset, 0
+    while n < 4:
+        d = date.fromordinal(d.toordinal() - 1)
+        if d.weekday() < 5 and not (d.month == 12 and d.day in (24, 25, 26, 31)):
+            n += 1
+    return d
+
+
+def _next_unfixed_reset(asof: date) -> date:
+    """First reset whose coupon is not yet known. Once the fixing for the next reset has
+    happened (late June / late December), the rate is locked until the reset after it."""
+    nxt = _next_reset(asof)
+    return _next_reset(nxt) if asof >= _fixing_date(nxt) else nxt
+
+
 def bullet_dprice(coupon_pct: float, yield_pct: float, maturity: date, asof: date, dy: float) -> float:
     """Price change per 100 of an annual-coupon bullet bond when its yield moves by dy (e.g. 0.01)."""
     times, t = [], (maturity - asof).days / 365.25
@@ -313,11 +331,12 @@ def build_model(data: dict, asof: date | None = None) -> dict:
                       "method": "Inkonvertibel, stående til ca. 1.4.2030, modelleret til kurs 100 — symmetrisk"}
     if q3:
         out = q3["amounts"]["cibor6"]
-        dur = (_next_reset(asof) - asof).days / 365.25
+        reset = _next_unfixed_reset(asof)   # rate is locked until the first reset not yet fixed
+        dur = (reset - asof).days / 365.25
         y6 = (c6_coupon or 3.0) / 100
         dp = dur / (1 + y6 / 2) * 1.0   # % price change per 1 pp
         sens["cibor6"] = {"up": per_share(-out * dp / 100), "down": per_share(out * dp / 100),
-                          "method": f"Rentetilpasses {_next_reset(asof).strftime('%d.%m.%Y')} — næsten ingen kursfølsomhed"}
+                          "method": f"Renten er låst til {reset.strftime('%d.%m.%Y')} — næsten ingen kursfølsomhed"}
 
     def ytr(base):
         if base is None:

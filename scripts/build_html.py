@@ -673,7 +673,8 @@ function renderDebt(){
   document.getElementById('dBondN').innerHTML=
     `<p>Proxy-obligationer: DLR 4 % 2053 (OA-serien for Baltorpvej); tingbogen angiver ikke serien, og *fordelingen af FED's faste gæld (ca. ${ML.pct.fixed} % af ${dn(DB.nominal_latest_m)} mio.) på de to lån er skønnet. `+
     `Stiger renten 1 pp, falder kursen op til ca. ${dn(Math.min(...F.bonds.map(b=>b.mod_duration||0)),0)}-${dn(Math.max(...F.bonds.map(b=>b.mod_duration||0)),0)} %, og NAV stiger op til ca. ${dn(F.nav_gain_per_share,1)} kr./aktie. `+
-    `Falder renten, kan FED indfri til kurs 100, så NAV-tabet er begrænset til ca. ${dn(Math.abs(F.nav_down1pp_per_share),1)} kr./aktie.</p>`;
+    `Falder renten, kan FED indfri til kurs 100, så NAV-tabet er begrænset til ca. ${dn(Math.abs(F.nav_down1pp_per_share),1)} kr./aktie.</p>`+
+    `<p>FED’s egen følsomhed (ÅR 2025 note 28): +1 pp ≈ −39,7 mio., −1 pp ≈ +22,1 mio. Vi regner med fuld omprisning og loft ved kurs 100.</p>`;
 
   // Property table
   // One row per property × loan type (summed); the individual loans sit in collapsed detail rows.

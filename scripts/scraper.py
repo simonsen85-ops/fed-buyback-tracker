@@ -145,8 +145,10 @@ DEBT_BONDS = [
     {"loan_ref": "25.09.2024-1016045407", "property": "Baltorpvej 156–172",
      "name": "DLR 4 B 2053 OA", "isin": "DK0006355532", "orderbook_id": "TX4372156",
      "coupon_pct": 4.0, "expiry": "2053-04-01", "repayment": "Afdragsfrihed (OA)",
-     # assumption: interest-only until 2030 (FED: ~44 % of the debt has deferred amortisation to 2030)
-     "io_until": "2030-01-01"},
+     # assumption: interest-only for 10 years from the Sept 2024 loan, i.e. to Oct 2034 — FED's stated
+     # policy is "10-års udsat amortisering" (AR 2025 p.63) and this pantebrev allows afdragsfrihed.
+     # Kærup's pantebrev has no afdragsfrihed option, so it stays a normal annuity.
+     "io_until": "2034-10-01"},
     {"loan_ref": "20.09.2024-1016027256", "property": "Kærup Industrivej 1",
      "name": "DLR 4 B 2053", "isin": "DK0006355961", "orderbook_id": "TX4373452",
      "coupon_pct": 4.0, "expiry": "2053-10-01", "repayment": "Annuitet"},

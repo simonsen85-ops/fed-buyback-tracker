@@ -160,10 +160,14 @@ The page has two tabs: Tilbagekøb (everything above) and Gæld (`#gaeld`).
   The bidrag estimate (FED's 4.06 % average − weighted coupons) is provisional
   until the 2026H1/2026H2 fixings are added to `history`.
 - Rate sensitivity (NAV/share after tax, shown in each type's KPI card):
-  fixed = cash-flow repricing (annuity; the OA bond interest-only to `io_until`
-  2030 — an assumption), −1 pp capped at price 100 (`CALL_CAP`, callable);
+  fixed = cash-flow repricing (Baltorpvej's OA bond interest-only to `io_until`
+  1.10.2034 = 10 years from the loan, FED's stated policy; Kærup a normal annuity,
+  its pantebrev has no afdragsfrihed), −1 pp capped at price 100 (`CALL_CAP`);
   F5 = non-callable bullet to ~1.4.2030 at par (symmetric); CIBOR6 = duration to
-  the next reset (tiny).
+  the first reset whose coupon isn't fixed yet (tiny).
+- Back-test vs AR 2025 note 28 (31.12.25 balances): +1 pp ≈ −33.5m vs FED −39.7m.
+  The gap is mostly method (FED: linear 5.28 y × debt; we reprice a full 1 pp) —
+  leave it. FED's −1 pp (+22.1m) lets the bonds trade above 100; we cap at 100.
 - `DEBT_MIX_HISTORY` has 31.12.25, 30.06.26 and 30.09.26; 31.03.26 is missing.
 - **Model:** `scripts/debt.py` (Python, run it directly to print the model);
   `build_html.py` injects it as `DB` and the JS only renders. Loan type is
