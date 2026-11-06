@@ -376,7 +376,7 @@ function render(){
   document.getElementById('kpis').innerHTML=[
     {l:'Andel tilbagekøbt',v:(R.aS/N0*100).toFixed(2)+'%',s:'af aktier i omløb før program',c:''},
     {l:'Gns. købskurs',v:R.aA.toFixed(2),s:dB.toFixed(1)+'% under NAV v. køb',c:''},
-    {l:'ROI v. køb',v:R.roiAt.toFixed(1)+'%',s:'Værdi skabt pr. investeret krone, målt ved købet',c:'color:var(--g2)'},
+    {l:'ROI v. køb',v:R.roiAt.toFixed(1)+'%',s:'målt ved køb',c:'color:var(--g2)'},
     {l:'Afkast på næste krone',v:((nav/kurs-1)*100).toFixed(1)+'%',s:'vs. ~'+DEBT_AT.toFixed(1).replace('.',',')+'% efter skat ved gældsnedbringelse',c:'color:var(--g4)'},
   ].map(k=>`<div class="kpi"><div class="l">${k.l}</div><div class="v" style="${k.c}">${k.v}</div><div class="s">${k.s}</div></div>`).join('');
 
