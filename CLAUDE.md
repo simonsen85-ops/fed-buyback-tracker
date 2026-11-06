@@ -128,17 +128,17 @@ All logic is JavaScript inside `build_html.py`.
 
 Presentation (calculations above are unchanged by it):
 
-- **Show each number once.** KPI bar: only the two decision cards, ROI v.
-  køb (how past purchases did) and Afkast på næste krone (whether to keep
-  buying vs. paying down debt), in a two-column variant (`.kpis.k2`; the Gæld
-  tab keeps the six-column `.kpis`). Shares, amount, average price and value
-  created live in the value boxes, programme usage in the progress bar.
-- Value boxes ("Værdiskabelse ved annullering", Rasmus prefers the box flow):
-  shares bought (with amount, avg price, % of shares, discount to NAV v. køb)
-  → value per share outstanding today (kr./aktie) → Værdi skabt v. køb (mio.),
-  plus a methodology note explaining NAV uden tilbagekøb and why earlier
-  buybacks' accretion is removed. The value boxes use Danish decimal commas;
-  the rest of the page still uses points.
+- **Show each number once.** "Nøgletal" panel (titled like the value boxes):
+  four cards in `.kpis.k4` (the Gæld tab keeps the six-column `.kpis`):
+  Andel tilbagekøbt (% of shares outstanding before the programme), Gns.
+  købskurs (with % under NAV v. køb), ROI v. køb and Afkast på næste krone
+  (vs. paying down debt). Programme usage lives in the progress bar.
+- Value boxes ("Værdiskabelse ved annullering"; Rasmus prefers the box flow):
+  shares bought (and the amount paid) → value per share outstanding today
+  (kr./aktie) → Værdi skabt v. køb (mio.), plus a methodology note
+  explaining NAV uden tilbagekøb and why earlier buybacks' accretion is
+  removed. The value boxes use Danish decimal commas; the rest of the page
+  still uses points.
 - Weekly table: Dato, Købt, Gns. kurs, Beløb, NAV v. køb, Afkast pr. krone,
   Markedsvolumen, Udnyttelse (Safe Harbour utilisation), Akk. investeret,
   Værdi skabt (cumulative value at purchase). The last row's Værdi skabt must

@@ -81,11 +81,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--t4);border:1px solid var(--t4);border-radius:4px;overflow:hidden;margin-bottom:16px}
 @media(max-width:900px){.kpis{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:500px){.kpis{grid-template-columns:repeat(2,1fr)}}
-/* Buyback tab: two decision cards only (the value boxes below hold the rest) */
-.kpis.k2{grid-template-columns:repeat(2,1fr)}
-.kpis.k2 .kpi{padding:14px 18px}
-.kpis.k2 .kpi .v{font-size:1.6rem}
-@media(max-width:500px){.kpis.k2{grid-template-columns:1fr}}
+/* Buyback tab: four key-figure cards inside a titled panel (the value boxes hold the rest) */
+.kpis.k4{grid-template-columns:repeat(4,1fr);margin-bottom:0}
+.kpis.k4 .kpi{padding:14px 16px}
+.kpis.k4 .kpi .v{font-size:1.4rem}
+@media(max-width:900px){.kpis.k4{grid-template-columns:repeat(2,1fr)}}
 .kpi{background:var(--bg2);padding:12px 14px}
 .kpi .l{font-size:.65rem;color:var(--t2);text-transform:uppercase;letter-spacing:.7px;font-weight:500;margin-bottom:6px}
 .kpi .v{font-size:1.2rem;font-weight:700;line-height:1}
@@ -207,7 +207,10 @@ tr:hover td{background:rgba(16,185,129,.02)}
 </nav>
 
 <section id="tab-tilbagekob" class="tabp" role="tabpanel">
-<div class="kpis k2" id="kpis"></div>
+<div class="vc">
+  <div class="sh">Nøgletal</div>
+  <div class="kpis k4" id="kpis"></div>
+</div>
 
 <div class="vc">
   <div class="sh">Værdiskabelse ved annullering</div>
@@ -368,9 +371,11 @@ function render(){
   document.getElementById('hKrs').textContent=kurs;
   document.getElementById('hRab').textContent=dM.toFixed(1)+'%';
 
-  // KPIs: only the two decision figures — how past purchases did, and whether to keep buying.
-  // Everything else (shares, amount, avg price, value created) is in the value boxes below.
+  // Key figures: share bought, price paid vs. NAV, and the two decision figures (past
+  // purchases, next krone). Shares, amount and value created are in the value boxes below.
   document.getElementById('kpis').innerHTML=[
+    {l:'Andel tilbagekøbt',v:(R.aS/N0*100).toFixed(2)+'%',s:'af aktier i omløb før program',c:''},
+    {l:'Gns. købskurs',v:R.aA.toFixed(2),s:dB.toFixed(1)+'% under NAV v. køb',c:''},
     {l:'ROI v. køb',v:R.roiAt.toFixed(1)+'%',s:'Værdi skabt pr. investeret krone, målt ved købet',c:'color:var(--g2)'},
     {l:'Afkast på næste krone',v:((nav/kurs-1)*100).toFixed(1)+'%',s:'vs. ~'+DEBT_AT.toFixed(1).replace('.',',')+'% efter skat ved gældsnedbringelse',c:'color:var(--g4)'},
   ].map(k=>`<div class="kpi"><div class="l">${k.l}</div><div class="v" style="${k.c}">${k.v}</div><div class="s">${k.s}</div></div>`).join('');
@@ -379,7 +384,7 @@ function render(){
   // property performance, not a buyback effect, and is deliberately not shown.
   const dk=(n,d)=>n.toLocaleString('da-DK',{minimumFractionDigits:d,maximumFractionDigits:d});
   document.getElementById('vcG').innerHTML=`
-    <div class="vb a"><div class="nm">${fD(R.aS)} stk.</div><div class="lb">Tilbagekøbt</div><div class="dt">${dk(R.aAmt/1e6,2)} mio. kr. til gns. ${dk(R.aA,2)} kr./aktie<br>${dk(R.aS/N0*100,2)} % af aktierne · ${dk(dB,1)} % under NAV v. køb</div></div>
+    <div class="vb a"><div class="nm">${fD(R.aS)} stk.</div><div class="lb">Tilbagekøbt</div><div class="dt">for ${dk(R.aAmt/1e6,2)} mio. kr.</div></div>
     <div class="vc-ar">→</div>
     <div class="vb b"><div class="nm" style="color:var(--g2)">+${dk(vPS,2)} kr./aktie</div><div class="lb">Pr. aktie i omløb</div><div class="dt">${dk(R.vAt/1e6,2)} mio. / ${fD(R.nSh)} aktier i omløb</div></div>
     <div class="vc-ar">→</div>
