@@ -81,6 +81,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:1px;background:var(--t4);border:1px solid var(--t4);border-radius:4px;overflow:hidden;margin-bottom:16px}
 @media(max-width:900px){.kpis{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:500px){.kpis{grid-template-columns:repeat(2,1fr)}}
+/* Buyback tab: two decision cards only (the value boxes below hold the rest) */
+.kpis.k2{grid-template-columns:repeat(2,1fr)}
+.kpis.k2 .kpi{padding:14px 18px}
+.kpis.k2 .kpi .v{font-size:1.6rem}
+@media(max-width:500px){.kpis.k2{grid-template-columns:1fr}}
 .kpi{background:var(--bg2);padding:12px 14px}
 .kpi .l{font-size:.65rem;color:var(--t2);text-transform:uppercase;letter-spacing:.7px;font-weight:500;margin-bottom:6px}
 .kpi .v{font-size:1.2rem;font-weight:700;line-height:1}
@@ -91,7 +96,17 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 /* VALUE CREATION */
 .vc{background:var(--bg2);border:1px solid var(--t4);border-radius:4px;padding:14px 16px;margin-bottom:16px}
-.vc-n{font-size:.7rem;color:var(--t2);line-height:1.6}
+.vc-flow{display:grid;grid-template-columns:1fr 30px 1fr 30px 1fr;gap:8px;align-items:stretch}
+@media(max-width:700px){.vc-flow{grid-template-columns:1fr}.vc-ar{transform:rotate(90deg)}}
+.vb{border-radius:4px;padding:16px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;width:100%}
+.vb.a{background:rgba(248,250,252,.03);border:1px solid var(--t4)}
+.vb.b{background:rgba(52,211,153,.04);border:1px solid rgba(52,211,153,.12)}
+.vb.c{background:rgba(5,150,105,.07);border:1px solid rgba(5,150,105,.2)}
+.vb .nm{font-size:1.3rem;font-weight:700}
+.vb .lb{font-size:.63rem;color:var(--t2);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+.vb .dt{font-size:.7rem;color:var(--t2);margin-top:6px;line-height:1.5}
+.vc-ar{font-size:1rem;color:var(--t3);display:flex;align-items:center;justify-content:center}
+.vc-n{font-size:.67rem;color:var(--t3);margin-top:10px;line-height:1.5;padding-top:10px;border-top:1px solid var(--t4)}
 
 /* PROGRESS */
 .prog{background:var(--bg2);border:1px solid var(--t4);border-radius:4px;padding:14px 16px;margin-bottom:16px}
@@ -192,10 +207,11 @@ tr:hover td{background:rgba(16,185,129,.02)}
 </nav>
 
 <section id="tab-tilbagekob" class="tabp" role="tabpanel">
-<div class="kpis" id="kpis"></div>
+<div class="kpis k2" id="kpis"></div>
 
 <div class="vc">
-  <div class="sh">Sådan måles værdien</div>
+  <div class="sh">Værdiskabelse ved annullering</div>
+  <div class="vc-flow" id="vcG"></div>
   <div class="vc-n" id="mn"></div>
 </div>
 
@@ -352,18 +368,23 @@ function render(){
   document.getElementById('hKrs').textContent=kurs;
   document.getElementById('hRab').textContent=dM.toFixed(1)+'%';
 
-  // KPIs: T1 white for facts, green spectrum for value metrics
+  // KPIs: only the two decision figures — how past purchases did, and whether to keep buying.
+  // Everything else (shares, amount, avg price, value created) is in the value boxes below.
   document.getElementById('kpis').innerHTML=[
-    {l:'Tilbagekøbt',v:fD(R.aS),s:(R.aS/N0*100).toFixed(2)+'% af aktier i omløb',c:''},
-    {l:'Investeret',v:fM(R.aAmt)+' mio.',s:pU.toFixed(1)+'% af ramme',c:''},
-    {l:'Gns. købskurs',v:R.aA.toFixed(2),s:dB.toFixed(1)+'% under NAV v. køb',c:''},
-    {l:'ROI v. køb',v:R.roiAt.toFixed(1)+'%',s:'Rabat fanget ved købet',c:'color:var(--g2)'},
-    {l:'Værdi skabt v. køb',v:fM(R.vAt)+' mio.',s:'+'+vPS.toFixed(2)+' kr. pr. aktie i omløb',c:'color:var(--g3)'},
+    {l:'ROI v. køb',v:R.roiAt.toFixed(1)+'%',s:'Værdi skabt pr. investeret krone, målt ved købet',c:'color:var(--g2)'},
     {l:'Afkast på næste krone',v:((nav/kurs-1)*100).toFixed(1)+'%',s:'vs. ~'+DEBT_AT.toFixed(1).replace('.',',')+'% efter skat ved gældsnedbringelse',c:'color:var(--g4)'},
   ].map(k=>`<div class="kpi"><div class="l">${k.l}</div><div class="v" style="${k.c}">${k.v}</div><div class="s">${k.s}</div></div>`).join('');
 
-  // Methodology note. Value is measured AT PURCHASE only: NAV development after
-  // purchase is property performance, not a buyback effect, and is deliberately not shown.
+  // Value box: value created AT PURCHASE only. NAV development after purchase is
+  // property performance, not a buyback effect, and is deliberately not shown.
+  const dk=(n,d)=>n.toLocaleString('da-DK',{minimumFractionDigits:d,maximumFractionDigits:d});
+  document.getElementById('vcG').innerHTML=`
+    <div class="vb a"><div class="nm">${fD(R.aS)} stk.</div><div class="lb">Tilbagekøbt</div><div class="dt">${dk(R.aAmt/1e6,2)} mio. kr. til gns. ${dk(R.aA,2)} kr./aktie<br>${dk(R.aS/N0*100,2)} % af aktierne · ${dk(dB,1)} % under NAV v. køb</div></div>
+    <div class="vc-ar">→</div>
+    <div class="vb b"><div class="nm" style="color:var(--g2)">+${dk(vPS,2)} kr./aktie</div><div class="lb">Pr. aktie i omløb</div><div class="dt">${dk(R.vAt/1e6,2)} mio. / ${fD(R.nSh)} aktier i omløb</div></div>
+    <div class="vc-ar">→</div>
+    <div class="vb c"><div class="nm" style="color:var(--g4)">${dk(R.vAt/1e6,2)} mio.</div><div class="lb">Værdi skabt v. køb</div><div class="dt">Købte aktier × NAV v. køb − købsbeløb</div></div>`;
+
   document.getElementById('mn').textContent=
     'NAV uden tilbagekøb = (rapporteret NAV × aktier i omløb + beløb brugt før balancedagen) / '+fD(N0)+' (aktier i omløb før program). '+
     'Rapporteret NAV indeholder allerede tidligere tilbagekøbs accretion — den fjernes, så den ikke tælles dobbelt. '+

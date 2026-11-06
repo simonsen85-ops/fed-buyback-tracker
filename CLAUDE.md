@@ -95,7 +95,7 @@ buybacks a better use than the alternative? Everything is measured at
 purchase.
 
 **NAV development after purchase is deliberately not shown anywhere** — not
-in the KPI cards, the methodology note, the weekly table or the charts. It is
+in the KPI cards, the value box, the weekly table or the charts. It is
 property performance, not a buyback effect: every FED share got it. Rasmus
 removed the "today" figures (ROI i dag, total incl. NAV development) on
 purpose; don't add them back.
@@ -121,24 +121,28 @@ All logic is JavaScript inside `build_html.py`.
   `markNow()` re-marks them to the latest NAV. None of these reach the page.
   `markNow()` is still needed: it supplies the latest reported NAV (header
   and Afkast på næste krone).
-- **Per share** (subtitle of the Værdi skabt v. køb card) = value created at
-  purchase (`vAt`) / shares outstanding today (`nSh` = N0 − shares bought).
+- **Per share** (value box) = value created at purchase (`vAt`) / shares
+  outstanding today (`nSh` = N0 − shares bought).
 - **Afkast pr. krone** (per week) = NAV v. køb / avg price − 1 (`aPK()`).
   **Afkast på næste krone** = reported NAV / current price − 1.
 
 Presentation (calculations above are unchanged by it):
 
-- KPI cards: Tilbagekøbt, Investeret, Gns. købskurs, ROI v. køb, Værdi skabt
-  v. køb, Afkast på næste krone.
-- "Sådan måles værdien": a text-only methodology note under the KPI cards
-  (NAV uden tilbagekøb, why earlier buybacks' accretion is removed, how value
-  and value per share are measured, why NAV development is left out). It
-  replaced the old three-box value flow, which only repeated the KPI cards:
-  show each number once.
+- **Show each number once.** KPI bar: only the two decision cards, ROI v.
+  køb (how past purchases did) and Afkast på næste krone (whether to keep
+  buying vs. paying down debt), in a two-column variant (`.kpis.k2`; the Gæld
+  tab keeps the six-column `.kpis`). Shares, amount, average price and value
+  created live in the value boxes, programme usage in the progress bar.
+- Value boxes ("Værdiskabelse ved annullering", Rasmus prefers the box flow):
+  shares bought (with amount, avg price, % of shares, discount to NAV v. køb)
+  → value per share outstanding today (kr./aktie) → Værdi skabt v. køb (mio.),
+  plus a methodology note explaining NAV uden tilbagekøb and why earlier
+  buybacks' accretion is removed. The value boxes use Danish decimal commas;
+  the rest of the page still uses points.
 - Weekly table: Dato, Købt, Gns. kurs, Beløb, NAV v. køb, Afkast pr. krone,
   Markedsvolumen, Udnyttelse (Safe Harbour utilisation), Akk. investeret,
   Værdi skabt (cumulative value at purchase). The last row's Værdi skabt must
-  equal the Værdi skabt v. køb card.
+  equal the Værdi skabt v. køb value box.
 - Charts: Købskurs vs. NAV; Afkast pr. krone (weekly bars vs. the dashed
   3.2 % line); Værdi skabt v. køb (cumulative); Udnyttelse af Safe
   Harbour-loft (weekly `utilization_pct` = shares bought / max allowed, where
