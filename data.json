@@ -30,7 +30,7 @@
   "program_max": 30000000,
   "program_start": "2025-10-24",
   "program_end": "2026-10-23",
-  "last_page_index": 158,
+  "last_page_index": 159,
   "announcements": [
     {
       "announcement_date": "2025-10-31",
@@ -4287,10 +4287,73 @@
       "avg_volume_20d": 1671,
       "buyback_pct_of_volume": 22.2,
       "utilization_pct": 98.9
+    },
+    {
+      "uid": "fed-fed-page159",
+      "announcement_date": "2026-11-05",
+      "source": "fastejendom",
+      "source_url": "https://fastejendom.dk/aktietilbagekoebsprogram-159/",
+      "period_start": "2026-11-02",
+      "period_end": "2026-11-05",
+      "week_shares": 780,
+      "week_amount": 181810,
+      "week_avg_price": 233.09,
+      "acc_shares": 6712,
+      "acc_amount": 1539632,
+      "program_id": null,
+      "daily_transactions": [
+        {
+          "date": "2026-11-02",
+          "shares": 425,
+          "price": 234.0,
+          "amount": 99450
+        },
+        {
+          "date": "2026-11-05",
+          "shares": 355,
+          "price": 232.0,
+          "amount": 82360
+        }
+      ],
+      "market_volume": 2352,
+      "max_allowed_week": 1567,
+      "daily_volume_detail": [
+        {
+          "date": "2026-11-02",
+          "day_volume": 562,
+          "avg_20d": 1715,
+          "max_allowed": 429,
+          "source": "nasdaq"
+        },
+        {
+          "date": "2026-11-03",
+          "day_volume": 43,
+          "avg_20d": 1631,
+          "max_allowed": 408,
+          "source": "nasdaq"
+        },
+        {
+          "date": "2026-11-04",
+          "day_volume": 50,
+          "avg_20d": 1492,
+          "max_allowed": 373,
+          "source": "nasdaq"
+        },
+        {
+          "date": "2026-11-05",
+          "day_volume": 1697,
+          "avg_20d": 1430,
+          "max_allowed": 357,
+          "source": "nasdaq"
+        }
+      ],
+      "avg_volume_20d": 1567,
+      "buyback_pct_of_volume": 33.2,
+      "utilization_pct": 49.8
     }
   ],
-  "last_updated": "2026-11-05T22:12:38.097086+00:00",
-  "current_price": 232.0,
+  "last_updated": "2026-11-06T11:53:27.803341+00:00",
+  "current_price": 230.0,
   "programs": [
     {
       "id": 1,
@@ -4331,6 +4394,11 @@
         "date": "2026-11-05",
         "price": 98.4,
         "nasdaq_ts": "2026-11-05 17:00:00 CET"
+      },
+      {
+        "date": "2026-11-06",
+        "price": 98.4,
+        "nasdaq_ts": ""
       }
     ],
     "DK0006355961": [
@@ -4343,6 +4411,11 @@
         "date": "2026-11-05",
         "price": 99.0,
         "nasdaq_ts": "2026-11-05 17:00:00 CET"
+      },
+      {
+        "date": "2026-11-06",
+        "price": 99.0,
+        "nasdaq_ts": ""
       }
     ]
   },
