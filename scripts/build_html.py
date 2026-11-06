@@ -83,7 +83,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 @media(max-width:500px){.kpis{grid-template-columns:repeat(2,1fr)}}
 /* Buyback tab: four key-figure cards inside a titled panel (the value boxes hold the rest) */
 .kpis.k4{grid-template-columns:repeat(4,1fr);margin-bottom:0}
-.kpis.k4 .kpi{padding:14px 16px}
+.kpis.k4 .kpi{padding:14px 16px;text-align:center}
 .kpis.k4 .kpi .v{font-size:1.4rem}
 @media(max-width:900px){.kpis.k4{grid-template-columns:repeat(2,1fr)}}
 .kpi{background:var(--bg2);padding:12px 14px}
