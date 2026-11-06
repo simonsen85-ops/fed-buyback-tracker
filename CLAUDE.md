@@ -91,10 +91,14 @@ commercial distributors (GlobeNewswire, Cision) last.
 ## Value model (dashboard)
 
 The dashboard judges capital-allocation decisions: was each krone spent on
-buybacks a better use than the alternative? NAV development after a purchase
-is property performance, not a buyback effect, so it appears only in the
-value box ("Værdiskabelse ved annullering"), never in the KPI cards, the
-weekly table or the charts.
+buybacks a better use than the alternative? Everything is measured at
+purchase.
+
+**NAV development after purchase is deliberately not shown anywhere** — not
+in the KPI cards, the value box, the weekly table or the charts. It is
+property performance, not a buyback effect: every FED share got it. Rasmus
+removed the "today" figures (ROI i dag, total incl. NAV development) on
+purpose; don't add them back.
 
 The alternative is paying down debt: ~3.2 % = FED's average loan rate of
 4.06 % (Q3 2026 report) after 22 % tax. It is the `DEBT_AT` constant in
@@ -112,12 +116,13 @@ All logic is JavaScript inside `build_html.py`.
   `period_end`).
 - **ROI at purchase (`roiAt`):** each trade valued at the `navEx` known on the
   trade date, minus the price paid. This is the discount captured.
-- **ROI today (`roic`):** all shares bought × latest `navEx` − amount paid.
-  The headline is marked to the latest NAV even if it was published after the
-  last buyback week (`markNow`).
-- **NAV development (`grw`)** = ROI today − ROI at purchase, in pp. This is
-  growth every FED share got, not value created by the buyback itself.
-- Accretion per share = value created / shares outstanding after buybacks.
+- **Not displayed:** `calc()` still computes `vc`/`roic` (all shares × latest
+  `navEx` − amount paid), `grw` (= `roic` − `roiAt`) and `accr`, and
+  `markNow()` re-marks them to the latest NAV. None of these reach the page.
+  `markNow()` is still needed: it supplies the latest reported NAV (header
+  and Afkast på næste krone).
+- **Per share** (value box) = value created at purchase (`vAt`) / shares
+  outstanding today (`nSh` = N0 − shares bought).
 - **Afkast pr. krone** (per week) = NAV v. køb / avg price − 1 (`aPK()`).
   **Afkast på næste krone** = reported NAV / current price − 1.
 
@@ -125,13 +130,19 @@ Presentation (calculations above are unchanged by it):
 
 - KPI cards: Tilbagekøbt, Investeret, Gns. købskurs, ROI v. køb, Værdi skabt
   v. køb, Afkast på næste krone.
+- Value box: shares bought → value per share outstanding today (kr./aktie)
+  → Værdi skabt v. køb (mio.), plus a methodology note explaining NAV uden
+  tilbagekøb and why earlier buybacks' accretion is removed. The value box
+  uses Danish decimal commas; the rest of the page still uses points.
 - Weekly table: Dato, Købt, Gns. kurs, Beløb, NAV v. køb, Afkast pr. krone,
-  Udnyttelse (Safe Harbour utilisation), Akk. investeret, Værdi skabt
-  (cumulative value at purchase). The last row's Værdi skabt must equal the
-  Værdi skabt v. køb card.
+  Markedsvolumen, Udnyttelse (Safe Harbour utilisation), Akk. investeret,
+  Værdi skabt (cumulative value at purchase). The last row's Værdi skabt must
+  equal the Værdi skabt v. køb card and the value box.
 - Charts: Købskurs vs. NAV; Afkast pr. krone (weekly bars vs. the dashed
-  3.2 % line); Værdi skabt v. køb (cumulative); trading volume; buyback as %
-  of market volume.
+  3.2 % line); Værdi skabt v. køb (cumulative); Udnyttelse af Safe
+  Harbour-loft (weekly `utilization_pct` = shares bought / max allowed, where
+  max = 25 % of the 20-day average daily volume × trading days; y-axis fixed
+  0–100 %, dashed line at 100 %); buyback as % of market volume.
 - GoatCounter analytics is embedded in `build_html.py`.
 
 ## Gæld tab (mortgage debt)

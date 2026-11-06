@@ -221,7 +221,7 @@ tr:hover td{background:rgba(16,185,129,.02)}
   <div class="chc"><h3>Købskurs vs. NAV <span>— DKK/aktie</span></h3><div class="chw"><canvas id="ch1"></canvas></div></div>
   <div class="chc"><h3>Afkast pr. krone <span>— ugentlig, %</span></h3><div class="chw"><canvas id="ch2"></canvas></div></div>
   <div class="chc"><h3>Værdi skabt v. køb <span>— akkumuleret DKK</span></h3><div class="chw"><canvas id="ch3"></canvas></div></div>
-  <div class="chc"><h3>Handelsvolumen <span>— tilbagekøb vs. marked</span></h3><div class="chw"><canvas id="ch4"></canvas></div></div>
+  <div class="chc"><h3>Udnyttelse af Safe Harbour-loft <span>— ugentlig, % af maks. tilladt</span></h3><div class="chw"><canvas id="ch4"></canvas></div></div>
   <div class="chc" style="grid-column:1/-1"><h3>Tilbagekøb som % af markedsvolumen <span>— ugentlig</span></h3><div class="chw" style="height:200px"><canvas id="ch5"></canvas></div></div>
 </div>
 
@@ -229,7 +229,7 @@ tr:hover td{background:rgba(16,185,129,.02)}
   <div class="sh">Ugentligt køb og likviditet</div>
   <div class="ts"><table id="tbl"><thead><tr>
     <th>Dato</th><th>Købt</th><th>Gns. kurs</th><th>Beløb</th><th>NAV v. køb</th>
-    <th>Afkast pr. krone</th><th>Udnyttelse</th><th>Akk. investeret</th><th>Værdi skabt</th>
+    <th>Afkast pr. krone</th><th>Markedsvolumen</th><th>Udnyttelse</th><th>Akk. investeret</th><th>Værdi skabt</th>
   </tr></thead><tbody id="tb"></tbody></table></div>
 </div>
 </section>
@@ -357,7 +357,7 @@ const DEBT_AT=3.2;
 function render(){
   const rows=calc(),R=markNow(rows[rows.length-1]),kurs=D.current_price||222,nav=R.nav,
     totMax=(D.programs||[{max_amount:D.program_max}]).reduce((s,p)=>s+p.max_amount,0),
-    pU=R.aAmt/totMax*100,dB=(1-R.aA/R.navAtAvg)*100,dM=(nav-kurs)/nav*100,vPS=R.vc/R.nSh;
+    pU=R.aAmt/totMax*100,dB=(1-R.aA/R.navAtAvg)*100,dM=(nav-kurs)/nav*100,vPS=R.vAt/R.nSh;
 
   document.getElementById('hNav').textContent=nav.toFixed(2);
   document.getElementById('hKrs').textContent=kurs;
@@ -373,17 +373,21 @@ function render(){
     {l:'Afkast på næste krone',v:((nav/kurs-1)*100).toFixed(1)+'%',s:'vs. ~'+DEBT_AT.toFixed(1).replace('.',',')+'% efter skat ved gældsnedbringelse',c:'color:var(--g4)'},
   ].map(k=>`<div class="kpi"><div class="l">${k.l}</div><div class="v" style="${k.c}">${k.v}</div><div class="s">${k.s}</div></div>`).join('');
 
+  // Value box: value created AT PURCHASE only. NAV development after purchase is
+  // property performance, not a buyback effect, and is deliberately not shown.
+  const dk=(n,d)=>n.toLocaleString('da-DK',{minimumFractionDigits:d,maximumFractionDigits:d});
   document.getElementById('vcG').innerHTML=`
     <div class="vb a"><div class="nm">${fD(R.aS)} stk.</div><div class="lb">Tilbagekøbt til gns.</div><div class="dt">${R.aA.toFixed(2)} DKK/aktie · ${fM(R.aAmt)} mio. DKK</div></div>
     <div class="vc-ar">→</div>
-    <div class="vb b"><div class="nm" style="color:var(--g2)">+${R.accr.toFixed(2)} DKK</div><div class="lb">NAV-accretion pr. aktie</div><div class="dt">NAV uden tilbagekøb ${R.navEx.toFixed(2)} → ${(R.navEx+R.accr).toFixed(2)}</div></div>
+    <div class="vb b"><div class="nm" style="color:var(--g2)">+${dk(vPS,2)} kr./aktie</div><div class="lb">Pr. aktie i omløb</div><div class="dt">${dk(R.vAt/1e6,2)} mio. / ${fD(R.nSh)} aktier i omløb</div></div>
     <div class="vc-ar">→</div>
-    <div class="vb c"><div class="nm" style="color:var(--g4)">${fM(R.vc)} mio.</div><div class="lb">Total værdiskabelse</div><div class="dt">${fM(R.vAt)} mio. ved køb + ${fM(R.vc-R.vAt)} mio. NAV-udv. · ${vPS.toFixed(2)} DKK/aktie</div></div>`;
+    <div class="vb c"><div class="nm" style="color:var(--g4)">${dk(R.vAt/1e6,2)} mio.</div><div class="lb">Værdi skabt v. køb</div><div class="dt">ROI v. køb ${dk(R.roiAt,1)} % af ${dk(R.aAmt/1e6,2)} mio. investeret</div></div>`;
 
   document.getElementById('mn').textContent=
     'NAV uden tilbagekøb = (rapporteret NAV × aktier i omløb + beløb brugt før balancedagen) / '+fD(N0)+' (aktier i omløb før program). '+
-    'ROI v. køb måler hvert køb mod NAV kendt på handelsdagen; ROI i dag måler mod seneste NAV. Forskellen er NAV-udviklingen efter købet. '+
-    'Rapporteret NAV indeholder allerede tidligere tilbagekøbs accretion — den fjernes, så den ikke tælles dobbelt. Værdiskabelse = tilbagekøbte aktier × NAV uden tilbagekøb − købsbeløb.';
+    'Rapporteret NAV indeholder allerede tidligere tilbagekøbs accretion — den fjernes, så den ikke tælles dobbelt. '+
+    'Værdi skabt v. køb = tilbagekøbte aktier × NAV uden tilbagekøb kendt på handelsdagen − købsbeløb; pr. aktie fordeles den på de '+fD(R.nSh)+' aktier i omløb i dag. '+
+    'NAV-udvikling efter købet er ejendommenes afkast, ikke tilbagekøbets, og indgår derfor ikke.';
 
   // Progress bar — combined across all programs
   const progs = D.programs || [{id:1, max_amount:D.program_max}];
@@ -444,29 +448,17 @@ function render(){
      pointRadius:2.5,pointBackgroundColor:'#10b981'}
   ]},options:cO()});
 
-  // Chart 4: Volume — market volume (grey) vs buyback (white)
-  // Skip first data point for y-axis max calc if it's a spike (>2x median)
+  // Chart 4: Safe Harbour utilisation — shares bought as % of the max allowed
+  // (25 % of 20-day average daily volume × trading days), same colours as the table
   const hasMktVol = rows.some(r=>r.mVol>0);
-  const volData = rows.map(r=>r.mVol);
-  const buyData = rows.map(r=>r.wS);
-  const ch4datasets = [{
-    label:'Tilbagekøbt',
-    data:buyData,backgroundColor:'rgba(248,250,252,.25)',borderColor:'rgba(248,250,252,.4)',
-    borderWidth:1,borderRadius:2
-  }];
-  if(hasMktVol){
-    ch4datasets.unshift({
-      label:'Markedsvolumen',
-      data:volData,backgroundColor:'rgba(176,186,201,.1)',borderColor:'rgba(176,186,201,.2)',
-      borderWidth:1,borderRadius:2
-    });
-  }
-  // Calculate a sensible y-max excluding outlier first week
-  const allVols = hasMktVol ? volData.slice(1) : buyData.slice(1);
-  const sugMax = Math.max(...allVols) * 1.2;
-  new Chart(document.getElementById('ch4'),{type:'bar',data:{labels:lbl,datasets:ch4datasets},
-    options:cO({y:{beginAtZero:true,suggestedMax:sugMax>0?sugMax:undefined},
-      lg:{display:hasMktVol,labels:{color:'#b0bac9',font:{family:'JetBrains Mono',size:10},boxWidth:10,padding:12}}})});
+  const utilCol=u=>u>100?'rgba(239,68,68,.6)':u>80?'rgba(16,185,129,.55)':u>50?'rgba(245,158,11,.6)':'rgba(239,68,68,.6)';
+  new Chart(document.getElementById('ch4'),{type:'bar',data:{labels:lbl,datasets:[
+    {label:'Udnyttelse',data:rows.map(r=>r.util>0?r.util:null),
+     backgroundColor:rows.map(r=>utilCol(r.util)),borderColor:rows.map(r=>utilCol(r.util).replace(/[\d.]+\)$/,'0.9)')),
+     borderWidth:1,borderRadius:2,pct:true,order:2},
+    {label:'Loft (100 %)',data:rows.map(()=>100),type:'line',
+     borderColor:'#f59e0b',borderWidth:1.5,borderDash:[8,4],pointRadius:0,fill:false,pct:true,order:1}
+  ]},options:cO({y:{min:0,max:100},yt:{callback:v=>v+'%',stepSize:20},lg:lgO})});
 
   // Chart 5: Buyback as % of market volume — color-coded bars + average line + 25% limit
   if(hasMktVol){
@@ -499,6 +491,7 @@ function render(){
     {k:'wAmt',l:'Beløb'},
     {k:'navAt',l:'NAV v. køb',t:'Indre værdi pr. aktie på handelsdagene, renset for tidligere tilbagekøbs effekt (vægtet over ugens handler).'},
     {k:'apk',l:'Afkast pr. krone',t:'Indre værdi købt pr. betalt krone: NAV v. køb / gns. kurs − 1.'},
+    {k:'mVol',l:'Markedsvolumen'},
     {k:'util',l:'Udnyttelse',t:'Ugens køb i % af Safe Harbour-loftet (25 % af 20-dages gns. volumen).'},
     {k:'aAmt',l:'Akk. investeret'},
     {k:'vAt',l:'Værdi skabt',t:'Akkumuleret værdi ved køb: købte aktier × NAV v. køb − betalt beløb.'}
@@ -531,6 +524,7 @@ function render(){
       <td>${fK(r.wAmt)}K</td>
       <td>${r.navAt.toFixed(2)}</td>
       <td style="color:var(--g1)">${r.wA>0?aPK(r).toFixed(1)+'%':'—'}</td>
+      <td>${r.mVol>0?fD(r.mVol):'—'}</td>
       <td style="color:${r.util>100?'var(--red)':r.util>80?'var(--g3)':r.util>50?'var(--amb)':r.util>0?'var(--red)':'var(--t3)'}" title="${r.avg20>0?`20-dages snit: ${fD(r.avg20)} aktier/dag\nMax tilladt i ugen: ${fD(r.maxW)} aktier (25% × snit × ${r.detail.length} dage)\nFaktisk købt: ${fD(r.wS)} aktier\nUdnyttelse: ${r.util.toFixed(1)}%`:'Ikke nok historik til 20-dages beregning'}">${r.util>0?r.util.toFixed(0)+'%':'—'}</td>
       <td>${fM(r.aAmt)}M</td>
       <td style="color:var(--g3)"><b>${fM(r.vAt)}M</b></td>
