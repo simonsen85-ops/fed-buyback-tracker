@@ -52,42 +52,42 @@
           "day_volume": 16024,
           "avg_20d": 2273,
           "max_allowed": 568,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-10-27",
           "day_volume": 1193,
           "avg_20d": 3073,
           "max_allowed": 768,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-10-28",
           "day_volume": 3452,
           "avg_20d": 3044,
           "max_allowed": 761,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-10-29",
           "day_volume": 1622,
           "avg_20d": 3207,
           "max_allowed": 802,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-10-30",
           "day_volume": 3439,
           "avg_20d": 3288,
           "max_allowed": 822,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-10-31",
           "day_volume": 7520,
           "avg_20d": 3413,
           "max_allowed": 853,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 3050,
@@ -114,35 +114,35 @@
           "day_volume": 2220,
           "avg_20d": 3748,
           "max_allowed": 937,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-11-04",
           "day_volume": 758,
           "avg_20d": 3857,
           "max_allowed": 964,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-11-05",
           "day_volume": 792,
           "avg_20d": 3853,
           "max_allowed": 963,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-11-06",
           "day_volume": 1386,
           "avg_20d": 3808,
           "max_allowed": 952,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-11-07",
           "day_volume": 4970,
           "avg_20d": 3867,
           "max_allowed": 967,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 3827,
@@ -169,35 +169,35 @@
           "day_volume": 1750,
           "avg_20d": 4112,
           "max_allowed": 1028,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-11-11",
           "day_volume": 1450,
           "avg_20d": 4142,
           "max_allowed": 1035,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-11-12",
           "day_volume": 1295,
           "avg_20d": 4214,
           "max_allowed": 1054,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-11-13",
           "day_volume": 1289,
           "avg_20d": 4228,
           "max_allowed": 1057,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-11-14",
           "day_volume": 1546,
           "avg_20d": 4293,
           "max_allowed": 1073,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 4198,
@@ -224,35 +224,35 @@
           "day_volume": 1968,
           "avg_20d": 4359,
           "max_allowed": 1090,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-11-18",
           "day_volume": 1354,
           "avg_20d": 4457,
           "max_allowed": 1114,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-11-19",
           "day_volume": 494,
           "avg_20d": 4520,
           "max_allowed": 1130,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-11-20",
           "day_volume": 2924,
           "avg_20d": 4504,
           "max_allowed": 1126,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-11-21",
           "day_volume": 4186,
           "avg_20d": 2872,
           "max_allowed": 718,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 4142,
@@ -279,7 +279,7 @@
           "day_volume": 799,
           "avg_20d": 2280,
           "max_allowed": 570,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-11-25",
@@ -293,21 +293,21 @@
           "day_volume": 753,
           "avg_20d": 2088,
           "max_allowed": 522,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-11-27",
           "day_volume": 6023,
           "avg_20d": 2045,
           "max_allowed": 511,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-11-28",
           "day_volume": 2597,
           "avg_20d": 2174,
           "max_allowed": 543,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 2170,
@@ -334,35 +334,35 @@
           "day_volume": 1637,
           "avg_20d": 1928,
           "max_allowed": 482,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-12-02",
           "day_volume": 201,
           "avg_20d": 1899,
           "max_allowed": 475,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-12-03",
           "day_volume": 1253,
           "avg_20d": 1871,
           "max_allowed": 468,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-12-04",
           "day_volume": 4182,
           "avg_20d": 1894,
           "max_allowed": 473,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-12-05",
           "day_volume": 696,
           "avg_20d": 2034,
           "max_allowed": 508,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1925,
@@ -422,35 +422,35 @@
           "day_volume": 1048,
           "avg_20d": 1820,
           "max_allowed": 455,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-12-09",
           "day_volume": 1593,
           "avg_20d": 1785,
           "max_allowed": 446,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-12-10",
           "day_volume": 3734,
           "avg_20d": 1792,
           "max_allowed": 448,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-12-11",
           "day_volume": 2587,
           "avg_20d": 1914,
           "max_allowed": 478,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-12-12",
           "day_volume": 1959,
           "avg_20d": 1979,
           "max_allowed": 495,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1858,
@@ -510,35 +510,35 @@
           "day_volume": 1230,
           "avg_20d": 1999,
           "max_allowed": 500,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-12-16",
           "day_volume": 1710,
           "avg_20d": 1962,
           "max_allowed": 491,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-12-17",
           "day_volume": 3297,
           "avg_20d": 1980,
           "max_allowed": 495,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-12-18",
           "day_volume": 892,
           "avg_20d": 2120,
           "max_allowed": 530,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-12-19",
           "day_volume": 1779,
           "avg_20d": 2019,
           "max_allowed": 505,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 2016,
@@ -592,28 +592,28 @@
           "day_volume": 3700,
           "avg_20d": 1898,
           "max_allowed": 475,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-12-23",
           "day_volume": 966,
           "avg_20d": 2044,
           "max_allowed": 511,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-12-29",
           "day_volume": 883,
           "avg_20d": 2092,
           "max_allowed": 523,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2025-12-30",
           "day_volume": 799,
           "avg_20d": 2098,
           "max_allowed": 525,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 2033,
@@ -679,42 +679,42 @@
           "day_volume": 1758,
           "avg_20d": 1837,
           "max_allowed": 459,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-01-05",
           "day_volume": 2210,
           "avg_20d": 1795,
           "max_allowed": 449,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-01-06",
           "day_volume": 992,
           "avg_20d": 1824,
           "max_allowed": 456,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-01-07",
           "day_volume": 2062,
           "avg_20d": 1863,
           "max_allowed": 466,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-01-08",
           "day_volume": 2070,
           "avg_20d": 1904,
           "max_allowed": 476,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-01-09",
           "day_volume": 4106,
           "avg_20d": 1798,
           "max_allowed": 450,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1837,
@@ -774,35 +774,35 @@
           "day_volume": 1493,
           "avg_20d": 1969,
           "max_allowed": 492,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-01-13",
           "day_volume": 1912,
           "avg_20d": 1991,
           "max_allowed": 498,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-01-14",
           "day_volume": 421,
           "avg_20d": 2007,
           "max_allowed": 502,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-01-15",
           "day_volume": 1342,
           "avg_20d": 1841,
           "max_allowed": 460,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-01-16",
           "day_volume": 588,
           "avg_20d": 1779,
           "max_allowed": 445,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1917,
@@ -862,35 +862,35 @@
           "day_volume": 519,
           "avg_20d": 1710,
           "max_allowed": 428,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-01-20",
           "day_volume": 964,
           "avg_20d": 1675,
           "max_allowed": 419,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-01-21",
           "day_volume": 1423,
           "avg_20d": 1638,
           "max_allowed": 409,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-01-22",
           "day_volume": 4118,
           "avg_20d": 1544,
           "max_allowed": 386,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-01-23",
           "day_volume": 1502,
           "avg_20d": 1705,
           "max_allowed": 426,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1654,
@@ -950,35 +950,35 @@
           "day_volume": 1340,
           "avg_20d": 1691,
           "max_allowed": 423,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-01-27",
           "day_volume": 1488,
           "avg_20d": 1573,
           "max_allowed": 393,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-01-28",
           "day_volume": 1634,
           "avg_20d": 1600,
           "max_allowed": 400,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-01-29",
           "day_volume": 723,
           "avg_20d": 1637,
           "max_allowed": 409,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-01-30",
           "day_volume": 1118,
           "avg_20d": 1633,
           "max_allowed": 408,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1627,
@@ -1038,35 +1038,35 @@
           "day_volume": 1082,
           "avg_20d": 1601,
           "max_allowed": 400,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-02-03",
           "day_volume": 2469,
           "avg_20d": 1545,
           "max_allowed": 386,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-02-04",
           "day_volume": 731,
           "avg_20d": 1619,
           "max_allowed": 405,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-02-05",
           "day_volume": 550,
           "avg_20d": 1552,
           "max_allowed": 388,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-02-06",
           "day_volume": 967,
           "avg_20d": 1476,
           "max_allowed": 369,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1559,
@@ -1126,35 +1126,35 @@
           "day_volume": 4360,
           "avg_20d": 1319,
           "max_allowed": 330,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-02-10",
           "day_volume": 3182,
           "avg_20d": 1463,
           "max_allowed": 366,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-02-11",
           "day_volume": 1793,
           "avg_20d": 1526,
           "max_allowed": 382,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-02-12",
           "day_volume": 2867,
           "avg_20d": 1595,
           "max_allowed": 399,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-02-13",
           "day_volume": 248,
           "avg_20d": 1671,
           "max_allowed": 418,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1515,
@@ -1214,35 +1214,35 @@
           "day_volume": 1536,
           "avg_20d": 1654,
           "max_allowed": 413,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-02-17",
           "day_volume": 1426,
           "avg_20d": 1705,
           "max_allowed": 426,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-02-18",
           "day_volume": 837,
           "avg_20d": 1728,
           "max_allowed": 432,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-02-19",
           "day_volume": 1659,
           "avg_20d": 1699,
           "max_allowed": 425,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-02-20",
           "day_volume": 2158,
           "avg_20d": 1576,
           "max_allowed": 394,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1672,
@@ -1302,35 +1302,35 @@
           "day_volume": 1048,
           "avg_20d": 1608,
           "max_allowed": 402,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-02-24",
           "day_volume": 1880,
           "avg_20d": 1594,
           "max_allowed": 398,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-02-25",
           "day_volume": 63,
           "avg_20d": 1613,
           "max_allowed": 403,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-02-26",
           "day_volume": 106,
           "avg_20d": 1535,
           "max_allowed": 384,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-02-27",
           "day_volume": 1477,
           "avg_20d": 1504,
           "max_allowed": 376,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1571,
@@ -1390,35 +1390,35 @@
           "day_volume": 627,
           "avg_20d": 1522,
           "max_allowed": 380,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-03-03",
           "day_volume": 667,
           "avg_20d": 1499,
           "max_allowed": 375,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-03-04",
           "day_volume": 84,
           "avg_20d": 1409,
           "max_allowed": 352,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-03-05",
           "day_volume": 146,
           "avg_20d": 1377,
           "max_allowed": 344,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-03-06",
           "day_volume": 1465,
           "avg_20d": 1357,
           "max_allowed": 339,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1433,
@@ -1478,35 +1478,35 @@
           "day_volume": 1211,
           "avg_20d": 1381,
           "max_allowed": 345,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-03-10",
           "day_volume": 237,
           "avg_20d": 1224,
           "max_allowed": 306,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-03-11",
           "day_volume": 614,
           "avg_20d": 1077,
           "max_allowed": 269,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-03-12",
           "day_volume": 1240,
           "avg_20d": 1018,
           "max_allowed": 254,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-03-13",
           "day_volume": 905,
           "avg_20d": 936,
           "max_allowed": 234,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1127,
@@ -1566,35 +1566,35 @@
           "day_volume": 585,
           "avg_20d": 969,
           "max_allowed": 242,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-03-17",
           "day_volume": 759,
           "avg_20d": 922,
           "max_allowed": 230,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-03-18",
           "day_volume": 526,
           "avg_20d": 888,
           "max_allowed": 222,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-03-19",
           "day_volume": 982,
           "avg_20d": 873,
           "max_allowed": 218,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-03-20",
           "day_volume": 765,
           "avg_20d": 839,
           "max_allowed": 210,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 898,
@@ -1646,48 +1646,41 @@
           "amount": 0
         }
       ],
-      "market_volume": 12297,
-      "max_allowed_week": 1304,
+      "market_volume": 7035,
+      "max_allowed_week": 886,
       "daily_volume_detail": [
-        {
-          "date": "2026-03-23",
-          "day_volume": 5262,
-          "avg_20d": 769,
-          "max_allowed": 192,
-          "source": "nasdaq"
-        },
         {
           "date": "2026-03-24",
           "day_volume": 2894,
-          "avg_20d": 980,
-          "max_allowed": 245,
-          "source": "nasdaq"
+          "avg_20d": 769,
+          "max_allowed": 192,
+          "source": "yahoo"
         },
         {
           "date": "2026-03-25",
           "day_volume": 3572,
-          "avg_20d": 1031,
-          "max_allowed": 258,
-          "source": "nasdaq"
+          "avg_20d": 862,
+          "max_allowed": 215,
+          "source": "yahoo"
         },
         {
           "date": "2026-03-26",
           "day_volume": 538,
-          "avg_20d": 1206,
-          "max_allowed": 302,
-          "source": "nasdaq"
+          "avg_20d": 946,
+          "max_allowed": 237,
+          "source": "yahoo"
         },
         {
           "date": "2026-03-27",
           "day_volume": 31,
-          "avg_20d": 1228,
-          "max_allowed": 307,
-          "source": "nasdaq"
+          "avg_20d": 970,
+          "max_allowed": 242,
+          "source": "yahoo"
         }
       ],
-      "avg_volume_20d": 1043,
-      "buyback_pct_of_volume": 5.6,
-      "utilization_pct": 52.9
+      "avg_volume_20d": 887,
+      "buyback_pct_of_volume": 9.8,
+      "utilization_pct": 77.9
     },
     {
       "uid": "fed-oam-300006895",
@@ -1723,33 +1716,33 @@
         }
       ],
       "market_volume": 5869,
-      "max_allowed_week": 929,
+      "max_allowed_week": 766,
       "daily_volume_detail": [
         {
           "date": "2026-03-30",
           "day_volume": 1862,
-          "avg_20d": 1156,
-          "max_allowed": 289,
-          "source": "nasdaq"
+          "avg_20d": 966,
+          "max_allowed": 242,
+          "source": "yahoo"
         },
         {
           "date": "2026-03-31",
           "day_volume": 3195,
-          "avg_20d": 1217,
-          "max_allowed": 304,
-          "source": "nasdaq"
+          "avg_20d": 986,
+          "max_allowed": 246,
+          "source": "yahoo"
         },
         {
           "date": "2026-04-01",
           "day_volume": 812,
-          "avg_20d": 1344,
-          "max_allowed": 336,
-          "source": "nasdaq"
+          "avg_20d": 1114,
+          "max_allowed": 278,
+          "source": "yahoo"
         }
       ],
-      "avg_volume_20d": 1239,
+      "avg_volume_20d": 1022,
       "buyback_pct_of_volume": 14.1,
-      "utilization_pct": 89.3
+      "utilization_pct": 108.4
     },
     {
       "uid": "fed-oam-300007168",
@@ -1791,40 +1784,40 @@
         }
       ],
       "market_volume": 5916,
-      "max_allowed_week": 1401,
+      "max_allowed_week": 1174,
       "daily_volume_detail": [
         {
           "date": "2026-04-07",
           "day_volume": 427,
-          "avg_20d": 1380,
-          "max_allowed": 345,
-          "source": "nasdaq"
+          "avg_20d": 1121,
+          "max_allowed": 280,
+          "source": "yahoo"
         },
         {
           "date": "2026-04-08",
           "day_volume": 455,
-          "avg_20d": 1394,
-          "max_allowed": 349,
-          "source": "nasdaq"
+          "avg_20d": 1138,
+          "max_allowed": 285,
+          "source": "yahoo"
         },
         {
           "date": "2026-04-09",
           "day_volume": 4048,
-          "avg_20d": 1344,
-          "max_allowed": 336,
-          "source": "nasdaq"
+          "avg_20d": 1154,
+          "max_allowed": 288,
+          "source": "yahoo"
         },
         {
           "date": "2026-04-10",
           "day_volume": 986,
-          "avg_20d": 1485,
-          "max_allowed": 371,
-          "source": "nasdaq"
+          "avg_20d": 1283,
+          "max_allowed": 321,
+          "source": "yahoo"
         }
       ],
-      "avg_volume_20d": 1401,
+      "avg_volume_20d": 1174,
       "buyback_pct_of_volume": 23.3,
-      "utilization_pct": 98.5
+      "utilization_pct": 117.5
     },
     {
       "uid": "fed-gnw-3276074",
@@ -1872,47 +1865,47 @@
         }
       ],
       "market_volume": 9401,
-      "max_allowed_week": 2087,
+      "max_allowed_week": 1802,
       "daily_volume_detail": [
         {
           "date": "2026-04-13",
           "day_volume": 3476,
-          "avg_20d": 1523,
-          "max_allowed": 381,
-          "source": "nasdaq"
+          "avg_20d": 1272,
+          "max_allowed": 318,
+          "source": "yahoo"
         },
         {
           "date": "2026-04-14",
           "day_volume": 2358,
-          "avg_20d": 1666,
-          "max_allowed": 416,
-          "source": "nasdaq"
+          "avg_20d": 1434,
+          "max_allowed": 358,
+          "source": "yahoo"
         },
         {
           "date": "2026-04-15",
           "day_volume": 831,
-          "avg_20d": 1722,
-          "max_allowed": 430,
-          "source": "nasdaq"
+          "avg_20d": 1521,
+          "max_allowed": 380,
+          "source": "yahoo"
         },
         {
           "date": "2026-04-16",
           "day_volume": 584,
-          "avg_20d": 1718,
-          "max_allowed": 430,
-          "source": "nasdaq"
+          "avg_20d": 1500,
+          "max_allowed": 375,
+          "source": "yahoo"
         },
         {
           "date": "2026-04-17",
           "day_volume": 2152,
-          "avg_20d": 1718,
-          "max_allowed": 430,
-          "source": "nasdaq"
+          "avg_20d": 1484,
+          "max_allowed": 371,
+          "source": "yahoo"
         }
       ],
-      "avg_volume_20d": 1669,
+      "avg_volume_20d": 1442,
       "buyback_pct_of_volume": 15.4,
-      "utilization_pct": 69.2
+      "utilization_pct": 80.1
     },
     {
       "uid": "fed-oam-300007982",
@@ -1960,47 +1953,47 @@
         }
       ],
       "market_volume": 8945,
-      "max_allowed_week": 2297,
+      "max_allowed_week": 2072,
       "daily_volume_detail": [
         {
           "date": "2026-04-20",
           "day_volume": 1714,
-          "avg_20d": 1788,
-          "max_allowed": 447,
-          "source": "nasdaq"
+          "avg_20d": 1563,
+          "max_allowed": 391,
+          "source": "yahoo"
         },
         {
           "date": "2026-04-21",
           "day_volume": 656,
-          "avg_20d": 1847,
-          "max_allowed": 462,
-          "source": "nasdaq"
+          "avg_20d": 1610,
+          "max_allowed": 403,
+          "source": "yahoo"
         },
         {
           "date": "2026-04-22",
           "day_volume": 2302,
-          "avg_20d": 1831,
-          "max_allowed": 458,
-          "source": "nasdaq"
+          "avg_20d": 1617,
+          "max_allowed": 404,
+          "source": "yahoo"
         },
         {
           "date": "2026-04-23",
           "day_volume": 3341,
-          "avg_20d": 1908,
-          "max_allowed": 477,
-          "source": "nasdaq"
+          "avg_20d": 1683,
+          "max_allowed": 421,
+          "source": "yahoo"
         },
         {
           "date": "2026-04-24",
           "day_volume": 932,
           "avg_20d": 1812,
           "max_allowed": 453,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
-      "avg_volume_20d": 1837,
+      "avg_volume_20d": 1657,
       "buyback_pct_of_volume": 23.5,
-      "utilization_pct": 91.4
+      "utilization_pct": 101.4
     },
     {
       "uid": "fed-oam-300008250",
@@ -2049,28 +2042,28 @@
           "day_volume": 4187,
           "avg_20d": 1714,
           "max_allowed": 428,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-04-28",
           "day_volume": 1037,
           "avg_20d": 1744,
           "max_allowed": 436,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-04-29",
           "day_volume": 27,
           "avg_20d": 1769,
           "max_allowed": 442,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-04-30",
           "day_volume": 4418,
           "avg_20d": 1769,
           "max_allowed": 442,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1749,
@@ -2130,35 +2123,35 @@
           "day_volume": 1076,
           "avg_20d": 1897,
           "max_allowed": 474,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-05-04",
           "day_volume": 2584,
           "avg_20d": 1791,
           "max_allowed": 448,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-05-05",
           "day_volume": 1356,
           "avg_20d": 1880,
           "max_allowed": 470,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-05-06",
           "day_volume": 4760,
           "avg_20d": 1926,
           "max_allowed": 482,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-05-07",
           "day_volume": 1003,
           "avg_20d": 2141,
           "max_allowed": 535,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1927,
@@ -2212,28 +2205,28 @@
           "day_volume": 4968,
           "avg_20d": 1989,
           "max_allowed": 497,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-05-11",
           "day_volume": 3023,
           "avg_20d": 2188,
           "max_allowed": 547,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-05-12",
           "day_volume": 1724,
           "avg_20d": 2165,
           "max_allowed": 541,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-05-13",
           "day_volume": 3590,
           "avg_20d": 2134,
           "max_allowed": 533,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 2119,
@@ -2287,28 +2280,28 @@
           "day_volume": 1391,
           "avg_20d": 2272,
           "max_allowed": 568,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-05-19",
           "day_volume": 5254,
           "avg_20d": 2312,
           "max_allowed": 578,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-05-20",
           "day_volume": 2658,
           "avg_20d": 2467,
           "max_allowed": 617,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-05-21",
           "day_volume": 765,
           "avg_20d": 2514,
           "max_allowed": 629,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 2391,
@@ -2354,7 +2347,7 @@
           "amount": 133200
         }
       ],
-      "market_volume": 9715,
+      "market_volume": 9707,
       "max_allowed_week": 2510,
       "daily_volume_detail": [
         {
@@ -2362,32 +2355,32 @@
           "day_volume": 463,
           "avg_20d": 2520,
           "max_allowed": 630,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-05-26",
           "day_volume": 5791,
           "avg_20d": 2428,
           "max_allowed": 607,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-05-27",
           "day_volume": 729,
           "avg_20d": 2550,
           "max_allowed": 638,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-05-28",
-          "day_volume": 2732,
+          "day_volume": 2724,
           "avg_20d": 2540,
           "max_allowed": 635,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 2510,
-      "buyback_pct_of_volume": 14.5,
+      "buyback_pct_of_volume": 14.6,
       "utilization_pct": 56.3
     },
     {
@@ -2443,35 +2436,35 @@
           "day_volume": 920,
           "avg_20d": 2467,
           "max_allowed": 617,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-06-01",
           "day_volume": 1273,
-          "avg_20d": 2462,
+          "avg_20d": 2461,
           "max_allowed": 615,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-06-02",
           "day_volume": 669,
           "avg_20d": 2524,
           "max_allowed": 631,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-06-03",
           "day_volume": 1376,
           "avg_20d": 2336,
           "max_allowed": 584,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-06-04",
           "day_volume": 12,
           "avg_20d": 2351,
           "max_allowed": 588,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 2428,
@@ -2523,33 +2516,33 @@
         {
           "date": "2026-06-08",
           "day_volume": 1442,
-          "avg_20d": 2223,
+          "avg_20d": 2222,
           "max_allowed": 556,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-06-09",
           "day_volume": 4912,
           "avg_20d": 2227,
           "max_allowed": 557,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-06-10",
           "day_volume": 1783,
-          "avg_20d": 2235,
+          "avg_20d": 2234,
           "max_allowed": 559,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-06-11",
           "day_volume": 3535,
-          "avg_20d": 2274,
+          "avg_20d": 2273,
           "max_allowed": 568,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
-      "avg_volume_20d": 2240,
+      "avg_volume_20d": 2239,
       "buyback_pct_of_volume": 18.9,
       "utilization_pct": 98.7
     },
@@ -2599,45 +2592,45 @@
         }
       ],
       "market_volume": 13932,
-      "max_allowed_week": 2818,
+      "max_allowed_week": 2817,
       "daily_volume_detail": [
         {
           "date": "2026-06-12",
           "day_volume": 4479,
           "avg_20d": 2202,
-          "max_allowed": 551,
-          "source": "nasdaq"
+          "max_allowed": 550,
+          "source": "yahoo"
         },
         {
           "date": "2026-06-15",
           "day_volume": 1411,
-          "avg_20d": 2275,
+          "avg_20d": 2274,
           "max_allowed": 569,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-06-16",
           "day_volume": 4058,
           "avg_20d": 2259,
           "max_allowed": 565,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-06-17",
           "day_volume": 712,
-          "avg_20d": 2283,
+          "avg_20d": 2282,
           "max_allowed": 571,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-06-18",
           "day_volume": 3272,
-          "avg_20d": 2249,
+          "avg_20d": 2248,
           "max_allowed": 562,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
-      "avg_volume_20d": 2254,
+      "avg_volume_20d": 2253,
       "buyback_pct_of_volume": 20.0,
       "utilization_pct": 99.0
     },
@@ -2692,40 +2685,40 @@
         {
           "date": "2026-06-19",
           "day_volume": 948,
-          "avg_20d": 2150,
+          "avg_20d": 2149,
           "max_allowed": 537,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-06-22",
           "day_volume": 1193,
           "avg_20d": 2064,
           "max_allowed": 516,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-06-23",
           "day_volume": 810,
-          "avg_20d": 2086,
+          "avg_20d": 2085,
           "max_allowed": 521,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-06-24",
           "day_volume": 460,
-          "avg_20d": 2103,
+          "avg_20d": 2102,
           "max_allowed": 526,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-06-25",
           "day_volume": 721,
           "avg_20d": 1836,
           "max_allowed": 459,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
-      "avg_volume_20d": 2048,
+      "avg_volume_20d": 2047,
       "buyback_pct_of_volume": 48.9,
       "utilization_pct": 78.9
     },
@@ -2782,35 +2775,35 @@
           "day_volume": 4890,
           "avg_20d": 1836,
           "max_allowed": 459,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-06-29",
           "day_volume": 917,
           "avg_20d": 1944,
           "max_allowed": 486,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-06-30",
           "day_volume": 594,
           "avg_20d": 1944,
           "max_allowed": 486,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-07-01",
           "day_volume": 2498,
           "avg_20d": 1910,
           "max_allowed": 477,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-07-02",
           "day_volume": 826,
           "avg_20d": 2001,
           "max_allowed": 500,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1927,
@@ -2870,35 +2863,35 @@
           "day_volume": 1933,
           "avg_20d": 1974,
           "max_allowed": 493,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-07-06",
           "day_volume": 3167,
           "avg_20d": 2070,
           "max_allowed": 517,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-07-07",
           "day_volume": 1838,
           "avg_20d": 2156,
           "max_allowed": 539,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-07-08",
           "day_volume": 952,
           "avg_20d": 2002,
           "max_allowed": 501,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-07-09",
           "day_volume": 3825,
           "avg_20d": 1961,
           "max_allowed": 490,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 2033,
@@ -2958,35 +2951,35 @@
           "day_volume": 2526,
           "avg_20d": 1975,
           "max_allowed": 494,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-07-13",
           "day_volume": 1057,
           "avg_20d": 1878,
           "max_allowed": 469,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-07-14",
           "day_volume": 2360,
           "avg_20d": 1860,
           "max_allowed": 465,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-07-15",
           "day_volume": 513,
           "avg_20d": 1775,
           "max_allowed": 444,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-07-16",
           "day_volume": 3552,
           "avg_20d": 1765,
           "max_allowed": 441,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1851,
@@ -3046,35 +3039,35 @@
           "day_volume": 4137,
           "avg_20d": 1779,
           "max_allowed": 445,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-07-20",
           "day_volume": 57,
           "avg_20d": 1938,
           "max_allowed": 485,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-07-21",
           "day_volume": 507,
           "avg_20d": 1882,
           "max_allowed": 470,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-07-22",
           "day_volume": 5022,
           "avg_20d": 1866,
           "max_allowed": 467,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-07-23",
           "day_volume": 582,
           "avg_20d": 2095,
           "max_allowed": 524,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1912,
@@ -3134,35 +3127,35 @@
           "day_volume": 982,
           "avg_20d": 2088,
           "max_allowed": 522,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-07-27",
           "day_volume": 43,
           "avg_20d": 1892,
           "max_allowed": 473,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-07-28",
           "day_volume": 754,
           "avg_20d": 1849,
           "max_allowed": 462,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-07-29",
           "day_volume": 53,
           "avg_20d": 1857,
           "max_allowed": 464,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-07-30",
           "day_volume": 1172,
           "avg_20d": 1734,
           "max_allowed": 434,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1884,
@@ -3222,35 +3215,35 @@
           "day_volume": 1551,
           "avg_20d": 1752,
           "max_allowed": 438,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-08-03",
           "day_volume": 1891,
           "avg_20d": 1732,
           "max_allowed": 433,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-08-04",
           "day_volume": 341,
           "avg_20d": 1669,
           "max_allowed": 417,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-08-05",
           "day_volume": 533,
           "avg_20d": 1594,
           "max_allowed": 398,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-08-06",
           "day_volume": 611,
           "avg_20d": 1573,
           "max_allowed": 393,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1664,
@@ -3310,35 +3303,35 @@
           "day_volume": 1760,
           "avg_20d": 1412,
           "max_allowed": 353,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-08-10",
           "day_volume": 621,
           "avg_20d": 1374,
           "max_allowed": 343,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-08-11",
           "day_volume": 444,
           "avg_20d": 1352,
           "max_allowed": 338,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-08-12",
           "day_volume": 1672,
           "avg_20d": 1256,
           "max_allowed": 314,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-08-13",
           "day_volume": 380,
           "avg_20d": 1314,
           "max_allowed": 329,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1342,
@@ -3398,35 +3391,35 @@
           "day_volume": 812,
           "avg_20d": 1156,
           "max_allowed": 289,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-08-17",
           "day_volume": 550,
           "avg_20d": 989,
           "max_allowed": 247,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-08-18",
           "day_volume": 778,
           "avg_20d": 1014,
           "max_allowed": 254,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-08-19",
           "day_volume": 1210,
           "avg_20d": 1028,
           "max_allowed": 257,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-08-20",
           "day_volume": 24,
           "avg_20d": 837,
           "max_allowed": 209,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1005,
@@ -3486,35 +3479,35 @@
           "day_volume": 866,
           "avg_20d": 809,
           "max_allowed": 202,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-08-24",
           "day_volume": 1223,
           "avg_20d": 803,
           "max_allowed": 201,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-08-25",
           "day_volume": 5440,
           "avg_20d": 862,
           "max_allowed": 216,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-08-26",
           "day_volume": 1575,
           "avg_20d": 1097,
           "max_allowed": 274,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-08-27",
           "day_volume": 112,
           "avg_20d": 1173,
           "max_allowed": 293,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 949,
@@ -3574,35 +3567,35 @@
           "day_volume": 1350,
           "avg_20d": 1120,
           "max_allowed": 280,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-08-31",
           "day_volume": 1052,
           "avg_20d": 1110,
           "max_allowed": 277,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-09-01",
           "day_volume": 5140,
           "avg_20d": 1068,
           "max_allowed": 267,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-09-02",
           "day_volume": 1345,
           "avg_20d": 1308,
           "max_allowed": 327,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-09-03",
           "day_volume": 2522,
           "avg_20d": 1348,
           "max_allowed": 337,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1191,
@@ -3662,35 +3655,35 @@
           "day_volume": 1313,
           "avg_20d": 1444,
           "max_allowed": 361,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-09-07",
           "day_volume": 734,
           "avg_20d": 1421,
           "max_allowed": 355,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-09-08",
           "day_volume": 5335,
           "avg_20d": 1427,
           "max_allowed": 357,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-09-09",
           "day_volume": 580,
           "avg_20d": 1672,
           "max_allowed": 418,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-09-10",
           "day_volume": 2563,
           "avg_20d": 1617,
           "max_allowed": 404,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1516,
@@ -3750,35 +3743,35 @@
           "day_volume": 3735,
           "avg_20d": 1726,
           "max_allowed": 432,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-09-14",
           "day_volume": 798,
           "avg_20d": 1872,
           "max_allowed": 468,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-09-15",
           "day_volume": 882,
           "avg_20d": 1885,
           "max_allowed": 471,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-09-16",
           "day_volume": 1730,
           "avg_20d": 1890,
           "max_allowed": 472,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-09-17",
           "day_volume": 1096,
           "avg_20d": 1916,
           "max_allowed": 479,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1858,
@@ -3838,35 +3831,35 @@
           "day_volume": 4467,
           "avg_20d": 1970,
           "max_allowed": 492,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-09-21",
           "day_volume": 1386,
           "avg_20d": 2150,
           "max_allowed": 537,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-09-22",
           "day_volume": 839,
           "avg_20d": 2158,
           "max_allowed": 539,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-09-23",
           "day_volume": 741,
           "avg_20d": 1928,
           "max_allowed": 482,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-09-24",
           "day_volume": 912,
           "avg_20d": 1886,
           "max_allowed": 472,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 2018,
@@ -3926,35 +3919,35 @@
           "day_volume": 2359,
           "avg_20d": 1926,
           "max_allowed": 482,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-09-28",
           "day_volume": 1319,
           "avg_20d": 1976,
           "max_allowed": 494,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-09-29",
           "day_volume": 25,
           "avg_20d": 1990,
           "max_allowed": 497,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-09-30",
           "day_volume": 822,
           "avg_20d": 1734,
           "max_allowed": 434,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-10-01",
           "day_volume": 801,
           "avg_20d": 1708,
           "max_allowed": 427,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1867,
@@ -4008,28 +4001,28 @@
           "day_volume": 2224,
           "avg_20d": 1671,
           "max_allowed": 418,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-10-06",
           "day_volume": 2834,
           "avg_20d": 1746,
           "max_allowed": 436,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-10-07",
           "day_volume": 1295,
           "avg_20d": 1621,
           "max_allowed": 405,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-10-08",
           "day_volume": 653,
           "avg_20d": 1656,
           "max_allowed": 414,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1674,
@@ -4089,35 +4082,35 @@
           "day_volume": 598,
           "avg_20d": 1561,
           "max_allowed": 390,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-10-12",
           "day_volume": 370,
           "avg_20d": 1404,
           "max_allowed": 351,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-10-13",
           "day_volume": 2465,
           "avg_20d": 1383,
           "max_allowed": 346,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-10-14",
           "day_volume": 2797,
           "avg_20d": 1462,
           "max_allowed": 365,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-10-15",
           "day_volume": 1112,
           "avg_20d": 1515,
           "max_allowed": 379,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1465,
@@ -4165,35 +4158,35 @@
           "day_volume": 83,
           "avg_20d": 1516,
           "max_allowed": 379,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-10-19",
           "day_volume": 6872,
           "avg_20d": 1297,
           "max_allowed": 324,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-10-20",
           "day_volume": 186,
           "avg_20d": 1571,
           "max_allowed": 393,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-10-21",
           "day_volume": 8,
           "avg_20d": 1538,
           "max_allowed": 385,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-10-22",
           "day_volume": 3489,
           "avg_20d": 1502,
           "max_allowed": 375,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1485,
@@ -4253,35 +4246,35 @@
           "day_volume": 2170,
           "avg_20d": 1631,
           "max_allowed": 408,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-10-26",
           "day_volume": 1700,
           "avg_20d": 1621,
           "max_allowed": 405,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-10-27",
           "day_volume": 1469,
           "avg_20d": 1640,
           "max_allowed": 410,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-10-28",
           "day_volume": 1580,
           "avg_20d": 1712,
           "max_allowed": 428,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-10-29",
           "day_volume": 2382,
           "avg_20d": 1750,
           "max_allowed": 438,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1671,
@@ -4323,28 +4316,28 @@
           "day_volume": 562,
           "avg_20d": 1715,
           "max_allowed": 429,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-11-03",
           "day_volume": 43,
           "avg_20d": 1631,
           "max_allowed": 408,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-11-04",
           "day_volume": 50,
           "avg_20d": 1492,
           "max_allowed": 373,
-          "source": "nasdaq"
+          "source": "yahoo"
         },
         {
           "date": "2026-11-05",
           "day_volume": 1697,
           "avg_20d": 1430,
           "max_allowed": 357,
-          "source": "nasdaq"
+          "source": "yahoo"
         }
       ],
       "avg_volume_20d": 1567,
@@ -4352,7 +4345,7 @@
       "utilization_pct": 49.8
     }
   ],
-  "last_updated": "2026-11-10T00:22:54.714337+00:00",
+  "last_updated": "2026-11-10T21:55:03.631342+00:00",
   "current_price": 232.0,
   "programs": [
     {
