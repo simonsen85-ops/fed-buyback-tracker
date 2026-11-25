@@ -52,5 +52,19 @@ jobs:
         with:
           path: '.'
 
+      # deploy-pages looks the artifact up right after the upload. Since Nov 2026
+      # GitHub's API sometimes doesn't list it yet ("No artifacts named
+      # github-pages were found") although the upload succeeded. Retry once after
+      # a short wait; if the retry also fails, the run still fails.
       - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4
+        continue-on-error: true
+
+      - name: Wait before retrying the deploy
+        if: steps.deploy.outcome == 'failure'
+        run: sleep 30
+
+      - name: Deploy to GitHub Pages (retry)
+        if: steps.deploy.outcome == 'failure'
         uses: actions/deploy-pages@v4
