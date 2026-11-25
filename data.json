@@ -3786,47 +3786,47 @@
       "utilization_pct": 99.1
     },
     {
-      "uid": "fed-fed-page153",
-      "announcement_date": "2026-09-24",
-      "source": "fastejendom",
-      "source_url": "https://fastejendom.dk/aktietilbagekoebsprogram-153/",
+      "uid": "fed-oam-400000189",
+      "announcement_date": "2026-09-25",
+      "source": "finanstilsynet",
+      "source_url": "https://saesappublicprd.blob.core.windows.net/stc-public-submissions/2026/09/c056429f-f576-46f0-89e6-7ffc30622760/documents/Fast Ejendom Danmark AS-DA.pdf",
       "period_start": "2026-09-18",
       "period_end": "2026-09-24",
       "week_shares": 2510,
       "week_amount": 567038,
-      "week_avg_price": 225.91,
+      "week_avg_price": 225.9116,
       "acc_shares": 43028,
       "acc_amount": 9634332,
-      "program_id": null,
+      "program_id": 2,
       "daily_transactions": [
         {
           "date": "2026-09-18",
           "shares": 490,
-          "price": 226.0,
+          "avg_price": 226.0,
           "amount": 110740
         },
         {
           "date": "2026-09-21",
           "shares": 535,
-          "price": 226.0,
+          "avg_price": 226.0,
           "amount": 120910
         },
         {
           "date": "2026-09-22",
           "shares": 535,
-          "price": 225.59,
+          "avg_price": 225.59,
           "amount": 120688
         },
         {
           "date": "2026-09-23",
           "shares": 480,
-          "price": 226.0,
+          "avg_price": 226.0,
           "amount": 108480
         },
         {
           "date": "2026-09-24",
           "shares": 470,
-          "price": 226.0,
+          "avg_price": 226.0,
           "amount": 106220
         }
       ],
@@ -3874,47 +3874,47 @@
       "utilization_pct": 99.5
     },
     {
-      "uid": "fed-fed-page154",
-      "announcement_date": "2026-10-01",
-      "source": "fastejendom",
-      "source_url": "https://fastejendom.dk/aktietilbagekoebsprogram-154/",
+      "uid": "fed-oam-400000354",
+      "announcement_date": "2026-10-02",
+      "source": "finanstilsynet",
+      "source_url": "https://saesappublicprd.blob.core.windows.net/stc-public-submissions/2026/10/SUBMISSION-eec9a7e2a33acaa1882916ffc3b4b224/documents/Meddelelse nr 49 i 2026 aktietilbagekøbsprogram-da.pdf",
       "period_start": "2026-09-25",
       "period_end": "2026-10-01",
       "week_shares": 1627,
       "week_amount": 365504,
-      "week_avg_price": 224.65,
+      "week_avg_price": 224.649,
       "acc_shares": 44655,
       "acc_amount": 9999836,
-      "program_id": null,
+      "program_id": 2,
       "daily_transactions": [
         {
           "date": "2026-09-25",
           "shares": 480,
-          "price": 224.0,
+          "avg_price": 224.0,
           "amount": 107520
         },
         {
           "date": "2026-09-28",
           "shares": 490,
-          "price": 224.0,
+          "avg_price": 224.0,
           "amount": 109760
         },
         {
           "date": "2026-09-29",
           "shares": 19,
-          "price": 224.0,
+          "avg_price": 224.0,
           "amount": 4256
         },
         {
           "date": "2026-09-30",
           "shares": 430,
-          "price": 225.49,
+          "avg_price": 225.49,
           "amount": 96960
         },
         {
           "date": "2026-10-01",
           "shares": 208,
-          "price": 226.0,
+          "avg_price": 226.0,
           "amount": 47008
         }
       ],
@@ -3962,41 +3962,41 @@
       "utilization_pct": 69.7
     },
     {
-      "uid": "fed-fed-page155",
+      "uid": "fed-oam-400000655",
       "announcement_date": "2026-10-08",
-      "source": "fastejendom",
-      "source_url": "https://fastejendom.dk/aktietilbagekoebsprogram-155/",
+      "source": "finanstilsynet",
+      "source_url": "https://saesappublicprd.blob.core.windows.net/stc-public-submissions/2026/10/SUBMISSION-21b44265a177ced2a4df098e7d636341/documents/Meddelelse nr 51 i 2026 aktietilbagekøbsprogram-da.pdf",
       "period_start": "2026-10-05",
       "period_end": "2026-10-08",
       "week_shares": 1306,
       "week_amount": 296026,
-      "week_avg_price": 226.67,
+      "week_avg_price": 226.6662,
       "acc_shares": 1306,
       "acc_amount": 296026,
-      "program_id": null,
+      "program_id": 3,
       "daily_transactions": [
         {
           "date": "2026-10-05",
           "shares": 415,
-          "price": 226.0,
+          "avg_price": 226.0,
           "amount": 93790
         },
         {
           "date": "2026-10-06",
           "shares": 435,
-          "price": 228.0,
+          "avg_price": 228.0,
           "amount": 99180
         },
         {
           "date": "2026-10-07",
           "shares": 46,
-          "price": 226.0,
+          "avg_price": 226.0,
           "amount": 10396
         },
         {
           "date": "2026-10-08",
           "shares": 410,
-          "price": 226.0,
+          "avg_price": 226.0,
           "amount": 92660
         }
       ],
@@ -4037,47 +4037,47 @@
       "utilization_pct": 78.1
     },
     {
-      "uid": "fed-fed-page156",
+      "uid": "fed-oam-400000928",
       "announcement_date": "2026-10-15",
-      "source": "fastejendom",
-      "source_url": "https://fastejendom.dk/aktietilbagekoebsprogram-156/",
+      "source": "finanstilsynet",
+      "source_url": "https://saesappublicprd.blob.core.windows.net/stc-public-submissions/2026/10/SUBMISSION-a5e76d9a7a5daceffc1034ac5485bf94/documents/Meddelelse nr 52 i 2026 aktietilbagekøbsprogram-da.pdf",
       "period_start": "2026-10-09",
       "period_end": "2026-10-15",
       "week_shares": 1810,
       "week_amount": 410530,
-      "week_avg_price": 226.81,
+      "week_avg_price": 226.8122,
       "acc_shares": 3116,
       "acc_amount": 706556,
-      "program_id": null,
+      "program_id": 3,
       "daily_transactions": [
         {
           "date": "2026-10-09",
           "shares": 385,
-          "price": 228.0,
+          "avg_price": 228.0,
           "amount": 87780
         },
         {
           "date": "2026-10-12",
           "shares": 350,
-          "price": 228.0,
+          "avg_price": 228.0,
           "amount": 79800
         },
         {
           "date": "2026-10-13",
           "shares": 340,
-          "price": 226.0,
+          "avg_price": 226.0,
           "amount": 76840
         },
         {
           "date": "2026-10-14",
           "shares": 360,
-          "price": 226.0,
+          "avg_price": 226.0,
           "amount": 81360
         },
         {
           "date": "2026-10-15",
           "shares": 375,
-          "price": 226.0,
+          "avg_price": 226.0,
           "amount": 84750
         }
       ],
@@ -4125,35 +4125,35 @@
       "utilization_pct": 98.9
     },
     {
-      "uid": "fed-fed-page157",
+      "uid": "fed-oam-400001198",
       "announcement_date": "2026-10-22",
-      "source": "fastejendom",
-      "source_url": "https://fastejendom.dk/aktietilbagekoebsprogram-157/",
+      "source": "finanstilsynet",
+      "source_url": "https://saesappublicprd.blob.core.windows.net/stc-public-submissions/2026/10/SUBMISSION-376ad50e2d2097e1b8721007378ba084/documents/Meddelelse nr 55 i 2026 aktietilbagekøbsprogram-da.pdf",
       "period_start": "2026-10-16",
       "period_end": "2026-10-22",
       "week_shares": 751,
       "week_amount": 170466,
-      "week_avg_price": 226.99,
+      "week_avg_price": 226.9854,
       "acc_shares": 3867,
       "acc_amount": 877022,
-      "program_id": null,
+      "program_id": 3,
       "daily_transactions": [
         {
           "date": "2026-10-16",
           "shares": 61,
-          "price": 226.0,
+          "avg_price": 226.0,
           "amount": 13786
         },
         {
           "date": "2026-10-19",
           "shares": 320,
-          "price": 226.0,
+          "avg_price": 226.0,
           "amount": 72320
         },
         {
           "date": "2026-10-22",
           "shares": 370,
-          "price": 228.0,
+          "avg_price": 228.0,
           "amount": 84360
         }
       ],
@@ -4201,47 +4201,47 @@
       "utilization_pct": 40.5
     },
     {
-      "uid": "fed-fed-page158",
+      "uid": "fed-oam-400001422",
       "announcement_date": "2026-10-29",
-      "source": "fastejendom",
-      "source_url": "https://fastejendom.dk/aktietilbagekoebsprogram-158/",
+      "source": "finanstilsynet",
+      "source_url": "https://saesappublicprd.blob.core.windows.net/stc-public-submissions/2026/10/SUBMISSION-f9d30826b8123b9398a9f570776babd7/documents/Meddelelse nr 57 i 2026 aktietilbagekøbsprogram-da.pdf",
       "period_start": "2026-10-23",
       "period_end": "2026-10-29",
       "week_shares": 2065,
       "week_amount": 480800,
-      "week_avg_price": 232.83,
+      "week_avg_price": 232.8329,
       "acc_shares": 5932,
       "acc_amount": 1357822,
-      "program_id": null,
+      "program_id": 3,
       "daily_transactions": [
         {
           "date": "2026-10-23",
           "shares": 400,
-          "price": 232.0,
+          "avg_price": 232.0,
           "amount": 92800
         },
         {
           "date": "2026-10-26",
           "shares": 400,
-          "price": 232.0,
+          "avg_price": 232.0,
           "amount": 92800
         },
         {
           "date": "2026-10-27",
           "shares": 405,
-          "price": 232.0,
+          "avg_price": 232.0,
           "amount": 93960
         },
         {
           "date": "2026-10-28",
           "shares": 425,
-          "price": 234.0,
+          "avg_price": 234.0,
           "amount": 99450
         },
         {
           "date": "2026-10-29",
           "shares": 435,
-          "price": 234.0,
+          "avg_price": 234.0,
           "amount": 101790
         }
       ],
@@ -4289,29 +4289,29 @@
       "utilization_pct": 98.9
     },
     {
-      "uid": "fed-fed-page159",
-      "announcement_date": "2026-11-05",
-      "source": "fastejendom",
-      "source_url": "https://fastejendom.dk/aktietilbagekoebsprogram-159/",
+      "uid": "fed-oam-400001835",
+      "announcement_date": "2026-11-06",
+      "source": "finanstilsynet",
+      "source_url": "https://saesappublicprd.blob.core.windows.net/stc-public-submissions/2026/11/SUBMISSION-b36440320f7b85bcfb5a865c4ede9ba2/documents/Meddelelse nr 58 i 2026 aktietilbagekøbsprogram-da.pdf",
       "period_start": "2026-11-02",
       "period_end": "2026-11-05",
       "week_shares": 780,
       "week_amount": 181810,
-      "week_avg_price": 233.09,
+      "week_avg_price": 233.0897,
       "acc_shares": 6712,
       "acc_amount": 1539632,
-      "program_id": null,
+      "program_id": 3,
       "daily_transactions": [
         {
           "date": "2026-11-02",
           "shares": 425,
-          "price": 234.0,
+          "avg_price": 234.0,
           "amount": 99450
         },
         {
           "date": "2026-11-05",
           "shares": 355,
-          "price": 232.0,
+          "avg_price": 232.0,
           "amount": 82360
         }
       ],
@@ -4352,47 +4352,47 @@
       "utilization_pct": 49.8
     },
     {
-      "uid": "fed-fed-page160",
+      "uid": "fed-oam-400002181",
       "announcement_date": "2026-11-12",
-      "source": "fastejendom",
-      "source_url": "https://fastejendom.dk/aktietilbagekoebsprogram-160/",
+      "source": "finanstilsynet",
+      "source_url": "https://saesappublicprd.blob.core.windows.net/stc-public-submissions/2026/11/SUBMISSION-db3fcf4bc2cb8bf3516a60d25b5c1540/documents/Meddelelse nr 59 i 2026 aktietilbagekøbsprogram-da.pdf",
       "period_start": "2026-11-06",
       "period_end": "2026-11-12",
       "week_shares": 1895,
       "week_amount": 441428,
-      "week_avg_price": 232.94,
+      "week_avg_price": 232.9435,
       "acc_shares": 8607,
       "acc_amount": 1981060,
-      "program_id": null,
+      "program_id": 3,
       "daily_transactions": [
         {
           "date": "2026-11-06",
           "shares": 365,
-          "price": 232.0,
+          "avg_price": 232.0,
           "amount": 84680
         },
         {
           "date": "2026-11-09",
           "shares": 390,
-          "price": 232.0,
+          "avg_price": 232.0,
           "amount": 90480
         },
         {
           "date": "2026-11-10",
           "shares": 390,
-          "price": 232.0,
+          "avg_price": 232.74,
           "amount": 90768
         },
         {
           "date": "2026-11-11",
           "shares": 385,
-          "price": 234.0,
+          "avg_price": 234.0,
           "amount": 90090
         },
         {
           "date": "2026-11-12",
           "shares": 365,
-          "price": 234.0,
+          "avg_price": 234.0,
           "amount": 85410
         }
       ],
@@ -4440,47 +4440,47 @@
       "utilization_pct": 98.7
     },
     {
-      "uid": "fed-fed-page161",
-      "announcement_date": "2026-11-19",
-      "source": "fastejendom",
-      "source_url": "https://fastejendom.dk/aktietilbagekoebsprogram-161/",
+      "uid": "fed-oam-400002517",
+      "announcement_date": "2026-11-20",
+      "source": "finanstilsynet",
+      "source_url": "https://saesappublicprd.blob.core.windows.net/stc-public-submissions/2026/11/SUBMISSION-205470d7edf9fa1a8317d1473629c728/documents/Meddelelse nr 61 i 2026 aktietilbagekøbsprogram-da.pdf",
       "period_start": "2026-11-13",
       "period_end": "2026-11-19",
       "week_shares": 1835,
       "week_amount": 435410,
-      "week_avg_price": 237.28,
+      "week_avg_price": 237.2807,
       "acc_shares": 10442,
       "acc_amount": 2416470,
-      "program_id": null,
+      "program_id": 3,
       "daily_transactions": [
         {
           "date": "2026-11-13",
           "shares": 360,
-          "price": 236.0,
+          "avg_price": 236.0,
           "amount": 84960
         },
         {
           "date": "2026-11-16",
           "shares": 415,
-          "price": 236.55,
+          "avg_price": 236.55,
           "amount": 98170
         },
         {
           "date": "2026-11-17",
           "shares": 340,
-          "price": 238.0,
+          "avg_price": 238.0,
           "amount": 80920
         },
         {
           "date": "2026-11-18",
           "shares": 360,
-          "price": 238.0,
+          "avg_price": 238.0,
           "amount": 85680
         },
         {
           "date": "2026-11-19",
           "shares": 360,
-          "price": 238.0,
+          "avg_price": 238.0,
           "amount": 85680
         }
       ],
@@ -4528,7 +4528,7 @@
       "utilization_pct": 98.8
     }
   ],
-  "last_updated": "2026-11-25T13:23:03.600173+00:00",
+  "last_updated": "2026-11-25T13:34:06.011302+00:00",
   "current_price": 240.0,
   "programs": [
     {
