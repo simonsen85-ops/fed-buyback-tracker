@@ -4447,8 +4447,8 @@
       "period_start": "2026-11-13",
       "period_end": "2026-11-19",
       "week_shares": 1835,
-      "week_amount": 349815,
-      "week_avg_price": 190.63,
+      "week_amount": 435410,
+      "week_avg_price": 237.28,
       "acc_shares": 10442,
       "acc_amount": 2416470,
       "program_id": null,
@@ -4475,7 +4475,7 @@
           "date": "2026-11-18",
           "shares": 360,
           "price": 238.0,
-          "amount": 85
+          "amount": 85680
         },
         {
           "date": "2026-11-19",
@@ -4528,8 +4528,8 @@
       "utilization_pct": 98.8
     }
   ],
-  "last_updated": "2026-11-25T11:06:11.305953+00:00",
-  "current_price": 238.0,
+  "last_updated": "2026-11-25T13:23:03.600173+00:00",
+  "current_price": 240.0,
   "programs": [
     {
       "id": 1,
