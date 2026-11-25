@@ -226,6 +226,40 @@ def _sanitize_dates(data: dict) -> int:
     return fixed
 
 
+def _repair_daily_amounts(data: dict) -> int:
+    """
+    A day's amount must be about shares × price. fastejendom.dk once printed
+    "85,680" for 85.680 kr. (18 Nov 2026, page 161) and the old parser stored
+    85 kr., so the week came out at 349.815 kr. / avg 190,63 instead of
+    435.410 kr. / 237,28. The parser now cross-checks amounts; this repairs
+    rows already stored. Only gross mismatches (>20 %) are touched — normal
+    rounding of the reported avg price is far below that — and the week's
+    totals are recomputed from the repaired days.
+
+    Returns number of day rows repaired.
+    """
+    fixed = 0
+    for a in data.get("announcements", []):
+        days = a.get("daily_transactions") or []
+        touched = False
+        for t in days:
+            price = t.get("price") or t.get("avg_price") or 0
+            expected = t.get("shares", 0) * price
+            if expected > 0 and abs(t.get("amount", 0) - expected) > 0.2 * expected:
+                print(f"  ! {a.get('uid')} {t.get('date')}: amount {t.get('amount')} → "
+                      f"{round(expected)} ({t.get('shares')} × {price})")
+                t["amount"] = int(round(expected))
+                touched = True
+                fixed += 1
+        if touched:
+            a["week_amount"] = sum(t.get("amount", 0) for t in days)
+            if a.get("week_shares"):
+                a["week_avg_price"] = round(a["week_amount"] / a["week_shares"], 2)
+    if fixed:
+        print(f"Repaired {fixed} daily amount(s) that didn't match shares × price")
+    return fixed
+
+
 def _dedup_by_period(data: dict) -> int:
     """
     One row per buyback week. Sources disagree on period_end (e.g. legacy
@@ -432,6 +466,7 @@ def main():
     new_count = fetch_all_announcements(data)
 
     _sanitize_dates(data)
+    _repair_daily_amounts(data)
     _dedup_by_period(data)
 
     # Chronological by the week covered (dashboard accumulates in array order)

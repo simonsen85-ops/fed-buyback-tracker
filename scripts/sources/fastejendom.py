@@ -44,6 +44,27 @@ def _parse_number(s):
         return 0
 
 
+def _parse_amount(s, shares, price):
+    """
+    DKK amount cell → whole kroner, cross-checked against shares × price.
+
+    FED's pages occasionally use ',' as the thousands separator by mistake
+    ("85,680" for 85.680 kr. on 18 Nov 2026, page 161), which _parse_number
+    reads as 85,68. Read the cell both ways and keep the reading closest to
+    shares × price.
+    """
+    normal = _parse_number(s)
+    expected = shares * price
+    if expected <= 0:
+        return int(round(normal))
+    as_thousands = _parse_number(str(s).replace(",", "."))
+    best = min((normal, as_thousands), key=lambda v: abs(v - expected))
+    if best != normal:
+        print(f"  [fastejendom] amount {s!r} read as {best:,.0f} "
+              f"(matches {shares} × {price} = {expected:,.0f})")
+    return int(round(best))
+
+
 def _parse_date_danish(s):
     """'13. april 2026' → '2026-04-13'."""
     if not s:
@@ -221,7 +242,7 @@ class FastEjendomSource(AnnouncementSource):
             if date_str and len(row) >= 4:
                 shares = int(_parse_number(row[1]))
                 price = _parse_number(row[2])
-                amount = int(_parse_number(row[3]))
+                amount = _parse_amount(row[3], shares, price)
                 if shares > 0:
                     daily_transactions.append({
                         "date": date_str,
@@ -242,6 +263,13 @@ class FastEjendomSource(AnnouncementSource):
             new_acc["amount"] = prev_acc["amount"] + week_amount
 
         week_avg = week_amount / week_shares if week_shares > 0 else 0
+
+        # The day rows must add up to the change in the running total.
+        if prev_acc and week_shares > 0 and new_acc["amount"] > prev_acc["amount"]:
+            delta = new_acc["amount"] - prev_acc["amount"]
+            if abs(delta - week_amount) > 2:
+                print(f"  [fastejendom] ! page {page_idx}: day rows sum to {week_amount:,} kr "
+                      f"but the running total moved {delta:,} kr — check the page")
 
         if daily_transactions:
             dates_sorted = sorted(t["date"] for t in daily_transactions)

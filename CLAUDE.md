@@ -199,6 +199,16 @@ The page has two tabs: Tilbagekøb (everything above) and Gæld (`#gaeld`).
   failing the run. This is exactly how the IMB tracker went silent for four
   weeks in Oct 2026. First improvement: record parse failures in `data.json`
   and fail the workflow on them, as the IMB repo now does.
-- The latest row (29 Oct 2026) came from the fastejendom.dk fallback with uid
-  `fed-fed-page158`. Check whether OAM still returns new filings, and why the
-  uid is double-prefixed.
+- **OAM has stopped delivering new filings.** Every week since late Oct 2026
+  (`fed-fed-page158` onwards) comes from the fastejendom.dk fallback. The
+  self-test shows why: newer OAM filings (ids 400…) have no HTML attachment,
+  only a PDF (`no HTML attachment (pdf_url=yes)`), and the source only parses
+  HTML. Fixing it means parsing the PDF. Also check why the fallback uid is
+  double-prefixed (`fed-fed-page…`).
+- **fastejendom.dk typos.** Page 161 printed "85,680" for 85.680 kr. (18 Nov
+  2026); the old parser stored 85 kr. and the week's avg price showed 190,63
+  instead of 237,28. `_parse_amount()` now cross-checks each day's amount
+  against shares × price, the parser warns when the day rows don't add up to
+  the change in the running total, and `_repair_daily_amounts()` in
+  `scraper.py` fixed the stored row. The regulatory filing had it right —
+  another reason to get OAM working again.
