@@ -14,7 +14,7 @@ buyback. Talk to him in English, in plain language. Dashboard text is Danish.
 
 Workflow `.github/workflows/scrape.yml` runs weekdays 16:30 UTC and on manual
 trigger: install requirements → scraper → build_html → commit & push → deploy
-via `actions/deploy-pages`. Dependencies: `requests`, `beautifulsoup4`.
+via `actions/deploy-pages`. Dependencies: `requests`, `beautifulsoup4`, `pypdf`.
 
 `README.md` is stale: it describes Netlify, a Wed/Fri schedule and a manual
 `curKurs`. Trust the workflow and the code, and fix the README when you touch it.
@@ -34,7 +34,7 @@ via `actions/deploy-pages`. Dependencies: `requests`, `beautifulsoup4`.
   The dashboard only changes when the
   workflow next runs: tell him to run it from the Actions tab if the change
   should show today.
-- **Cloud sessions have a network allowlist.** This repo needs: appft.gold.extension.gopublic.dk, saegressprod.blob.core.windows.net, fastejendom.dk, *.nasdaq.com, *.finance.yahoo.com.
+- **Cloud sessions have a network allowlist.** This repo needs: appft.gold.extension.gopublic.dk, saesappublicprd.blob.core.windows.net (OAM attachments since 2026), saegressprod.blob.core.windows.net, fastejendom.dk, *.nasdaq.com, *.finance.yahoo.com.
   If a fetch fails from a cloud session, check the allowlist before concluding
   that the site or its format has changed.
 
@@ -52,8 +52,15 @@ commercial distributors (GlobeNewswire, Cision) last.
 - `finanstilsynet_oam.py` — **primary**. The Danish FSA's public OAM database
   ("Egne aktier" announcements), via the GoPublic API at
   `appft.gold.extension.gopublic.dk`. Attachments sit on
-  `saegressprod.blob.core.windows.net` and need no auth.
-  Self-test: `python finanstilsynet_oam.py` from `scripts/sources/`.
+  `saesappublicprd.blob.core.windows.net` (earlier `saegressprod…`) and need
+  no auth. Since Oct 2026 (ids 400…) filings have **only a PDF**:
+  `fetch_and_parse()` uses the HTML when there is one, else the PDF
+  (`fetch_document_pdf` strips the multipart header the blob stores before
+  `%PDF-`; `pdf_to_text` uses pypdf; `parse_buyback_pdf` reads the day rows
+  and the two "Akkumuleret" rows, skips 0-share days so `period_start`
+  matches fastejendom.dk). Rows use the publication date as
+  `announcement_date`. Self-test: `python finanstilsynet_oam.py` from
+  `scripts/sources/`.
 - `fastejendom.py` — fallback. fastejendom.dk WordPress posts at
   `aktietilbagekoebsprogram-{N}`. N is a sequential page slug, not the
   announcement number, so the scraper scans past 404s. FED posts here 1–3 days
@@ -199,16 +206,15 @@ The page has two tabs: Tilbagekøb (everything above) and Gæld (`#gaeld`).
   failing the run. This is exactly how the IMB tracker went silent for four
   weeks in Oct 2026. First improvement: record parse failures in `data.json`
   and fail the workflow on them, as the IMB repo now does.
-- **OAM has stopped delivering new filings.** Every week since late Oct 2026
-  (`fed-fed-page158` onwards) comes from the fastejendom.dk fallback. The
-  self-test shows why: newer OAM filings (ids 400…) have no HTML attachment,
-  only a PDF (`no HTML attachment (pdf_url=yes)`), and the source only parses
-  HTML. Fixing it means parsing the PDF. Also check why the fallback uid is
+- OAM went PDF-only in Sep/Oct 2026 and the source silently fell back to
+  fastejendom.dk for nine weeks (18 Sep – 19 Nov) — the fail-loud gap above
+  in action. Fixed 25 Nov 2026 with the PDF parser; those weeks are OAM rows
+  again with identical numbers. Still open: why the fallback uid is
   double-prefixed (`fed-fed-page…`).
 - **fastejendom.dk typos.** Page 161 printed "85,680" for 85.680 kr. (18 Nov
   2026); the old parser stored 85 kr. and the week's avg price showed 190,63
   instead of 237,28. `_parse_amount()` now cross-checks each day's amount
   against shares × price, the parser warns when the day rows don't add up to
   the change in the running total, and `_repair_daily_amounts()` in
-  `scraper.py` fixed the stored row. The regulatory filing had it right —
-  another reason to get OAM working again.
+  `scraper.py` fixed the stored row. The regulatory filing had it right; the
+  week now comes from OAM.

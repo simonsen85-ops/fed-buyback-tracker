@@ -10,7 +10,11 @@ the project source hierarchy:
 The Danish FSA (Finanstilsynet) hosts its public OAM database on the GoPublic
 platform at https://appft.gold.extension.gopublic.dk. API discovered via HAR
 export from the public portal. Document attachments are served from
-Azure blob storage (saegressprod.blob.core.windows.net) without auth.
+Azure blob storage without auth (saesappublicprd.blob.core.windows.net since
+2026; earlier saegressprod.blob.core.windows.net).
+
+Since Oct 2026 (ids 400…) FED's filings have only a PDF attachment, no HTML.
+The PDF is parsed with pypdf (parse_buyback_pdf); HTML is used when present.
 
 Test mode:
     python -m scripts.sources.finanstilsynet_oam
@@ -20,6 +24,7 @@ Test mode:
 
 from __future__ import annotations
 
+import io
 import json
 import re
 import time
@@ -206,6 +211,27 @@ def _parse_dk_number(s: str) -> Optional[float]:
         return None
 
 
+def _parse_dk_amount(s: str, shares: float, avg: float) -> Optional[float]:
+    """
+    A day's DKK amount, cross-checked against shares × avg price.
+
+    FED's documents occasionally use ',' as the thousands separator by mistake
+    ("85,680" for 85.680 kr. on fastejendom.dk, 18 Nov 2026), which
+    _parse_dk_number reads as 85,68. Read the cell both ways and keep the
+    reading closest to shares × avg.
+    """
+    normal = _parse_dk_number(s)
+    expected = (shares or 0) * (avg or 0)
+    if normal is None or expected <= 0:
+        return normal
+    alt = _parse_dk_number(s.replace(",", "."))
+    if alt is not None and abs(alt - expected) < abs(normal - expected):
+        print(f"{LOG_PREFIX}   amount {s!r} read as {alt:,.0f} "
+              f"(matches {shares:g} × {avg:g} = {expected:,.0f})")
+        return alt
+    return normal
+
+
 
 
 
@@ -378,12 +404,105 @@ def parse_buyback_html(html: str, debug: bool = False) -> ParsedAnnouncement:
                 continue
             shares = _parse_dk_number(cells[1])
             avg = _parse_dk_number(cells[2])
-            amt = _parse_dk_number(cells[3])
+            amt = _parse_dk_amount(cells[3], shares, avg) if None not in (shares, avg) else None
             if None in (shares, avg, amt):
                 continue
             parsed.daily_transactions.append((d, int(shares), float(avg), float(amt)))
 
     return parsed
+
+
+# ============================================================
+# PDF parsing (filings from Oct 2026 on have no HTML attachment)
+# ============================================================
+# pypdf's text for FED's announcement, page 1:
+#   Akkumuleret under programmet jf.
+#   seneste meddelelse
+#   8.607 230,17 1.981.060
+#   13. november 2026 360 236,00 84.960
+#   ...
+#   Akkumuleret under programmet jf.
+#   ovenstående transaktioner
+#   10.442 231,42 2.416.470
+# The PDFs also list trading days with no purchases (0 shares); those are
+# skipped so period_start matches the fastejendom.dk rows for the same week
+# (_dedup_by_period keys on period_start). The "Bilag" trade lines
+# ("67 FED.CO 226 20260918 …") have no Danish date, so they never match a day
+# row — and in older layouts (Sep 2026) the main table itself sits after
+# "Bilag", so the text is not cut there.
+
+_PDF_DAY_RE = re.compile(
+    r"^\s*(\d{1,2}\.\s*[a-zæøå]+\s+\d{4})\s+([\d.]+)\s+([\d.,]+)\s+([\d.,]+)\s*$",
+    re.IGNORECASE | re.MULTILINE,
+)
+_PDF_ACC_RE = re.compile(
+    r"Akkumuleret\s+under\s+programmet\s+jf\.\s*"
+    r"(seneste\s+meddelelse|ovenst[åa]ende\s+transaktioner)\s+"
+    r"([\d.]+)\s+([\d.,]+)\s+([\d.,]+)",
+    re.IGNORECASE,
+)
+
+
+def fetch_document_pdf(pdf_url: str, session: Optional[requests.Session] = None) -> bytes:
+    """Download a PDF attachment. The blob holds the raw multipart upload
+    (Content-Disposition/Content-Type lines first), so cut everything before
+    the %PDF- marker."""
+    sess = session or requests.Session()  # blob doesn't need our auth headers
+    resp = sess.get(pdf_url, timeout=TIMEOUT)
+    resp.raise_for_status()
+    data = resp.content
+    start = data.find(b"%PDF-")
+    if start < 0:
+        raise ValueError("attachment has no %PDF- marker")
+    return data[start:]
+
+
+def pdf_to_text(pdf: bytes) -> str:
+    from pypdf import PdfReader  # only needed for PDF-only filings
+    reader = PdfReader(io.BytesIO(pdf))
+    return "\n".join(page.extract_text() or "" for page in reader.pages)
+
+
+def parse_buyback_pdf(text: str) -> ParsedAnnouncement:
+    """Parse the text of a buyback announcement PDF (see layout above)."""
+    body = text
+    parsed = ParsedAnnouncement(daily_transactions=[])
+
+    for m in _PDF_ACC_RE.finditer(body):
+        sh, amt = _parse_dk_number(m.group(2)), _parse_dk_number(m.group(4))
+        if m.group(1).lower().startswith("seneste"):
+            parsed.prev_accum_shares = int(sh) if sh is not None else None
+            parsed.prev_accum_amount = amt
+        else:
+            parsed.new_accum_shares = int(sh) if sh is not None else None
+            parsed.new_accum_amount = amt
+
+    for m in _PDF_DAY_RE.finditer(body):
+        d = _parse_dk_date(m.group(1))
+        shares = _parse_dk_number(m.group(2))
+        avg = _parse_dk_number(m.group(3))
+        if d is None or None in (shares, avg) or shares <= 0:
+            continue
+        amt = _parse_dk_amount(m.group(4), shares, avg)
+        if amt is None:
+            continue
+        parsed.daily_transactions.append((d, int(shares), float(avg), float(amt)))
+    parsed.daily_transactions.sort()
+    return parsed
+
+
+def fetch_and_parse(doc: OAMDocument,
+                    session: Optional[requests.Session] = None,
+                    debug: bool = False) -> tuple[ParsedAnnouncement, str]:
+    """Parse a filing from its HTML attachment, else its PDF.
+    Returns (parsed, url used). Raises ValueError if there is neither."""
+    if doc.html_url:
+        html = fetch_document_html(doc.html_url, session=session)
+        return parse_buyback_html(html, debug=debug), doc.html_url
+    if doc.pdf_url:
+        text = pdf_to_text(fetch_document_pdf(doc.pdf_url, session=session))
+        return parse_buyback_pdf(text), doc.pdf_url
+    raise ValueError("no HTML or PDF attachment")
 
 
 # ============================================================
@@ -420,14 +539,8 @@ def fetch_fed_transactions(
             print(f"{LOG_PREFIX}   {ann.id}: CVR {doc.cvr} != FED ({FED_CVR}), skipping")
             continue
 
-        if not doc.html_url:
-            print(f"{LOG_PREFIX}   {ann.id}: no HTML attachment "
-                  f"(pdf_url={'yes' if doc.pdf_url else 'no'})")
-            continue
-
         try:
-            html = fetch_document_html(doc.html_url, session=session)
-            parsed = parse_buyback_html(html, debug=debug)
+            parsed, _ = fetch_and_parse(doc, session=session, debug=debug)
         except Exception as exc:
             print(f"{LOG_PREFIX}   {ann.id}: parse failed ({exc})")
             continue
@@ -563,15 +676,9 @@ class FinanstilsynetSource(AnnouncementSource):
             if self.validate_cvr and doc.cvr and doc.cvr != self.cvr:
                 skipped_cvr += 1
                 continue
-            if not doc.html_url:
-                # Older entries (~pre-2025) sometimes only have a PDF.
-                # Currently no PDF fallback — skip with a notice.
-                print(f"  [{self.name}]   {oam_ann.id}: no HTML attachment (PDF only)")
-                continue
-
             try:
-                html = fetch_document_html(doc.html_url, session=session)
-                parsed = parse_buyback_html(html)
+                # HTML if the filing has it, else the PDF (all filings since Oct 2026)
+                parsed, source_url = fetch_and_parse(doc, session=session)
             except Exception as exc:
                 print(f"  [{self.name}]   {oam_ann.id}: parse failed ({exc})")
                 continue
@@ -615,7 +722,7 @@ class FinanstilsynetSource(AnnouncementSource):
                 uid=f"{self.uid_prefix}-oam-{oam_ann.id}",
                 announcement_date=oam_ann.publication_date.date().isoformat(),
                 source=self.name,
-                source_url=doc.html_url,
+                source_url=source_url,
                 period_start=period_start.isoformat(),
                 period_end=period_end.isoformat(),
                 week_shares=week_shares,
